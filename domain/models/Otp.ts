@@ -20,7 +20,6 @@ export class Otp extends Model<OtpAttributes, OtpCreationAttributes> {
 
 export function initOtp(sequelize: Sequelize) {
   
-    console.log("Otp models were synchronized successfully.");
       Otp.init(
         {
           id: {
