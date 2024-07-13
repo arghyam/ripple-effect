@@ -1,6 +1,5 @@
 import express from 'express';
 import { validationResult } from 'express-validator';
-import { error } from 'winston';
 import { GenerateOTPReq } from '../../data/requests/GenerateOTPReq';
 import { LoginUserReq } from '../../data/requests/LoginUserReq';
 import { RegisterUserReq } from '../../data/requests/RegisterUserReq';
@@ -8,9 +7,11 @@ import { ResetPasswordReq } from '../../data/requests/ResetPasswordReq';
 import { VerifyOTPReq } from '../../data/requests/VerifyOTPReq';
 import { container } from '../../di/container';
 import { TOKENS } from '../../di/tokens';
-import { InvalidUserCredentials } from '../../services/utils/errors/ErrorCodes';
-import { handleRegisterRouteError, handleLoginRouteError, handleGentOTPRouteError, handleVerifyOTPRouteError, handleresetPasswordRouteError } from '../../services/utils/errors/ErrorResponseUtils';
-import { AuthError } from '../../services/utils/errors/ErrorUtils';
+import { InvalidUserCredentials } from './errorhandling/ErrorCodes';
+import { handleRegisterRouteError, handleLoginRouteError, handleGentOTPRouteError, handleVerifyOTPRouteError, handleresetPasswordRouteError } from './errorhandling/ErrorResponseUtils';
+import { AuthError } from './errorhandling/ErrorUtils';
+import jwt from 'jsonwebtoken';
+import { token } from 'brandi';
 
 
 
@@ -58,6 +59,7 @@ router.post('/login', async (req, res) => {
 
     const userData: LoginUserReq = req.body;
     const userResData = await authService.loginUser(userData)
+    res.set('authorization', `Bearer ${userResData.access_token}`)
     res.status(200).json(
       {
         status_code: 200,
@@ -72,7 +74,7 @@ router.post('/login', async (req, res) => {
     );
 
   } catch (err) {
-    console.error(err);
+    
     if(err instanceof Error) {
       handleLoginRouteError(err, res);
     }
@@ -86,17 +88,19 @@ router.post('/generate-otp', async (req, res) => {
 
     const emailData: GenerateOTPReq = req.body
 
-    const status = await authService.generateForgotPasswordOTP(emailData.email)
+    const timestamp = await authService.generateForgotPasswordOTP(emailData.email)
+  
 
     res.status(200).json(
       {
         status_code: 200,
-        message: status
+        created_on: timestamp,
+        message: `otp has been sent to an email: ${emailData.email}`
       }
     );
 
   } catch (err) {
-    console.error(err);
+    
     if(err instanceof Error) {
       handleGentOTPRouteError(err, res);
     }
@@ -110,7 +114,7 @@ router.post('/verify-otp', async (req, res) => {
 
     const verifyOtpReq: VerifyOTPReq = req.body
 
-    const result = await authService.verifyOtp(verifyOtpReq.otp, verifyOtpReq.email)
+    const result = await authService.verifyOtp(verifyOtpReq.otp,verifyOtpReq.email, verifyOtpReq.created_on)
 
     res.status(200).json(
       {
@@ -121,7 +125,6 @@ router.post('/verify-otp', async (req, res) => {
     );
 
   } catch (err) {
-    console.error(err);
     if(err instanceof Error) {
       handleVerifyOTPRouteError(err, res);
     }
@@ -129,13 +132,57 @@ router.post('/verify-otp', async (req, res) => {
 
 });
 
+const validateAuthorization = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const authHeader = req.headers.authorization;
 
-router.post('/reset-password', async (req, res) => {
+  
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Unauthorized: Missing authorization header' });
+  }
+
+ 
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+    return res.status(401).json({ message: 'Unauthorized: Invalid authorization format' });
+  }
+
+  const token = parts[1];
+
+  const secretKey = "Puddle@2024"
+
+
+
+  try {
+    const decoded = jwt.verify(token, secretKey) as TokenPayload; 
+    
+
+     
+    next();
+  
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ message: 'Unauthorized: Token expired' });
+    } else if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ message: 'Unauthorized: Invalid token signature' });
+    } else { 
+      console.error('Error verifying token:', error);
+      return res.status(500).json({ message: 'Internal Server Error' }); 
+    }
+    
+  }
+
+   
+};
+
+
+router.post('/reset-password', validateAuthorization, async (req, res) => {
 
   try {
     const reqest: ResetPasswordReq = req.body
 
-    const result = await authService.resetPassword(reqest.access_token, reqest.new_password, reqest.email)
+    
+
+    const result = await authService.resetPassword(reqest.new_password, reqest.email)
 
     if(result) {
       res.status(200).json(
@@ -152,6 +199,7 @@ router.post('/reset-password', async (req, res) => {
         }
       );
     }
+    
    
 
   } catch (err) {
@@ -163,5 +211,10 @@ router.post('/reset-password', async (req, res) => {
   }
     
 });
+
+interface TokenPayload {
+  email: string, 
+  otp: string
+}
 
 export default router;

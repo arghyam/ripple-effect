@@ -1,5 +1,5 @@
-import { User } from '../../../domain/models/User';
-import { Otp } from "../../../domain/models/Otp";
+import { User } from '../../db_models/User';
+import { Otp } from "../../db_models/Otp";
 import { RegisterUserData } from '../../../domain/models/RegisterUserData';
 
 export interface UserDAO {
@@ -10,7 +10,7 @@ export interface UserDAO {
 
     fetchUserByEmail(email: string): Promise<User>;
 
-    getOtp(email: string, otp: string): Promise<Otp>;
+    getOtp(email: string, timestamp: number): Promise<Otp>;
 
     insertOtp(email: string, otp: string): Promise<Otp>;
 

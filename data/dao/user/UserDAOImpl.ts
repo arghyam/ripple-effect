@@ -1,8 +1,8 @@
-import { Otp } from "../../../domain/models/Otp";
+import { Otp } from "../../db_models/Otp";
 import { RegisterUserData } from "../../../domain/models/RegisterUserData";
-import { User } from "../../../domain/models/User";
-import { FetchUserByEmail, FetchUserUserDAO, InsertOTPUserDAO, InsertUserUSerDAO, IsEmailExistUserDAO, OTPNotFoundInDB, UnknownDatabaseError, UserNotFoundInDB } from "../../../services/utils/errors/ErrorCodes";
-import { AuthError, DatabaseError } from "../../../services/utils/errors/ErrorUtils";
+import { User } from "../../db_models/User";
+import { FetchUserByEmail, FetchUserUserDAO, InsertOTPUserDAO, InsertUserUSerDAO, IsEmailExistUserDAO, OTPNotFoundInDB, UnknownDatabaseError, UserNotFoundInDB } from "../../../routes/auth/errorhandling/ErrorCodes";
+import { AuthError, DatabaseError } from "../../../routes/auth/errorhandling/ErrorUtils";
 import { UserDAO } from "./UserDAO";
 
 
@@ -22,12 +22,13 @@ export class UserDAOImpl implements UserDAO {
   async insertOtp(email: string, otp: string): Promise<Otp> {
     try {
       const now = new Date()
-      const otpData = await Otp.create({ email: email, otp_hash: otp, generated_at: now })
+      const otpData = await Otp.create({ email: email, otp_hash: otp, generated_at: now.getTime() })
       return otpData
     } catch (error) {
       if (error instanceof AuthError) {
         throw error
       } else if (error instanceof Error) {
+        console.log(`error is: ${error}`)
         throw new DatabaseError(error.message, InsertOTPUserDAO);
       } else {
         throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- insertOtp", UnknownDatabaseError);
@@ -35,14 +36,14 @@ export class UserDAOImpl implements UserDAO {
     }
   }
 
-  async getOtp(email: string, otp: string): Promise<Otp> {
+  async getOtp(email: string, timestamp: number): Promise<Otp> {
     try {
 
-
+  
       const otpRow = await Otp.findOne({
         where: {
-          email: email
-
+          email: email,
+          generated_at: timestamp
         }
       });
 
@@ -55,7 +56,8 @@ export class UserDAOImpl implements UserDAO {
       if (error instanceof AuthError) {
         throw error
       } else if (error instanceof Error) {
-        throw new DatabaseError(error.message, IsEmailExistUserDAO);
+        console.log(`error is: ${error.message}`)
+        throw new DatabaseError("error.message", IsEmailExistUserDAO);
       } else {
         throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- getOtp", UnknownDatabaseError);
       }
@@ -69,6 +71,7 @@ export class UserDAOImpl implements UserDAO {
 
     try {
       const user = await User.create({ name: userData.name, email: userData.email, password_hash: userData.password_hash })
+      console.log(`createdAt is: ${user.createdAt} && updatedAt is: ${user.updatedAt}`)
       return user
     } catch (error) {
       if (error instanceof AuthError) {

@@ -4,5 +4,6 @@ import { AuthService } from '../services/AuthService';
 
 export const TOKENS = {
     userDao: token<UserDAO>('user_dao'),
-    authService: token<AuthService>('auth_service')
+    authService: token<AuthService>('auth_service'),
+  
   }; 

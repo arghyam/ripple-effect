@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 
+const connectionString = process.env.DATABASE_URL as string
 
-const sequelize = new Sequelize('postgres://postgres:1234@localhost:5432/postgres');
+const sequelize = new Sequelize(connectionString);
 
 export default sequelize;
