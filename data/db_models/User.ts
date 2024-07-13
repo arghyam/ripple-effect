@@ -24,7 +24,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
 
 export function initUser(sequelize: Sequelize) {
   
-console.log("User models were synchronized successfully.");
   User.init(
     {
       id: {
