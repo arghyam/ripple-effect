@@ -43,8 +43,7 @@ router.post('/register', async (req, res) => {
     )
 
   } catch (err) {
-    console.error(err);
-    if(err instanceof Error) {
+    if (err instanceof Error) {
       handleRegisterRouteError(err, res);
     }
   }
@@ -74,8 +73,8 @@ router.post('/login', async (req, res) => {
     );
 
   } catch (err) {
-    
-    if(err instanceof Error) {
+
+    if (err instanceof Error) {
       handleLoginRouteError(err, res);
     }
   }
@@ -89,7 +88,7 @@ router.post('/generate-otp', async (req, res) => {
     const emailData: GenerateOTPReq = req.body
 
     const timestamp = await authService.generateForgotPasswordOTP(emailData.email)
-  
+
 
     res.status(200).json(
       {
@@ -100,8 +99,8 @@ router.post('/generate-otp', async (req, res) => {
     );
 
   } catch (err) {
-    
-    if(err instanceof Error) {
+
+    if (err instanceof Error) {
       handleGentOTPRouteError(err, res);
     }
   }
@@ -114,7 +113,7 @@ router.post('/verify-otp', async (req, res) => {
 
     const verifyOtpReq: VerifyOTPReq = req.body
 
-    const result = await authService.verifyOtp(verifyOtpReq.otp,verifyOtpReq.email, verifyOtpReq.created_on)
+    const result = await authService.verifyOtp(verifyOtpReq.otp, verifyOtpReq.email, verifyOtpReq.created_on)
 
     res.status(200).json(
       {
@@ -125,7 +124,7 @@ router.post('/verify-otp', async (req, res) => {
     );
 
   } catch (err) {
-    if(err instanceof Error) {
+    if (err instanceof Error) {
       handleVerifyOTPRouteError(err, res);
     }
   }
@@ -135,12 +134,12 @@ router.post('/verify-otp', async (req, res) => {
 const validateAuthorization = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
 
-  
+
   if (!authHeader) {
     return res.status(401).json({ message: 'Unauthorized: Missing authorization header' });
   }
 
- 
+
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
     return res.status(401).json({ message: 'Unauthorized: Invalid authorization format' });
@@ -153,25 +152,22 @@ const validateAuthorization = (req: express.Request, res: express.Response, next
 
 
   try {
-    const decoded = jwt.verify(token, secretKey) as TokenPayload; 
-    
+    jwt.verify(token, secretKey) as TokenPayload;
 
-     
     next();
-  
+
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       return res.status(401).json({ message: 'Unauthorized: Token expired' });
     } else if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({ message: 'Unauthorized: Invalid token signature' });
-    } else { 
-      console.error('Error verifying token:', error);
-      return res.status(500).json({ message: 'Internal Server Error' }); 
+    } else {
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
-    
+
   }
 
-   
+
 };
 
 
@@ -180,11 +176,9 @@ router.post('/reset-password', validateAuthorization, async (req, res) => {
   try {
     const reqest: ResetPasswordReq = req.body
 
-    
-
     const result = await authService.resetPassword(reqest.new_password, reqest.email)
 
-    if(result) {
+    if (result) {
       res.status(200).json(
         {
           status_code: 200,
@@ -199,21 +193,20 @@ router.post('/reset-password', validateAuthorization, async (req, res) => {
         }
       );
     }
-    
-   
+
+
 
   } catch (err) {
-    console.error(err);
-    if(err instanceof Error) {
+    if (err instanceof Error) {
       handleresetPasswordRouteError(err, res);
     }
-    
+
   }
-    
+
 });
 
 interface TokenPayload {
-  email: string, 
+  email: string,
   otp: string
 }
 

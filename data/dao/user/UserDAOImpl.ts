@@ -28,7 +28,6 @@ export class UserDAOImpl implements UserDAO {
       if (error instanceof AuthError) {
         throw error
       } else if (error instanceof Error) {
-        console.log(`error is: ${error}`)
         throw new DatabaseError(error.message, InsertOTPUserDAO);
       } else {
         throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- insertOtp", UnknownDatabaseError);
@@ -56,7 +55,6 @@ export class UserDAOImpl implements UserDAO {
       if (error instanceof AuthError) {
         throw error
       } else if (error instanceof Error) {
-        console.log(`error is: ${error.message}`)
         throw new DatabaseError("error.message", IsEmailExistUserDAO);
       } else {
         throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- getOtp", UnknownDatabaseError);
@@ -71,7 +69,6 @@ export class UserDAOImpl implements UserDAO {
 
     try {
       const user = await User.create({ name: userData.name, email: userData.email, password_hash: userData.password_hash })
-      console.log(`createdAt is: ${user.createdAt} && updatedAt is: ${user.updatedAt}`)
       return user
     } catch (error) {
       if (error instanceof AuthError) {
