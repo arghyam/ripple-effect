@@ -5,19 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Test2Screen">
+      <SelectionState runConfigName="WFCOnboard5Screen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Test4">
+      <SelectionState runConfigName="WFCOnboard6Screen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WFCOnboardScreen">
+      <SelectionState runConfigName="WFCOnboard7Screen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WFCOnboard2Screen">
+      <SelectionState runConfigName="WFCOnboard8Screen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="WFCOnboard3Screen">
+      <SelectionState runConfigName="WFCOnboard9Screen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
