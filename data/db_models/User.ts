@@ -8,7 +8,7 @@ interface UserAttributes {
   // other attributes...
 };
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 export class User extends Model<UserAttributes, UserCreationAttributes> {
   declare id: number;
@@ -18,12 +18,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-  // other attributes...
+
 
 }
 
 export function initUser(sequelize: Sequelize) {
-  
+
   User.init(
     {
       id: {
@@ -45,17 +45,17 @@ export function initUser(sequelize: Sequelize) {
         allowNull: false,
         unique: true,
       },
-    
-    }, 
+
+    },
     {
       sequelize: sequelize,
       tableName: 'users2',
       timestamps: true
 
     }
-  ).sync({ 
-    alter: true 
+  ).sync({
+    alter: true
   });
-  
+
 }
 

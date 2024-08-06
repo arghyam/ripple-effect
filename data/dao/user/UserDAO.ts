@@ -6,8 +6,6 @@ export interface UserDAO {
     
     insertUser(userData: RegisterUserData): Promise<User>;
 
-    fetchUser(userId: number): Promise<User>;
-
     fetchUserByEmail(email: string): Promise<User>;
 
     getOtp(email: string, timestamp: number): Promise<Otp>;

@@ -99,12 +99,9 @@ export class AuthService {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.error(error);
+                
                 throw new AuthError("we're facing an issue to send an email: " + error.message, ForgotPasswordEmailNotSent);
             
-
-            } else {
-                console.log('Email sent: %s', info);
 
             }
         });
