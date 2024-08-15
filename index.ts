@@ -1,25 +1,27 @@
 import express from 'express';
 import winston from 'winston';
 import authRouter from './routes/auth/AuthRoutes';
-import { initUser } from './domain/models/User';
+import waterFtCalcRouter from './routes/water_ft_catculator/WaterfootprintCalcRoutes';
+import { initUser, User } from './data/db_models/User';
 import sequelize from './db';
-import { initOtp } from './domain/models/Otp';
-import dotenv from 'dotenv';
+import { initOtp } from './data/db_models/Otp';
+import path from 'path';
+import { IngredientRow, initIngredientRow } from './data/db_models/IngredientRowData';
+import { IngredientRowItem, initIngredientRowItem } from './data/db_models/IngredientRowItem';
+import { initWaterFtCalcResult, WaterFtCalcResult } from './data/db_models/WaterFtCalcResult';
 
 
-dotenv.config();
-//const cors = require('cors'); // Enable if needed for CORS
+initUser(sequelize)
+initOtp(sequelize)
+initIngredientRow(sequelize)
+initIngredientRowItem(sequelize)
+initWaterFtCalcResult(sequelize)
 
+IngredientRow.hasMany(IngredientRowItem, { foreignKey: 'rowId' });
+IngredientRowItem.belongsTo(IngredientRow, { foreignKey: 'rowId' });
 
-
-initUser(sequelize);
-initOtp(sequelize);
-
-const jwtSecret = process.env.JWT_SECRET;
-const databaseUrl = process.env.DATABASE_URL;
-
-console.log(`JWT_SECRET: ${jwtSecret}`);
-console.log(`DATABASE_URL: ${databaseUrl}`);
+User.hasMany(WaterFtCalcResult, { foreignKey: 'user_id' })
+WaterFtCalcResult.belongsTo(User, { foreignKey: 'user_id' })
 
 
 export const logger = winston.createLogger({
@@ -31,27 +33,32 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console() // Log to console
   ]
-});
+})
 
-const app = express();
-const port = 3000;
+sequelize.authenticate()
+  .then(() => console.log('Connection has been established successfully.'))
+  .catch(err => console.error('Unable to connect to the database:', err));
+
+const app = express()
 
 
 // Body parser middleware (already included in Express.js)
-app.use(express.json());
+app.use(express.json())
+
+app.use('/images', express.static(path.join(__dirname, 'resources','public')))
 
 
-app.use('/api/auth', authRouter);
+app.use('/api/auth', authRouter)
 
-
+app.use('/api/user/', waterFtCalcRouter)
 
 
 app.get('/', (req, res) => {
-  logger.info('Received a GET request to the root path');
-  res.send('Welcome to my server!');
-});
+  logger.info('Received a GET request to the root path')
+  res.send('Welcome to my server!')
+})
 
 
-app.listen(port, () => {
-  logger.info(`Server is running on port ${port}`);
-});
+app.listen(() => {
+  logger.info(`Server is running on port`)
+})

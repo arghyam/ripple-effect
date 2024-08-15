@@ -10,10 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDAOImpl = void 0;
-const Otp_1 = require("../../../domain/models/Otp");
-const User_1 = require("../../../domain/models/User");
-const ErrorCodes_1 = require("../../../services/utils/errors/ErrorCodes");
-const ErrorUtils_1 = require("../../../services/utils/errors/ErrorUtils");
+const Otp_1 = require("../../db_models/Otp");
+const User_1 = require("../../db_models/User");
+const ErrorCodes_1 = require("../../../utils/errors/ErrorCodes");
+const ErrorUtils_1 = require("../../../utils/errors/ErrorUtils");
+const uuid_1 = require("uuid");
 class UserDAOImpl {
     updatePassword(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,7 +31,8 @@ class UserDAOImpl {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const now = new Date();
-                const otpData = yield Otp_1.Otp.create({ email: email, otp_hash: otp, generated_at: now });
+                const id = (0, uuid_1.v6)();
+                const otpData = yield Otp_1.Otp.create({ id: id, email: email, otp_hash: otp, generated_at: now.getTime() });
                 return otpData;
             }
             catch (error) {
@@ -46,12 +48,13 @@ class UserDAOImpl {
             }
         });
     }
-    getOtp(email, otp) {
+    getOtp(email, timestamp) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const otpRow = yield Otp_1.Otp.findOne({
                     where: {
-                        email: email
+                        email: email,
+                        generated_at: timestamp
                     }
                 });
                 if (otpRow == null) {
@@ -64,7 +67,7 @@ class UserDAOImpl {
                     throw error;
                 }
                 else if (error instanceof Error) {
-                    throw new ErrorUtils_1.DatabaseError(error.message, ErrorCodes_1.IsEmailExistUserDAO);
+                    throw new ErrorUtils_1.DatabaseError("error.message", ErrorCodes_1.IsEmailExistUserDAO);
                 }
                 else {
                     throw new ErrorUtils_1.DatabaseError("e is not a instance of Error: UserDAOImpl --- getOtp", ErrorCodes_1.UnknownDatabaseError);
@@ -75,7 +78,8 @@ class UserDAOImpl {
     insertUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.User.create({ name: userData.name, email: userData.email, password_hash: userData.password_hash });
+                const userId = (0, uuid_1.v6)();
+                const user = yield User_1.User.create({ id: userId, name: userData.name, email: userData.email, password_hash: userData.password_hash, leaderboard_rank: 0, total_water_footprint: 0 });
                 return user;
             }
             catch (error) {
@@ -87,28 +91,6 @@ class UserDAOImpl {
                 }
                 else {
                     throw new ErrorUtils_1.DatabaseError("e is not a instance of Error: UserDAOImpl --- insertUser", ErrorCodes_1.UnknownDatabaseError);
-                }
-            }
-        });
-    }
-    fetchUser(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = yield User_1.User.findByPk(userId);
-                if (user == null) {
-                    throw new ErrorUtils_1.AuthError("user with id: " + userId + "is not found in the database", ErrorCodes_1.UserNotFoundInDB);
-                }
-                return user;
-            }
-            catch (error) {
-                if (error instanceof ErrorUtils_1.AuthError) {
-                    throw error;
-                }
-                else if (error instanceof Error) {
-                    throw new ErrorUtils_1.DatabaseError(error.message, ErrorCodes_1.FetchUserUserDAO);
-                }
-                else {
-                    throw new ErrorUtils_1.DatabaseError("e is not a instance of Error: UserDAOImpl --- fetchUser", ErrorCodes_1.UnknownDatabaseError);
                 }
             }
         });

@@ -1,6 +1,20 @@
-import { Sequelize } from 'sequelize';
+import { Dialect, Sequelize } from "sequelize";
+import * as dotenv from 'dotenv-flow';
+dotenv.config({ path: '../' })
 
 
-const sequelize = new Sequelize('postgres://postgres:1234@localhost:5432/postgres');
+const sequelize = new Sequelize(String(process.env.DB_NAME), String(process.env.DB_USERNAME), String(process.env.DB_PASSWORD),{
+        host: String(process.env.DB_HOST),
+        port: Number(process.env.DB_PORT),
+        dialect: process.env.DB_DIALECT as Dialect,
+        ssl: true,
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false // For development only, disable for production
+              }
+        }
+    }
+);
 
 export default sequelize;

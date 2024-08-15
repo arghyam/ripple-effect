@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
-const winston_1 = require("winston");
 const container_1 = require("../../di/container");
 const tokens_1 = require("../../di/tokens");
-const ErrorCodes_1 = require("../../services/utils/errors/ErrorCodes");
-const ErrorResponseUtils_1 = require("../../services/utils/errors/ErrorResponseUtils");
-const ErrorUtils_1 = require("../../services/utils/errors/ErrorUtils");
+const ErrorCodes_1 = require("../../utils/errors/ErrorCodes");
+const ErrorResponses_1 = require("./errorhandling/ErrorResponses");
+const ErrorUtils_1 = require("../../utils/errors/ErrorUtils");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const router = express_1.default.Router();
 const authService = container_1.container.get(tokens_1.TOKENS.authService);
 router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,9 +41,8 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
     catch (err) {
-        console.error(err);
         if (err instanceof Error) {
-            (0, ErrorResponseUtils_1.handleRegisterRouteError)(err, res);
+            (0, ErrorResponses_1.handleRegisterRouteError)(err, res);
         }
     }
 }));
@@ -67,32 +66,31 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (err) {
-        console.error(err);
         if (err instanceof Error) {
-            (0, ErrorResponseUtils_1.handleLoginRouteError)(err, res);
+            (0, ErrorResponses_1.handleLoginRouteError)(err, res);
         }
     }
 }));
 router.post('/generate-otp', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const emailData = req.body;
-        const status = yield authService.generateForgotPasswordOTP(emailData.email);
+        const timestamp = yield authService.generateForgotPasswordOTP(emailData.email);
         res.status(200).json({
             status_code: 200,
-            message: status
+            created_on: timestamp,
+            message: `otp has been sent to an email: ${emailData.email}`
         });
     }
     catch (err) {
-        console.error(err);
         if (err instanceof Error) {
-            (0, ErrorResponseUtils_1.handleGentOTPRouteError)(err, res);
+            (0, ErrorResponses_1.handleGentOTPRouteError)(err, res);
         }
     }
 }));
 router.post('/verify-otp', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const verifyOtpReq = req.body;
-        const result = yield authService.verifyOtp(verifyOtpReq.otp, verifyOtpReq.email);
+        const result = yield authService.verifyOtp(verifyOtpReq.otp, verifyOtpReq.email, verifyOtpReq.created_on);
         res.status(200).json({
             status_code: 200,
             access_token: result.access_token,
@@ -100,16 +98,39 @@ router.post('/verify-otp', (req, res) => __awaiter(void 0, void 0, void 0, funct
         });
     }
     catch (err) {
-        console.error(err);
         if (err instanceof Error) {
-            (0, ErrorResponseUtils_1.handleVerifyOTPRouteError)(err, res);
+            (0, ErrorResponses_1.handleVerifyOTPRouteError)(err, res);
         }
     }
 }));
-router.post('/reset-password', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const validateAuthorization = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Unauthorized: Missing authorization header' });
+    }
+    const parts = authHeader.split(' ');
+    if (parts.length !== 2 || parts[0] !== 'Bearer') {
+        return res.status(401).json({ message: 'Unauthorized: Invalid authorization format' });
+    }
+    try {
+        next();
+    }
+    catch (error) {
+        if (error instanceof jsonwebtoken_1.default.TokenExpiredError) {
+            return res.status(401).json({ message: 'Unauthorized: Token expired' });
+        }
+        else if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid token signature' });
+        }
+        else {
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
+    }
+};
+router.post('/reset-password', validateAuthorization, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const reqest = req.body;
-        const result = yield authService.resetPassword(reqest.access_token, reqest.new_password, reqest.email);
+        const result = yield authService.resetPassword(reqest.new_password, reqest.email);
         if (result) {
             res.status(200).json({
                 status_code: 200,
@@ -124,14 +145,9 @@ router.post('/reset-password', (req, res) => __awaiter(void 0, void 0, void 0, f
         }
     }
     catch (err) {
-        console.error(err);
         if (err instanceof Error) {
-            (0, ErrorResponseUtils_1.handleresetPasswordRouteError)(err, res);
+            (0, ErrorResponses_1.handleresetPasswordRouteError)(err, res);
         }
-        res.status(500).json({
-            status_code: 500,
-            message: winston_1.error
-        });
     }
 }));
 exports.default = router;
