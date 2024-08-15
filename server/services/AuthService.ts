@@ -1,18 +1,18 @@
 import { UserDAO } from '../data/dao/user/UserDAO';
-import { LoginUserReq } from '../data/requests/LoginUserReq';
-import { RegisterUserReq } from '../data/requests/RegisterUserReq';
+import { LoginUserReq } from '../data/requests/auth/LoginUserReq';
+import { RegisterUserReq } from '../data/requests/auth/RegisterUserReq';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { LoginUserResData } from '../data/responses/LoginUserResData';
+import { LoginUserResData } from '../data/responses/auth/LoginUserResData';
 import { injected } from 'brandi';
 import { TOKENS } from '../di/tokens';
 import Nodemailer from 'nodemailer';
 import OtpGenerator from 'otp-generator';
-import { VerifyOtpResData } from '../data/responses/VerifyOtpResData';
+import { VerifyOtpResData } from '../data/responses/auth/VerifyOtpResData';
 import { RegisterUserData } from '../domain/models/RegisterUserData';
-import { ForgotPasswordEmailNotSent, InvalidOTPCredentials, InvalidResetPasswordToken, InvalidUserCredentials, OTPValidityExpired, ResetPasswordTokenExpired } from '../routes/auth/errorhandling/ErrorCodes';
+import { ForgotPasswordEmailNotSent, InvalidOTPCredentials, InvalidResetPasswordToken, InvalidUserCredentials, OTPValidityExpired, ResetPasswordTokenExpired } from '../utils/errors/ErrorCodes';
 import { User } from '../data/db_models/User';
-import { AuthError } from '../routes/auth/errorhandling/ErrorUtils';
+import { AuthError } from '../utils/errors/ErrorUtils';
 
 
 
@@ -99,9 +99,12 @@ export class AuthService {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                
+                console.error(error);
                 throw new AuthError("we're facing an issue to send an email: " + error.message, ForgotPasswordEmailNotSent);
             
+
+            } else {
+                console.log('Email sent: %s', info);
 
             }
         });

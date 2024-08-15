@@ -1,10 +1,10 @@
 import { Otp } from "../../db_models/Otp";
 import { RegisterUserData } from "../../../domain/models/RegisterUserData";
 import { User } from "../../db_models/User";
-import { FetchUserByEmail, GetOTPUserDAO, InsertOTPUserDAO, InsertUserUSerDAO, OTPNotFoundInDB, UnknownDatabaseError, UpdatePasswordUserDao, UserNotFoundInDB } from "../../../routes/auth/errorhandling/ErrorCodes";
-import { AuthError } from "../../../routes/auth/errorhandling/ErrorUtils";
+import { FetchUserByEmail, FetchUserUserDAO, InsertOTPUserDAO, InsertUserUSerDAO, IsEmailExistUserDAO, OTPNotFoundInDB, UnknownDatabaseError, UserNotFoundInDB } from "../../../utils/errors/ErrorCodes";
+import { AuthError, DatabaseError } from "../../../utils/errors/ErrorUtils";
 import { UserDAO } from "./UserDAO";
-import { DatabaseError } from "../../../utils/errors/ErrorUtils";
+import { v6 as uuidv6 } from "uuid";
 
 
 
@@ -16,22 +16,21 @@ export class UserDAOImpl implements UserDAO {
       const [updatedCount] = await User.update({ password_hash: password }, { where: { email: email } });
       return updatedCount == 1
     } catch (error) {
-      if (error instanceof Error) {
-        throw new DatabaseError(error.message, UpdatePasswordUserDao);
-      } else {
-        throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- updatePassword", UnknownDatabaseError);
-      }
-      
+      throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- updatePassword", UnknownDatabaseError);
     }
   }
 
   async insertOtp(email: string, otp: string): Promise<Otp> {
     try {
       const now = new Date()
-      const otpData = await Otp.create({ email: email, otp_hash: otp, generated_at: now.getTime() })
+      const id = uuidv6()
+      const otpData = await Otp.create({ id: id, email: email, otp_hash: otp, generated_at: now.getTime() })
       return otpData
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof AuthError) {
+        throw error
+      } else if (error instanceof Error) {
+
         throw new DatabaseError(error.message, InsertOTPUserDAO);
       } else {
         throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- insertOtp", UnknownDatabaseError);
@@ -42,7 +41,7 @@ export class UserDAOImpl implements UserDAO {
   async getOtp(email: string, timestamp: number): Promise<Otp> {
     try {
 
-  
+
       const otpRow = await Otp.findOne({
         where: {
           email: email,
@@ -59,7 +58,8 @@ export class UserDAOImpl implements UserDAO {
       if (error instanceof AuthError) {
         throw error
       } else if (error instanceof Error) {
-        throw new DatabaseError("error.message", GetOTPUserDAO);
+
+        throw new DatabaseError("error.message", IsEmailExistUserDAO);
       } else {
         throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- getOtp", UnknownDatabaseError);
       }
@@ -67,10 +67,13 @@ export class UserDAOImpl implements UserDAO {
   }
 
 
+
+
   async insertUser(userData: RegisterUserData): Promise<User> {
 
     try {
-      const user = await User.create({ name: userData.name, email: userData.email, password_hash: userData.password_hash })
+      const userId = uuidv6();
+      const user = await User.create({ id: userId, name: userData.name, email: userData.email, password_hash: userData.password_hash, leaderboard_rank: 0, total_water_footprint: 0})
       return user
     } catch (error) {
       if (error instanceof AuthError) {

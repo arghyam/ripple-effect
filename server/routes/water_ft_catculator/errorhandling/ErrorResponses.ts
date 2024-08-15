@@ -1,7 +1,6 @@
 import { Response } from "express";
-import { GetIngredientRowItemsDAOError, GetIngredientRowsDAOError, GetWaterConsumptionOfIngredientDAOError, InsertIngredientRowDAOError, InsertIngredientRowItemDAOError } from "./ErrorCodes";
-import { WaterFtCalcError } from "./ErrorUtils";
-import { DatabaseError } from "../../../utils/errors/ErrorUtils";
+import { GetIngredientRowItemsDAOError, GetIngredientRowsDAOError, GetWaterConsumptionOfIngredientDAOError, InsertIngredientRowDAOError, InsertIngredientRowItemDAOError } from "../../../utils/errors/ErrorCodes";
+import { DatabaseError, WaterFtCalcError } from "../../../utils/errors/ErrorUtils";
 
 export function handleAddIngredientRowRouteError(err: Error, res: Response) {
     if (err instanceof DatabaseError) {

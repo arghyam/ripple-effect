@@ -30,9 +30,6 @@ interface IngredientRowItemAttributes {
 interface IngredientRowItemCreationAttributes extends Optional<IngredientRowItemAttributes, 'id'> {}
 
 export class IngredientRowItem extends Model<IngredientRowItemAttributes, IngredientRowItemCreationAttributes> {
-    static belongsTo(IngredientRow: typeof IngredientRow, arg1: { foreignKey: string; }) {
-      throw new Error('Method not implemented.');
-    }
     declare id: number;
     declare itemId: number;
     declare rowId: number;
@@ -99,7 +96,7 @@ export class IngredientRowItem extends Model<IngredientRowItemAttributes, Ingred
           },
           water_footprint: {
             type: DataTypes.DECIMAL,
-            allowNull: false
+            allowNull: true
           },
           unselectedBgImageUrl: {
             type: DataTypes.STRING,

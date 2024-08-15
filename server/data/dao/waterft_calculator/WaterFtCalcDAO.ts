@@ -1,5 +1,6 @@
 import { IngredientRow } from "../../db_models/IngredientRowData";
 import { IngredientRowItem } from "../../db_models/IngredientRowItem";
+import { WaterFtCalcResult } from "../../db_models/WaterFtCalcResult";
 
 export interface WaterFtCalcDAO {
    
@@ -49,4 +50,9 @@ export interface WaterFtCalcDAO {
     ): Promise<IngredientRowItem[]>
 
     getWaterConsumptionOfIngredient(ingredientId: number): Promise<number>
+
+    insertWaterFtCalcResult(
+        userId: string,
+        water_footprint: number
+    ): Promise<WaterFtCalcResult>
 }

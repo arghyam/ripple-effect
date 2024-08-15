@@ -50,7 +50,6 @@ export class WaterftCalcService {
         return rowItem
     }
 
-
     async getIngredientsRows(): Promise<IngredientRowRes[]> {
 
         const rows  = await this.dao.getIngredientRows()
@@ -74,11 +73,15 @@ export class WaterftCalcService {
         for (const ing_req of req.data) {
             const water_consumption = await this.dao.getWaterConsumptionOfIngredient(ing_req.ingredient_id)
             totalWaterConsumption = totalWaterConsumption + ing_req.amt * water_consumption
-        
+                
         }
+
+        await this.dao.insertWaterFtCalcResult(req.user_id, totalWaterConsumption)
 
         return totalWaterConsumption
     }
+
+
 
 }
 

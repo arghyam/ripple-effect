@@ -1,16 +1,35 @@
 
-import { GetIngredientRowDAOError, GetIngredientRowItemDAOError, GetIngredientRowItemsDAOError, GetIngredientRowsDAOError, GetWaterConsumptionOfIngredientDAOError, IngredientNotFoundError, InsertIngredientRowDAOError, InsertIngredientRowItemDAOError, UnknownDatabaseError } from '../../../routes/water_ft_catculator/errorhandling/ErrorCodes';
-import { WaterFtCalcError } from '../../../routes/water_ft_catculator/errorhandling/ErrorUtils';
+import { GetIngredientRowDAOError, GetIngredientRowItemDAOError, GetIngredientRowItemsDAOError, GetIngredientRowsDAOError, GetWaterConsumptionOfIngredientDAOError, IngredientNotFoundError, InsertIngredientRowDAOError, InsertIngredientRowItemDAOError, InsertWaterFtCalcResultDAOError, UnknownDatabaseError } from '../../../utils/errors/ErrorCodes';
+import { DatabaseError, WaterFtCalcError } from '../../../utils/errors/ErrorUtils';
 import { WaterFtCalcDAO } from './WaterFtCalcDAO';
 import { IngredientRow } from '../../db_models/IngredientRowData';
 import { IngredientRowItem } from '../../db_models/IngredientRowItem';
-import { ForeignKeyConstraintError, UniqueConstraintError } from 'sequelize';
-import { DatabaseError } from "../../../utils/errors/ErrorUtils";
+import { WaterFtCalcResult } from '../../db_models/WaterFtCalcResult';
+import { v6 as uuidv6 } from "uuid";
 
 
 const FileName = "WaterFtCalcDAOImpl"
 
 export class WaterFtCalcDAOImpl implements WaterFtCalcDAO {
+  async insertWaterFtCalcResult(userId: string, water_footprint: number): Promise<WaterFtCalcResult> {
+    try {
+
+      const id = uuidv6()
+      const result = await WaterFtCalcResult.create({
+        id: id,
+        user_id: userId,
+        water_footprint: water_footprint
+      })
+      
+      return result
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new DatabaseError(error.message, InsertWaterFtCalcResultDAOError);
+      } else {
+        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- insertWaterFtCalcResult`, UnknownDatabaseError);
+      }
+    }
+  }
 
   async getIngredientRow(rowId: number): Promise<IngredientRow> {
     try {
@@ -114,6 +133,7 @@ export class WaterFtCalcDAOImpl implements WaterFtCalcDAO {
     yOffset: number
   ): Promise<IngredientRowItem> {
     try {
+
       const rowItem = await IngredientRowItem.create(
         {
           itemId: itemId,
@@ -142,7 +162,7 @@ export class WaterFtCalcDAOImpl implements WaterFtCalcDAO {
       return rowItem
     } catch (error) {
 
-     
+
       if (error instanceof Error) {
         throw new DatabaseError(error.message, InsertIngredientRowItemDAOError);
       } else {
@@ -172,6 +192,6 @@ export class WaterFtCalcDAOImpl implements WaterFtCalcDAO {
       }
     }
   }
-  
+
 
 }

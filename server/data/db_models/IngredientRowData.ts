@@ -1,5 +1,4 @@
 import { Optional, Model, DataTypes, Sequelize } from "sequelize";
-import { IngredientRowItem } from "./IngredientRowItem";
 
 
 interface IngredientRowAttributes {
@@ -10,9 +9,6 @@ interface IngredientRowAttributes {
 interface IngredientRowCreationAttributes extends Optional<IngredientRowAttributes, 'id'> {}
 
 export class IngredientRow extends Model<IngredientRowAttributes, IngredientRowCreationAttributes> {
-  static hasMany(IngredientRowItem: IngredientRowItem, arg1: { foreignKey: string; }) {
-    throw new Error('Method not implemented.');
-  }
   declare id: number;
   declare rowOrder: number;
 
