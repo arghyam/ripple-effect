@@ -1,4 +1,24 @@
-### Whats your Ripple Effect
+# Whats your Ripple Effect
+
+## Setup/Installation
+
+
+## Expected Outcome
+A mobile (PWA) app that users can interact with. It will allow users to
+Calculate their water footprint by entering the food they consume
+Track their water footprint
+Share their water footprint chart on social media
+
+## Implementation Details
+Any other frameworks can be used
+NextJS
+NodeJS
+MySQL
+Android Studio
+VS Code
+PgAdmin
+
+### Contributor : Keval Kanpariya
 
 ![image](https://github.com/user-attachments/assets/3b678598-5ecd-4abc-bc81-034e44fd473f)
 ![image](https://github.com/user-attachments/assets/879d81c0-465f-4324-917f-4145175445f1)
@@ -12,6 +32,8 @@
 ![image](https://github.com/user-attachments/assets/6098809c-f742-4d21-9a2f-200152631e72)
 ![image](https://github.com/user-attachments/assets/65b0c595-fa85-48db-a0c4-564265689bba)
 ![image](https://github.com/user-attachments/assets/e6ad038f-b356-4405-8877-4b19adeb5962)
+
+ 
 
 
 
