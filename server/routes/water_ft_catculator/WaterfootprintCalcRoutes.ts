@@ -3,8 +3,9 @@ import { container } from "../../di/container";
 import { TOKENS } from "../../di/tokens";
 import { handleAddIngredientRowItemRouteError, handleAddIngredientRowRouteError, handleCalculateWaterFootprintRouteError, handleGetIngredientsRowsRouteError } from "./errorhandling/ErrorResponses";
 import { CalcWaterFootPrintReq } from "../../data/requests/waterft_calc/CalcWaterFootprint";
-import { InsertIngredientRow } from "../../data/requests/waterft_calc/InsertIngredientRow";
-import { InsertIngredientRowItem } from '../../data/requests/waterft_calc/InsertIngredientRowItem';
+import { AddIngredientGroupPattern } from "../../data/requests/waterft_calc/AddIngredientGroupPattern";
+import { AddIngredientGroupPatternItem } from "../../data/requests/waterft_calc/AddIngredientGroupPatternItem";
+import { AddIngredient } from '../../data/requests/waterft_calc/AddIngredient';
 
 
 
@@ -16,12 +17,12 @@ const waterFtCalcService = container.get(TOKENS.waterFtCalcService);
 
 
 
-router.post('/add-ingredient-row', async (req, res) => {
+router.post('/add-ingredient-group-pattern', async (req, res) => {
 
   try {
-    const request: InsertIngredientRow = req.body
+    const request: AddIngredientGroupPattern = req.body
 
-    const result = await waterFtCalcService.addIngredientRow(request.rowOrder)
+    const result = await waterFtCalcService.AddIngredientGroupPattern(request.rank, request.size)
 
     res.status(200).json(
       {
@@ -41,18 +42,18 @@ router.post('/add-ingredient-row', async (req, res) => {
   }
 });
 
-router.post('/add-ingredient-row-item', async (req, res) => {
+router.post('/add-ingredient-group-pattern-item', async (req, res) => {
 
   try {
-    const request: InsertIngredientRowItem = req.body
+    const request: AddIngredientGroupPatternItem = req.body
 
-    const result = await waterFtCalcService.addIngredientRowItem(request)
+    const result = await waterFtCalcService.addIngredientGroupPatternItem(request)
 
     res.status(200).json(
       {
         status_code: 200,
         ingredient_row_item: result,
-        message: "ingredient Row Item added successfully"
+        message: "IngredientGroupPattern Item added successfully"
       }
     );
 
@@ -66,10 +67,34 @@ router.post('/add-ingredient-row-item', async (req, res) => {
   }
 });
 
+router.post('/add-ingredient', async(req, res) => {
+  try {
+    const request: AddIngredient = req.body
+
+    const result = await waterFtCalcService.addIngredient(request)
+
+    res.status(200).json(
+      {
+        status_code: 200,
+        ingredient_row: result,
+        message: "ingredient added successfully"
+      }
+    );
+
+
+  } catch (err) {
+
+    if (err instanceof Error) {
+      
+    }
+
+  }
+})
+
 router.get('/fetch-ingredients', async (req, res) => {
 
   try {
-    const result = await waterFtCalcService.getIngredientsRows()
+    const result = await waterFtCalcService.getIngredientsGroupPatternItems()
 
     res.status(200).json(
       {

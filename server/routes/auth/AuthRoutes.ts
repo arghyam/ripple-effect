@@ -11,7 +11,6 @@ import { InvalidUserCredentials } from '../../utils/errors/ErrorCodes';
 import { handleRegisterRouteError, handleLoginRouteError, handleGentOTPRouteError, handleVerifyOTPRouteError, handleresetPasswordRouteError } from './errorhandling/ErrorResponses';
 import { AuthError } from '../../utils/errors/ErrorUtils';
 import jwt from 'jsonwebtoken';
-import { token } from 'brandi';
 
 
 
@@ -165,7 +164,7 @@ const validateAuthorization = (req: express.Request, res: express.Response, next
   }
 
    
-};
+}
 
 
 router.post('/reset-password', validateAuthorization, async (req, res) => {
@@ -198,16 +197,12 @@ router.post('/reset-password', validateAuthorization, async (req, res) => {
   } catch (err) {
     
     if(err instanceof Error) {
-      handleresetPasswordRouteError(err, res);
+      handleresetPasswordRouteError(err, res)
     }
     
   }
     
-});
+})
 
-interface TokenPayload {
-  email: string, 
-  otp: string
-}
 
 export default router;

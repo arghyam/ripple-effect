@@ -1,53 +1,47 @@
-import { IngredientRow } from "../../db_models/IngredientRowData";
-import { IngredientRowItem } from "../../db_models/IngredientRowItem";
+import { IngredientGroupPatternItem } from "../../db_models/IngredientGroupPatternItem";
+import { Ingredient } from "../../db_models/Ingredient";
 import { WaterFtCalcResult } from "../../db_models/WaterFtCalcResult";
+import { AddIngredientGroupPatternItem } from "../../requests/waterft_calc/AddIngredientGroupPatternItem";
+import { IngredientGroupPattern } from "../../db_models/IngredientGroupPattern";
+import { AddIngredient } from "../../requests/waterft_calc/AddIngredient";
 
 export interface WaterFtCalcDAO {
    
-    insertIngredientRow(
-        rowOrder: number
-    ): Promise<IngredientRow>
+   
+    insertIngredientGroupPattern(rank: number, size: number): Promise<IngredientGroupPattern>
 
-    insertIngredientRowItem(
-        itemId: number,
-        rowId: number,
-        name: string,
-        amt: number,
-        unit: string,
-        waterFootprint: number,
-        unselectedBgImageUrl: string,
-        selectedBgImageUrl: string,
-        sampleImageUrl: string,
-        sampleImageSize: number,
-        scaleFactor: number,
-        iconScalefactor: number,
-        cornerType: string,
-        doneXOffSet: number,
-        doneYOffSet: number,
-        pluseXOffSet: number,
-        pluseYOffSet: number,
-        minusXOffSet: number,
-        minusYOffSet: number,
-        xOffset: number,
-        yOffset: number
-    ): Promise<IngredientRowItem>
+    insertIngredientGroupPatternItem(
+        insertReq: AddIngredientGroupPatternItem
+    ): Promise<IngredientGroupPatternItem>
+
+    insertIngredient(
+        insertReq: AddIngredient
+    ): Promise<Ingredient>
+
+    getIngredientGroupPattern(patternId: number): Promise<IngredientGroupPattern>
+
+    getIngredientGroupPatterns(
+        
+    ): Promise<IngredientGroupPattern[]>
 
 
-    getIngredientRow(
-        rowId: number,
-    ): Promise<IngredientRow>
+    getIngredientGroupPatternItem(
+        patternId: number,
+        itemNo: number
+    ): Promise<IngredientGroupPatternItem>
 
-    getIngredientRows(
+    getIngredientGroupPatternItems(
+        patternId: number,
+        startItemNo: number,
+        lastItemNo: number,
+    ): Promise<IngredientGroupPatternItem[]>
 
-    ): Promise<IngredientRow[]>
 
-    getIngredientRowItem(
-        rowId: number,
-    ): Promise<IngredientRowItem>
+    getIngredient(ingredientId: number): Promise<Ingredient>
 
-    getIngredientRowItems(
-        rowId: number,
-    ): Promise<IngredientRowItem[]>
+    getIngredients(
+
+    ): Promise<Ingredient[]>
 
     getWaterConsumptionOfIngredient(ingredientId: number): Promise<number>
 

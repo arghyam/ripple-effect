@@ -1,7 +1,7 @@
 import { Otp } from "../../db_models/Otp";
 import { RegisterUserData } from "../../../domain/models/RegisterUserData";
 import { User } from "../../db_models/User";
-import { FetchUserByEmail, FetchUserUserDAO, InsertOTPUserDAO, InsertUserUSerDAO, IsEmailExistUserDAO, OTPNotFoundInDB, UnknownDatabaseError, UserNotFoundInDB } from "../../../utils/errors/ErrorCodes";
+import { FetchUserByEmail, InsertOTPUserDAO, InsertUserUSerDAO, IsEmailExistUserDAO, OTPNotFoundInDB, UnknownDatabaseError, UserNotFoundInDB } from "../../../utils/errors/ErrorCodes";
 import { AuthError, DatabaseError } from "../../../utils/errors/ErrorUtils";
 import { UserDAO } from "./UserDAO";
 import { v6 as uuidv6 } from "uuid";
@@ -10,6 +10,44 @@ import { v6 as uuidv6 } from "uuid";
 
 
 export class UserDAOImpl implements UserDAO {
+
+  async fetchUserById(id: string): Promise<User> {
+    try {
+      const user = await User.findOne({
+        where: {
+          id: id
+        }
+      });
+      if (user == null) {
+        throw new AuthError("user with id: " + id + " is not found in the database", UserNotFoundInDB)
+      }
+      return user;
+    } catch (error) {
+
+      if (error instanceof AuthError) {
+        throw error
+      } else if (error instanceof Error) {
+        throw new DatabaseError(error.message, FetchUserByEmail);
+      } else {
+        throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- fetchUserById", UnknownDatabaseError);
+      }
+    }
+  }
+  async fetchUsers(): Promise<User[]> {
+    try {
+      return await User.findAll()
+    } catch (error) {
+      throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- fetchUsers", UnknownDatabaseError);
+    }
+  }
+  async updateUserRank(userId: string, rank: number): Promise<Boolean> {
+    try {
+      const [updatedCount] = await User.update({ leaderboard_rank: rank }, { where: { id: userId } })
+      return updatedCount == 1
+    } catch (error) {
+      throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- updateUserRank", UnknownDatabaseError);
+    }
+  }
 
   async updatePassword(email: string, password: string): Promise<Boolean> {
     try {
