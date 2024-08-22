@@ -44,7 +44,7 @@ export function initWaterFtCalcResult(sequelize: Sequelize) {
       },
       {
         sequelize: sequelize,
-        tableName: 'water_ft_calc_results_2',
+        tableName: 'water_ft_calc_results',
         timestamps: true
   
       }
