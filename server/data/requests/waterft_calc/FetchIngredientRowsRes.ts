@@ -1,8 +1,10 @@
-import { IngredientRowItem } from "../../db_models/IngredientRowItem";
+import { IngredientRes } from "../../../domain/models/IngredientRow";
+import { IngredientGroupPatternItem } from "../../db_models/IngredientGroupPatternItem";
+
 
 
 export interface IngredientRowRes {
-    rowId: number,
-    rowOrder: number,
-    rowItems: IngredientRowItem[]
+    patternId: number,
+    rank: number,
+    patternItems: IngredientRes[]
 }

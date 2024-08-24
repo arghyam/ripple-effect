@@ -1,18 +1,21 @@
 import { UserDAO } from '../data/dao/user/UserDAO';
-import { LoginUserReq } from '../data/requests/LoginUserReq';
-import { RegisterUserReq } from '../data/requests/RegisterUserReq';
+import { LoginUserReq } from '../data/requests/auth/LoginUserReq';
+import { RegisterUserReq } from '../data/requests/auth/RegisterUserReq';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { LoginUserResData } from '../data/responses/LoginUserResData';
+import { LoginUserResData } from '../data/responses/auth/LoginUserResData';
 import { injected } from 'brandi';
 import { TOKENS } from '../di/tokens';
 import Nodemailer from 'nodemailer';
 import OtpGenerator from 'otp-generator';
-import { VerifyOtpResData } from '../data/responses/VerifyOtpResData';
+import { VerifyOtpResData } from '../data/responses/auth/VerifyOtpResData';
 import { RegisterUserData } from '../domain/models/RegisterUserData';
-import { ForgotPasswordEmailNotSent, InvalidOTPCredentials, InvalidResetPasswordToken, InvalidUserCredentials, OTPValidityExpired, ResetPasswordTokenExpired } from '../routes/auth/errorhandling/ErrorCodes';
+import { ForgotPasswordEmailNotSent, InvalidOTPCredentials, InvalidResetPasswordToken, InvalidUserCredentials, OTPValidityExpired, ResetPasswordTokenExpired } from '../utils/errors/ErrorCodes';
 import { User } from '../data/db_models/User';
-import { AuthError } from '../routes/auth/errorhandling/ErrorUtils';
+import { AuthError } from '../utils/errors/ErrorUtils';
+import * as dotenv from 'dotenv-flow';
+dotenv.config({ path: '../' })
+
 
 
 
@@ -49,7 +52,7 @@ export class AuthService {
         }
 
         
-        const secret = ""
+        const secret = String(process.env.JWT_SECRET)
         const payload = { user: { email: user.email, id: user.id } };
         const token = jwt.sign(payload, secret, { expiresIn: '3600s' }); 
 
@@ -80,18 +83,18 @@ export class AuthService {
 
         const transporter = Nodemailer.createTransport(
             {
-                host: "",
-                port: 587,
+                host: String(process.env.NODEMAILER_HOST),
+                port: Number(process.env.NODEMAILER_PORT),
                 secure: false, // Use `true` for port 465, `false` for all other ports
                 auth: {
-                    user: "",
-                    pass: "",
+                    user: String(process.env.NODEMAILER_AUTH_USER),
+                    pass: String(process.env.NODEMAILER_AUTH_PASSWORD),
                 },
             } as Nodemailer.TransportOptions
         );
 
         const mailOptions = {
-            from: '',
+            from: String(process.env.NODEMAILER_SENDER_MAIL),
             to: email,
             subject: 'Forgot password otp for Puddle App',
             text: 'your forgot password otp is: ' + otp,
@@ -99,9 +102,12 @@ export class AuthService {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                
+                console.error(error);
                 throw new AuthError("we're facing an issue to send an email: " + error.message, ForgotPasswordEmailNotSent);
             
+
+            } else {
+                console.log('Email sent: %s', info);
 
             }
         });
@@ -130,7 +136,7 @@ export class AuthService {
             throw new AuthError("otp has been expired", OTPValidityExpired)
         }
 
-        const secret = ""
+        const secret = String(process.env.JWT_SECRET)
         const payload = { user: { email: email, otp: otp } };
         const token = jwt.sign(payload, secret, { expiresIn: '300s' });
 

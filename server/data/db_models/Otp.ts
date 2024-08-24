@@ -1,7 +1,7 @@
 import { Model, Optional, DataTypes, Sequelize } from 'sequelize';
 
 interface OtpAttributes {
-  id: number;
+  id: string;
   email: string;
   otp_hash: string;
   generated_at: number;
@@ -11,7 +11,7 @@ interface OtpAttributes {
 interface OtpCreationAttributes extends Optional<OtpAttributes, 'id'> { }
 
 export class Otp extends Model<OtpAttributes, OtpCreationAttributes> {
-  declare id: number;
+  declare id: string;
   declare email: string;
   declare otp_hash: string;
   declare generated_at: number;
@@ -23,14 +23,13 @@ export function initOtp(sequelize: Sequelize) {
   Otp.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.STRING,
         primaryKey: true,
+        unique: true
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        //unique: true,
       },
       otp_hash: {
         type: DataTypes.STRING,
@@ -39,7 +38,7 @@ export function initOtp(sequelize: Sequelize) {
       },
       generated_at: {
         type: DataTypes.BIGINT,
-        allowNull: false, // Optional timestamp
+        allowNull: false,
       },
 
     },

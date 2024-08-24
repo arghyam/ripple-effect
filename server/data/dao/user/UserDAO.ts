@@ -4,13 +4,19 @@ import { RegisterUserData } from '../../../domain/models/RegisterUserData';
 
 export interface UserDAO {
     
-    insertUser(userData: RegisterUserData): Promise<User>;
+    insertUser(userData: RegisterUserData): Promise<User>
 
-    fetchUserByEmail(email: string): Promise<User>;
+    fetchUserByEmail(email: string): Promise<User>
 
-    getOtp(email: string, timestamp: number): Promise<Otp>;
+    fetchUserById(id: string): Promise<User>
 
-    insertOtp(email: string, otp: string): Promise<Otp>;
+    fetchUsers(): Promise<User[]>
 
-    updatePassword(email: string, password: string): Promise<Boolean>;
+    updateUserRank(userId: string, rank: number): Promise<Boolean>
+
+    getOtp(email: string, timestamp: number): Promise<Otp>
+
+    insertOtp(email: string, otp: string): Promise<Otp>
+
+    updatePassword(email: string, password: string): Promise<Boolean>
 }

@@ -1,15 +1,10 @@
 
 
-export interface InsertIngredientRowItem {
-    itemId: number;
-    rowId: number;
-    name: string;
-    amt: number;
-    unit: string;
-    waterFootprint: number;
+export interface AddIngredientGroupPatternItem {
+    patternId: number;
+    itemNo: number;
     unselectedBgImageUrl: string;
     selectedBgImageUrl: string;
-    sampleImageUrl: string;
     sampleImageSize: number;
     scaleFactor: number;
     iconScalefactor: number;
