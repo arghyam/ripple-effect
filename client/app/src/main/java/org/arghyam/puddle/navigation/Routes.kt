@@ -19,6 +19,12 @@ sealed class Routes(
     data object AppGraph: Routes("app")
 
     data object HomeScreen: Routes("home")
+
+    data object QuizScreen: Routes("quiz")
+
+    data object ShowQuizResultScreen: Routes("show_quiz_result")
+
+    data object QuestionScreen: Routes("question")
     data object CalculateScreen: Routes("calculate")
     data object CalculateResultScreen: Routes("calculate_result")
     data object DiscoverScreen: Routes("discover")

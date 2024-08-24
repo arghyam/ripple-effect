@@ -1,6 +1,7 @@
 package org.arghyam.puddle.presentation.recipe
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import org.arghyam.puddle.R
+import org.arghyam.puddle.ui.theme.Color1
+import org.arghyam.puddle.ui.theme.Color5
+import org.arghyam.puddle.ui.theme.openSansFontFamily
+import org.arghyam.puddle.ui.theme.puddleFontFamily
 
 @Preview
 @Composable
@@ -34,14 +39,18 @@ fun RecipeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color1)
             .padding(horizontal = 15.dp)
+
     ) {
 
         Text(
             text = "Water Conscious Recipes",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            lineHeight = 30.sp
+            fontFamily = puddleFontFamily,
+            lineHeight = 30.sp,
+            color = Color5
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -49,6 +58,8 @@ fun RecipeScreen() {
         Text(
             text = "Water Conscious Snack Ideas",
             fontSize = 25.sp,
+            color = Color.White,
+            fontFamily = openSansFontFamily
             //fontWeight = FontWeight.Bold
         )
 
@@ -82,7 +93,7 @@ fun RecipeScreen() {
                     Text(
                         text = it.name,
                         fontSize = 20.sp,
-                        color = Color.Black
+                        color = Color.White
                     )
 
                 }
@@ -97,6 +108,7 @@ fun RecipeScreen() {
         Text(
             text = "Meat Alternatives",
             fontSize = 25.sp,
+            color = Color.White
             //fontWeight = FontWeight.Bold
         )
 
@@ -131,7 +143,7 @@ fun RecipeScreen() {
                     Text(
                         text = it.name,
                         fontSize = 20.sp,
-                        color = Color.Black
+                        color = Color.White
                     )
 
                 }
@@ -146,6 +158,7 @@ fun RecipeScreen() {
         Text(
             text = "High Protein dishes",
             fontSize = 25.sp,
+            color = Color.White
             //fontWeight = FontWeight.Bold
         )
 

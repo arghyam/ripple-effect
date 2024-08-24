@@ -1,8 +1,10 @@
 package org.arghyam.puddle.presentation.auth.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,16 +24,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.arghyam.puddle.R
 import org.arghyam.puddle.presentation.auth.ForgotPasswordViewModel
 import org.arghyam.puddle.presentation.auth.events.ForgotPasswordEvent
+import org.arghyam.puddle.ui.theme.Color1
+import org.koin.androidx.compose.koinViewModel
 
 
+@Preview
 @Composable
 fun VerifyOTPScreen(
-    forgotPwdViewModel: ForgotPasswordViewModel,
+    forgotPwdViewModel: ForgotPasswordViewModel = koinViewModel(),
     onNavigate: (String) -> Unit = {}
 ) {
 
@@ -39,7 +45,8 @@ fun VerifyOTPScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .background(Color1)
             .padding(horizontal = 10.dp)
     ){
 

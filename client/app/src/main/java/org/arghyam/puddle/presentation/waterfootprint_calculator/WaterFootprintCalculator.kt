@@ -98,6 +98,7 @@ fun WaterFootprintCalculator(
                 is WaterFtCalcUiEvent.WaterFootprintCalculationFailed -> {
                     Toast.makeText(context, "Water Footprint Calculation Failed", Toast.LENGTH_SHORT).show()
                 }
+                else -> Unit
             }
         }
     }

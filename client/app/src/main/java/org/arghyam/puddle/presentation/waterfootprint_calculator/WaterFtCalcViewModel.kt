@@ -1,5 +1,6 @@
 package org.arghyam.puddle.presentation.waterfootprint_calculator
 
+import android.content.SharedPreferences
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -19,12 +20,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.arghyam.puddle.presentation.waterfootprint_calculator.events.WFCOnboardEvent
 
 
 const val TAG = "WaterFtCalcViewModel"
 
 class WaterFtCalcViewModel(
-    private val waterFtCalcRepo: WaterFtCalcRepository
+    private val waterFtCalcRepo: WaterFtCalcRepository,
+    private val sharedPref: SharedPreferences
 ) : ViewModel() {
 
 
@@ -61,6 +64,15 @@ class WaterFtCalcViewModel(
 
         when (event) {
 
+            is WaterFtCalcEvent.OnNextClicked -> {
+                viewModelScope.launch {
+                    sharedPref.edit()
+                        .putBoolean("is_wfc_onboarding_completed", true)
+                        .apply()
+                    _eventFlow.emit(WaterFtCalcUiEvent.WFCOnboardCompleted)
+                }
+            }
+
             is WaterFtCalcEvent.FetchIngredients -> {
 
                 _fetchIngredientsState.update {
@@ -81,9 +93,8 @@ class WaterFtCalcViewModel(
                                         val listToAdded = row.items.map {
                                             //id is Ingredient Row Id or Ingredient Id
                                             IngredientCalcState(
-                                                id = it.id,
+                                                id = it.id!!,
                                                 name = it.name,
-                                                amt = it.amt.toString(),
                                                 unit = it.unit,
                                                 category = "none"
                                             )

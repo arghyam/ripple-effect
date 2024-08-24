@@ -13,6 +13,8 @@ import org.arghyam.puddle.presentation.auth.LoginViewModel
 import org.arghyam.puddle.presentation.auth.RegisterViewModel
 import org.arghyam.puddle.presentation.auth.ForgotPasswordViewModel
 import org.arghyam.puddle.presentation.waterfootprint_calculator.WaterFtCalcViewModel
+import org.arghyam.puddle.presentation.waterfootprint_calculator.WFCOnboardViewmodel
+import org.arghyam.puddle.presentation.quiz.QuizViewModel
 import io.ktor.client.HttpClient
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -31,4 +33,6 @@ val appModule = module {
     viewModelOf(::RegisterViewModel)
     viewModelOf(::ForgotPasswordViewModel)
     viewModelOf(::WaterFtCalcViewModel)
+    viewModelOf(::WFCOnboardViewmodel)
+    viewModelOf(::QuizViewModel)
 }

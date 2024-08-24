@@ -89,6 +89,8 @@ fun Test4(
                 is WaterFtCalcUiEvent.WaterFootprintCalculationFailed -> {
                     Toast.makeText(context, "Water Footprint Calculation Failed", Toast.LENGTH_SHORT).show()
                 }
+
+                else -> Unit
             }
         }
     }
@@ -155,7 +157,7 @@ fun Test4(
 
                                         waterFtCalcViewModel.onEvent(
                                             WaterFtCalcEvent.SelectIngredient(
-                                                item.id
+                                                item.id!!
                                             )
                                         )
                                     }
@@ -170,8 +172,8 @@ fun Test4(
                             ) {
 
 
-                                val existingAmt = waterFtCalcViewModel.findAmtOfIngredient(item.id)
-                                if (selectedIngId != item.id && existingAmt?.toInt() == 0) {
+                                val existingAmt = waterFtCalcViewModel.findAmtOfIngredient(item.id!!)
+                                if (selectedIngId != item.id && existingAmt != "0" && !existingAmt.isNullOrBlank()) {
                                     AsyncImage(
                                         modifier = Modifier
                                             .size(

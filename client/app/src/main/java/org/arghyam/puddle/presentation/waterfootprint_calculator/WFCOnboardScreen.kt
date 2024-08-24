@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -36,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.arghyam.puddle.R
-import org.arghyam.puddle.presentation.auth.events.LoginEvent
 import org.arghyam.puddle.ui.theme.Color1
 import org.arghyam.puddle.ui.theme.openSansFontFamily
 import org.arghyam.puddle.ui.theme.puddleFontFamily
@@ -44,7 +42,7 @@ import org.arghyam.puddle.ui.theme.puddleFontFamily
 @Preview
 @Composable
 fun WFCOnboard1Screen(
-
+    onNextClick: () -> Unit = {}
 ) {
 
     Column(
@@ -119,10 +117,14 @@ fun WFCOnboard1Screen(
                 )
             }
 
-            IconButton(modifier = Modifier
-                .size(65.dp)
-                .offset(x = 25.dp)
-                .align(Alignment.CenterEnd), onClick = { /*TODO*/ }) {
+            IconButton(
+                modifier = Modifier
+                    .size(65.dp)
+                    .offset(x = 25.dp)
+                    .align(Alignment.CenterEnd),
+                onClick = {
+                    onNextClick()
+                }) {
                 Icon(
                     modifier = Modifier.size(65.dp),
                     painter = painterResource(id = R.drawable.next_btn),
@@ -190,7 +192,8 @@ fun WFCOnboard2Screen(
                 verticalArrangement = Arrangement.spacedBy(80.dp)
             ) {
                 Text(
-                    text = "How much water do you think an average human consumes everyday?", style = TextStyle(
+                    text = "How much water do you think an average human consumes everyday?",
+                    style = TextStyle(
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         fontStyle = FontStyle.Normal,
@@ -291,8 +294,7 @@ fun WFCOnboard3Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(80.dp)
             ) {
@@ -387,8 +389,7 @@ fun WFCOnboard4Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(50.dp)
             ) {
@@ -409,8 +410,6 @@ fun WFCOnboard4Screen(
                     )
 
                 )
-
-
 
 
             }
@@ -479,8 +478,7 @@ fun WFCOnboard5Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(80.dp)
             ) {
@@ -555,8 +553,6 @@ fun WFCOnboard5Screen(
                 )
 
 
-
-
             }
 
             IconButton(modifier = Modifier
@@ -623,8 +619,7 @@ fun WFCOnboard6Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(80.dp)
             ) {
@@ -647,7 +642,6 @@ fun WFCOnboard6Screen(
                     )
 
                 )
-
 
 
             }
@@ -716,16 +710,14 @@ fun WFCOnboard7Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(50.dp)
             ) {
 
                 Image(
                     modifier = Modifier
-                        .scale(2.8f)
-                        ,
+                        .scale(2.8f),
                     painter = painterResource(id = R.drawable.agri_sector_span),
                     contentDescription = "coocking span"
                 )
@@ -746,7 +738,6 @@ fun WFCOnboard7Screen(
                     )
 
                 )
-
 
 
             }
@@ -815,8 +806,7 @@ fun WFCOnboard8Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(80.dp)
             ) {
@@ -838,9 +828,6 @@ fun WFCOnboard8Screen(
                     )
 
                 )
-
-
-
 
 
             }
@@ -909,8 +896,7 @@ fun WFCOnboard9Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(50.dp)
             ) {
@@ -929,8 +915,7 @@ fun WFCOnboard9Screen(
 
                 Image(
                     modifier = Modifier
-                        .scale(2.8f)
-                    ,
+                        .scale(2.8f),
                     painter = painterResource(id = R.drawable.be_mindful_span),
                     contentDescription = "be mindful span"
                 )
@@ -1002,8 +987,7 @@ fun WFCOnboard10Screen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                ,
+                    .fillMaxWidth(0.7f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(50.dp)
             ) {
@@ -1022,8 +1006,7 @@ fun WFCOnboard10Screen(
 
                 Button(
                     modifier = Modifier
-                        .fillMaxWidth()
-                    ,
+                        .fillMaxWidth(),
                     onClick = {
 
                     },
