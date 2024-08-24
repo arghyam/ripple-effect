@@ -32,7 +32,6 @@ class WaterFtCalcViewModel(
 
 
 
-
     var selectedIngredientId = mutableIntStateOf(0)
         private set
 
