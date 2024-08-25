@@ -13,12 +13,12 @@
 - Java Development Kit (JDK): A compatible JDK is required for Android development. Android Studio might bundle one, but you may need a specific version.
 ## Setting Up the Server:
 ### 1. Clone the repository: 
-```
+```bash
 git clone https://github.com/arghyam/ripple-effect.git
 ```
 ### 2. Install dependencies:
 Navigate to the server directory and run:
-```
+```bash
 cd ripple-effect/server
 npm install
 ```
@@ -43,12 +43,12 @@ Create a .env.local file at the root of the server directory and add the followi
 
 ### 4. Optional: Build TypeScript Code:
 If your project has a build step, run:
-```
+```bash
 tsc
 ```
 ### 5. Start the server:
 Navigate to the dist directory and run:
-```
+```bash
 cd dist
 node index.js
 ```
@@ -72,7 +72,7 @@ Wait for Android Studio to synchronize the project with Gradle. This might take 
 ### 1. Configure Build Types:
 Open the app-level build.gradle file and ensure you have defined debug and release build types. For the release type, configure signing configurations:
 
-```
+```kotlin
 buildTypes {
     release {
         isMinifyEnabled false
