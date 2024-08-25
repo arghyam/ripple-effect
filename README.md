@@ -4,7 +4,7 @@
 
 ## Getting Started
 ### Prerequisites:
-### Development Environment:
+### Server Environment:
 - Node.js and npm (or yarn): Ensure these tools are installed for server-side development.
 - TypeScript: This statically typed language is used for building the server. Make sure you have it installed globally or locally.
 ### Android Environment:
@@ -35,11 +35,11 @@ Create a .env.local file at the root of the server directory and add the followi
 | DB_PASSWORD | Database password |
 | SERVER_PORT | Server port number (e.g., 3000) |
 | JWT_SECRET | Secret key for JSON Web Tokens |
-| NODEMAILER_HOST | Email server host (if used for notifications) |
+| NODEMAILER_HOST | Email server host  |
 | NODEMAILER_PORT | Email server port (default for SMTP) |
-| NODEMAILER_AUTH_USER | Email authentication username (if used) |
-| NODEMAILER_AUTH_PASSWORD | Email authentication password (if used) |
-| NODEMAILER_SENDER_MAIL | Email address used for sending notifications (if used) |
+| NODEMAILER_AUTH_USER | Email authentication username  |
+| NODEMAILER_AUTH_PASSWORD | Email authentication password  |
+| NODEMAILER_SENDER_MAIL | Email address used for sending notifications |
 
 ### 4. Optional: Build TypeScript Code:
 If your project has a build step, run:
