@@ -20,6 +20,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import kotlinx.coroutines.flow.collectLatest
 import org.arghyam.puddle.domain.models.quiz
+import org.arghyam.puddle.presentation.discover.ArticleScreen
+import org.arghyam.puddle.presentation.discover.DiscoverScreen
 import org.arghyam.puddle.presentation.quiz.QuestionScreen
 import org.arghyam.puddle.presentation.quiz.QuizEvent
 import org.arghyam.puddle.presentation.quiz.QuizResultScreen
@@ -178,8 +180,15 @@ fun MainNavGraph(
         }
 
         composable(Routes.DiscoverScreen.route) {
-
+            DiscoverScreen(onNavigate = mainNavController::navigate)
         }
+
+        composable(Routes.ArticleScreen.route) {
+            ArticleScreen(onNavigateBack = {
+                mainNavController.popBackStack(Routes.ArticleScreen.route, inclusive = true)
+            })
+        }
+
 
         composable(Routes.PlanScreen.route) {
 
