@@ -35,9 +35,15 @@ class AuthRepoImpl(
                 setBody(signInRequest)
             }.body<SignInResponse>()
 
-            val user = res.userInfo.toUser()
+            val user = res.userInfo?.toUser()
 
-            Result.Success(user)
+            if (user == null) {
+                Result.Error(DataError.Network.SERVER_ERROR)
+            } else {
+                Result.Success(user)
+            }
+
+
         } catch (e: Exception) {
             e.printStackTrace()
             Result.Error(DataError.Network.SERVER_ERROR)

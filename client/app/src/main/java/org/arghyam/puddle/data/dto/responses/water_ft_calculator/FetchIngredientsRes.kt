@@ -12,8 +12,8 @@ data class FetchIngredientsRes(
 
 @Serializable
 data class IngredientRow(
-    @SerialName("rowId") val rowId: Int,
-    @SerialName("rowOrder") val rowOrder: Int,
-    @SerialName("rowItems") val items: List<IngredientRowItem>
+    @SerialName("patternId") val rowId: Int,
+    @SerialName("rank") val rowOrder: Int,
+    @SerialName("patternItems") val items: List<IngredientRowItem>
 )
 

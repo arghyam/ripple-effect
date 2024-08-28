@@ -4,4 +4,6 @@ sealed interface WaterFtCalcUiEvent {
 
     data class WaterFootprintCalculated(val result: Double): WaterFtCalcUiEvent
     data object WaterFootprintCalculationFailed: WaterFtCalcUiEvent
+
+    data object WFCOnboardCompleted: WaterFtCalcUiEvent
 }

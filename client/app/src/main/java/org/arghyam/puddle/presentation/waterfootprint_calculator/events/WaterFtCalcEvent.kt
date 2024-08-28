@@ -4,6 +4,9 @@ sealed interface WaterFtCalcEvent {
 
     data object FetchIngredients: WaterFtCalcEvent
 
+
+    data object OnNextClicked: WaterFtCalcEvent
+
     data class Search(val query: String): WaterFtCalcEvent
 
     data class SelectIngredient(val id: Int): WaterFtCalcEvent

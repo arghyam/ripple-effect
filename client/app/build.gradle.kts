@@ -98,6 +98,8 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose")
     implementation("io.insert-koin:koin-androidx-compose-navigation")
 
+    implementation("androidx.paging:paging-compose:3.2.1")
+
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
 }

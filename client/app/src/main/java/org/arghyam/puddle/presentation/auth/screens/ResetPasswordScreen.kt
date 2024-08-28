@@ -1,8 +1,10 @@
 package org.arghyam.puddle.presentation.auth.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,12 +33,15 @@ import androidx.compose.ui.unit.sp
 import org.arghyam.puddle.R
 import org.arghyam.puddle.presentation.auth.ForgotPasswordViewModel
 import org.arghyam.puddle.presentation.auth.events.ForgotPasswordEvent
+import org.arghyam.puddle.ui.theme.Color1
+import org.arghyam.puddle.ui.theme.Color3
 import org.arghyam.puddle.ui.theme.openSansFontFamily
+import org.koin.androidx.compose.koinViewModel
 
 @Preview
 @Composable
 fun ResetPasswordScreen(
-    forgotPwdViewModel: ForgotPasswordViewModel,
+    forgotPwdViewModel: ForgotPasswordViewModel = koinViewModel(),
     onNavigate: (String) -> Unit = {}
 ) {
 
@@ -44,7 +49,8 @@ fun ResetPasswordScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .background(Color1)
             .padding(horizontal = 20.dp)
     ) {
 
@@ -88,7 +94,7 @@ fun ResetPasswordScreen(
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedContainerColor = Color3,
                 focusedContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,

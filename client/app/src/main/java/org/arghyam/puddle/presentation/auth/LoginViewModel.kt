@@ -1,5 +1,6 @@
 package org.arghyam.puddle.presentation.auth
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import org.arghyam.puddle.data.dto.requests.SignInRequest
@@ -17,7 +18,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val authRepo: AuthRepository
+    private val authRepo: AuthRepository,
+    private val sharedPref: SharedPreferences
 ) : ViewModel() {
 
 
@@ -58,10 +60,16 @@ class LoginViewModel(
                     }
                     authRepo.signIn(SignInRequest(loginState.value.email, loginState.value.password))
                         .handleResult(
-                            onSuccess = { data ->
+                            onSuccess = { user ->
                                 _signInResponse.update {
-                                    it.copy(isLoading = false, data = data)
+                                    it.copy(isLoading = false, data = user)
                                 }
+
+                                //store user data
+                                sharedPref.edit()
+                                    .putString("userId", user?.id)
+                                    .putString("name", user?.name)
+                                    .apply()
 
                                 _eventFlow.emit(AuthUiEvent.LoginUserSuccessful)
 

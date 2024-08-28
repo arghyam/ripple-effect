@@ -4,6 +4,7 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import org.arghyam.puddle.R
@@ -11,15 +12,15 @@ import org.arghyam.puddle.R
 // Set of Material typography styles to start with
 
 val puddleFontFamily = FontFamily(
-    Font(R.font.anek_latin_extra_bold),
-    Font(R.font.anek_latin_bold),
-    Font(R.font.anek_latin_regular)
+    Font(R.font.anek_latin_extra_bold, FontWeight.ExtraBold, FontStyle.Normal),
+    Font(R.font.anek_latin_bold, FontWeight.Bold, FontStyle.Normal),
+    Font(R.font.anek_latin_regular, FontWeight.Normal, FontStyle.Normal)
 )
 val openSansFontFamily = FontFamily(
-    Font(R.font.open_sans_italic),
-    Font(R.font.open_sans_regular),
-    Font(R.font.open_sans_bold),
-    Font(R.font.open_sans_bold_italic),
+    Font(R.font.open_sans_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.open_sans_regular, FontWeight.Normal, FontStyle.Normal),
+    Font(R.font.open_sans_bold, FontWeight.Bold, FontStyle.Normal),
+    Font(R.font.open_sans_bold_italic, FontWeight.Bold, FontStyle.Italic),
 
 )
 val Typography = Typography(
