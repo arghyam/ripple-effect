@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import org.arghyam.puddle.BuildConfig
 import org.arghyam.puddle.presentation.waterfootprint_calculator.WaterFtCalcViewModel
-import org.arghyam.puddle.utils.SERVER_URL
 import org.koin.androidx.compose.koinViewModel
 
 @Preview
@@ -23,7 +23,7 @@ fun Test2Screen(
 
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data("$SERVER_URL/images/test.svg") // Replace with your SVG image URL
+            .data("${BuildConfig.SERVER_URL}L/images/test.svg") // Replace with your SVG image URL
             .decoderFactory(SvgDecoder.Factory())
             .build(),
         contentDescription = null,

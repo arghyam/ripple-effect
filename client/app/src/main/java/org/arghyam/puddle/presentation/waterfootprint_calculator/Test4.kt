@@ -57,8 +57,8 @@ import org.arghyam.puddle.presentation.waterfootprint_calculator.events.WaterFtC
 import org.arghyam.puddle.ui.theme.Color3
 import org.arghyam.puddle.ui.theme.Color5
 import org.arghyam.puddle.ui.theme.puddleFontFamily
-import org.arghyam.puddle.utils.SERVER_URL
 import kotlinx.coroutines.flow.collectLatest
+import org.arghyam.puddle.BuildConfig
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -162,7 +162,7 @@ fun Test4(
                                         )
                                     }
                                     .blur(if (selectedIngId != item.id && selectedIngId != 0) 3.dp else 0.dp),
-                                model = if (selectedIngId == item.id) "$SERVER_URL${item.selectedBgImageUrl.replace("xml", "png")}" else "$SERVER_URL${item.unselectedBgImageUrl.replace("xml", "png")}",
+                                model = if (selectedIngId == item.id) "${BuildConfig.SERVER_URL}${item.selectedBgImageUrl.replace("xml", "png")}" else "${BuildConfig.SERVER_URL}${item.unselectedBgImageUrl.replace("xml", "png")}",
                                 contentDescription = item.name + "image",
                             )
                             Column(
@@ -183,7 +183,7 @@ fun Test4(
                                                     item.sampleImageSize.dp - 20.dp
                                                 }
                                             ),
-                                        model = "$SERVER_URL${item.sampleImageUrl}",
+                                        model = "${BuildConfig.SERVER_URL}${item.sampleImageUrl}",
                                         contentDescription = item.name + "image",
                                     )
                                 } else {
