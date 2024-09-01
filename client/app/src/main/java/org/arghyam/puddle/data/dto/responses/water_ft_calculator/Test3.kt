@@ -1,6 +1,7 @@
 package org.arghyam.puddle.data.dto.responses.water_ft_calculator
 
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
@@ -10,9 +11,10 @@ import androidx.compose.ui.layout.layoutId
 @Composable
 fun LayoutOne(
     modifier: Modifier = Modifier,
-    height: Int = 850,
     row: IngredientRow,
+    selectedIngreId: Int = 0,
     content: @Composable @UiComposable () -> Unit,
+
 ) {
 
     Layout(
@@ -23,7 +25,7 @@ fun LayoutOne(
         val placeableList = measurables.map {
 
             val layoutId = it.layoutId as String
-            val layoutRow = row.items.first { item ->
+            val layoutRow = row.patternItems.first { item ->
                 item.name == layoutId
             }
             Pair(layoutRow,it.measure(constraints))
@@ -41,6 +43,8 @@ fun LayoutOne(
 
         maxHeight += 20
 
+        Log.d("MAXHEIGHT IS", "this is a $maxHeight")
+
         layout(width, maxHeight) {
 
             placeableList.forEach { item ->
@@ -48,8 +52,8 @@ fun LayoutOne(
                 val placeable = item.second
 
                 val row = item.first
-                placeable.placeRelative(row.xOffset.toInt(), row.yOffset.toInt())
-
+                val zIndex = if (row.id == selectedIngreId) 5f else 0f
+                placeable.placeRelative(row.xOffset.toInt(), row.yOffset.toInt(), zIndex)
 
             }
         }

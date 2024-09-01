@@ -118,7 +118,7 @@ fun WaterFootprintCalculator(
                             modifier = Modifier.size(50.dp),
                             onClick = {
                                 isBottomSheetOpened = false
-                                waterFtCalcViewModel.onEvent(WaterFtCalcEvent.OnDismissBottomSheet)
+                                //waterFtCalcViewModel.onEvent(WaterFtCalcEvent.OnDismissBottomSheet)
                             }
                         ) {
                             Icon(

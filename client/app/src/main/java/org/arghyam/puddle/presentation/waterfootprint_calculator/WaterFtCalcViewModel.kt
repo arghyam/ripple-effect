@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.arghyam.puddle.presentation.waterfootprint_calculator.events.WFCOnboardEvent
+import org.arghyam.puddle.data.dto.responses.water_ft_calculator.IngredientState
 
 
 const val TAG = "WaterFtCalcViewModel"
@@ -50,6 +50,13 @@ class WaterFtCalcViewModel(
     val ingredientStateList: StateFlow<List<IngredientCalcState>> =
         _ingredientStateList.asStateFlow()
 
+    private val _testStateList = MutableStateFlow<List<IngredientState>>(emptyList())
+    val testStateList: StateFlow<List<IngredientState>> =
+        _testStateList.asStateFlow()
+
+    var isWFCOnboardingCompleted = mutableStateOf(sharedPref.getBoolean("is_wfc_onboarding_completed", false))
+        private set
+
     private val _eventFlow = MutableSharedFlow<WaterFtCalcUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -68,7 +75,7 @@ class WaterFtCalcViewModel(
                     sharedPref.edit()
                         .putBoolean("is_wfc_onboarding_completed", true)
                         .apply()
-                    _eventFlow.emit(WaterFtCalcUiEvent.WFCOnboardCompleted)
+                    isWFCOnboardingCompleted.value = true
                 }
             }
 
@@ -89,14 +96,26 @@ class WaterFtCalcViewModel(
                                     }
 
                                     data.forEach { row ->
-                                        val listToAdded = row.items.map {
+                                        val listToAdded = row.patternItems.map {
                                             //id is Ingredient Row Id or Ingredient Id
                                             IngredientCalcState(
                                                 id = it.id!!,
                                                 name = it.name,
-                                                unit = it.unit,
-                                                category = "none"
+                                                unit = it.unit
                                             )
+                                        }
+
+                                        val listToAdded2 = row.patternItems.map {
+                                            //id is Ingredient Row Id or Ingredient Id
+                                            IngredientState(
+                                                isSelected = false,
+                                                amt = "",
+                                                detail = it
+                                            )
+                                        }
+
+                                        _testStateList.update {
+                                            listToAdded2
                                         }
 
                                         _ingredientStateList.update { stateList ->
@@ -120,6 +139,10 @@ class WaterFtCalcViewModel(
             is WaterFtCalcEvent.SelectIngredient -> {
                 selectedIngredientId.intValue = event.id
 
+                _testStateList.update { oldList ->
+                    oldList.toMutableList().map { if (it.detail.id == event.id) it.copy(isSelected = true) else  it}
+                }
+
                 val state = ingredientStateList.value.singleOrNull {it.id == event.id }
                 selectedIngredientAmt.value = state?.amt.toString()
 
@@ -128,6 +151,8 @@ class WaterFtCalcViewModel(
 
             is WaterFtCalcEvent.ChangeAmt -> {
                 selectedIngredientAmt.value = event.amt
+
+
             }
 
             is WaterFtCalcEvent.DoneAndUnSelectIngredient -> {
@@ -144,9 +169,13 @@ class WaterFtCalcViewModel(
                     }
 
                 }
+                _testStateList.update { oldList ->
+                    oldList.toMutableList().map { if (it.detail.id == event.id) it.copy(amt = selectedIngredientAmt.value.trim()) else  it}
+                }
+
 
                 selectedIngredientId.intValue = 0
-                selectedIngredientAmt.value = "0"
+                selectedIngredientAmt.value = ""
             }
 
             is WaterFtCalcEvent.Complete -> {
@@ -187,10 +216,6 @@ class WaterFtCalcViewModel(
 
             }
 
-            is WaterFtCalcEvent.OnDismissBottomSheet -> {
-                selectedIngredientId.intValue = 0
-                selectedIngredientAmt.value = "0"
-            }
 
             else -> Unit
         }
@@ -198,7 +223,7 @@ class WaterFtCalcViewModel(
 
     override fun onCleared() {
         selectedIngredientId.intValue = 0
-        selectedIngredientAmt.value = "0"
+        selectedIngredientAmt.value = ""
         isIngredientsAmtUploading.value = false
         super.onCleared()
     }

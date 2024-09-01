@@ -1,39 +1,30 @@
 package org.arghyam.puddle.navigation
 
-import android.content.SharedPreferences
-import android.util.Log
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import kotlinx.coroutines.flow.collectLatest
-import org.arghyam.puddle.domain.models.quiz
+import kotlinx.coroutines.launch
 import org.arghyam.puddle.presentation.discover.ArticleScreen
 import org.arghyam.puddle.presentation.discover.DiscoverScreen
 import org.arghyam.puddle.presentation.quiz.QuestionScreen
 import org.arghyam.puddle.presentation.quiz.QuizEvent
 import org.arghyam.puddle.presentation.quiz.QuizResultScreen
-import org.arghyam.puddle.presentation.quiz.QuizUiEvent
 import org.arghyam.puddle.presentation.quiz.QuizViewModel
 import org.arghyam.puddle.presentation.waterfootprint_calculator.Test4
 import org.arghyam.puddle.presentation.waterfootprint_calculator.WFCOnboard1Screen
 import org.arghyam.puddle.presentation.waterfootprint_calculator.WaterFootprintResultScreen
 import org.arghyam.puddle.presentation.waterfootprint_calculator.WaterFtCalcViewModel
 import org.arghyam.puddle.presentation.waterfootprint_calculator.events.WaterFtCalcEvent
-import org.arghyam.puddle.presentation.waterfootprint_calculator.events.WaterFtCalcUiEvent
-import org.koin.compose.koinInject
 
 @Composable
 fun MainNavGraph(
@@ -46,7 +37,7 @@ fun MainNavGraph(
     NavHost(
         modifier = Modifier.padding(scaffoldPadding),
         navController = mainNavController,
-        startDestination = Routes.QuizScreen.route,
+        startDestination = Routes.CalculateScreen.route,
         route = "Main"
     ) {
 
@@ -54,23 +45,8 @@ fun MainNavGraph(
 
             val viewModel: WaterFtCalcViewModel = it.sharedViewModel(navController = mainNavController)
 
-            val sharedPref = koinInject<SharedPreferences>()
 
-            var wfcOnboardingStatus = sharedPref.getBoolean("is_wfc_onboarding_completed", false)
-
-            LaunchedEffect(key1 = true) {
-                viewModel.eventFlow.collectLatest { event ->
-                    when(event) {
-                        is WaterFtCalcUiEvent.WFCOnboardCompleted -> {
-                            wfcOnboardingStatus = true
-                            Log.d("MAINNAVG", "wfconboardi")
-                        }
-                        else -> Unit
-                    }
-                }
-            }
-
-            if(wfcOnboardingStatus) {
+            if(viewModel.isWFCOnboardingCompleted.value) {
                 Test4(
                     waterFtCalcViewModel = viewModel,
                     onNavigate = { route ->
@@ -92,60 +68,79 @@ fun MainNavGraph(
 
         }
 
-        composable(route = Routes.QuizScreen.route) {
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                Button(onClick = { mainNavController.navigate(Routes.QuestionScreen.route) }) {
-                    Text(text = "Start Quiz")
-                }
-            }
-        }
-
         composable(
-            route = Routes.QuestionScreen.route
+            route = Routes.QuizScreen.route + "?" + "quiz_id={quiz_id}",
+            arguments = listOf(
+                navArgument("quiz_id") {
+                    type = NavType.StringType
+                    nullable = false
+                }
+            )
         ) {
 
-
+            val quizId = it.arguments?.getString("quiz_id")
             val quizViewModel = it.sharedViewModel<QuizViewModel>(navController = mainNavController)
+
+            LaunchedEffect(key1 = true) {
+                if (!quizId.isNullOrBlank()) quizViewModel.onEvent(QuizEvent.FetchQuiz(quizId))
+            }
+
             val questionState = quizViewModel.currentQuestionState.collectAsState()
+            val coroutineScope = rememberCoroutineScope()
+
+          quizViewModel.mQuiz?.let {
+
+              questionState.value.currentQuestion?.let { question ->
+                  QuestionScreen(
+                      question = question,
+                      questionnaire = quizViewModel.mQuiz!!.questionnaire,
+                      selectedOptionId = questionState.value.selectedOptionId,
+                      onNextQuestion = {
+                          quizViewModel.onEvent(QuizEvent.ShowNextQuestion)
+                      },
+                      onShowQuizResult = {
+                          quizViewModel.onEvent(QuizEvent.ShowQuizResult)
+                      },
+                      onSelectOption = { id ->
+                          quizViewModel.onEvent(QuizEvent.SelectAnswer(id))
+                      },
+                      onNavigateBack = {
+                          mainNavController.navigate(Routes.DiscoverScreen.route) {
+                              popUpTo(Routes.QuizScreen.route) {
+                                  inclusive = true
+                              }
+                          }
+                      }
+                  )
+              }?: kotlin.run {
+                  coroutineScope.launch {
+                      snackbarHostState.showSnackbar("no question is available. something went wrong")
+                  }
+              }
+
+          }  ?: kotlin.run {
+              coroutineScope.launch {
+                  snackbarHostState.showSnackbar("no quiz available. this quiz is corrupt")
+              }
+
+          }
 
 
-            QuestionScreen(
-                questionState = questionState.value,
-                onNextQuestion = {
-                    quizViewModel.onEvent(QuizEvent.ShowNextQuestion)
-                },
-                onShowQuizResult = {
-                    mainNavController.navigate(Routes.ShowQuizResultScreen.route)
-                },
-                onSelectOption = { id ->
-                    quizViewModel.onEvent(QuizEvent.SelectAnswer(id))
-                },
-                onNavigateBack = {
-                    mainNavController.navigate(Routes.DiscoverScreen.route) {
-                        popUpTo(Routes.QuestionScreen.route) {
-                            inclusive = true
+            if (quizViewModel.shouldShowResult) {
+                QuizResultScreen(
+                    quizScore = quizViewModel.quizScore.intValue,
+                    totalQuestions = quizViewModel.mQuiz!!.questionnaire.size,
+                    onNavigateBack = {
+                        mainNavController.navigate(Routes.DiscoverScreen.route) {
+                            popUpTo(Routes.QuizScreen.route) {
+                                inclusive = true
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
 
-        }
 
-        composable(Routes.ShowQuizResultScreen.route) {
-            val quizViewModel = it.sharedViewModel<QuizViewModel>(navController = mainNavController)
-
-            QuizResultScreen(
-                quizScore = quizViewModel.quizScore.intValue,
-                totalQuestions = quiz.questionnaire.size,
-                onNavigateBack = {
-                    mainNavController.navigate(Routes.DiscoverScreen.route) {
-                        popUpTo(Routes.ShowQuizResultScreen.route) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
         }
 
 

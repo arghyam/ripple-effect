@@ -1,54 +1,55 @@
 package org.arghyam.puddle.domain.models
 
-data class DiscoverItem(
-    val id: Int,
-    val itemType: DiscoverItemType,
-    val title: String,
-    val desc: String? =null,
-)
+
+abstract class DiscoverItem {
+    abstract val itemId: Int
+    abstract val itemType: DiscoverItemType
+}
 
 val list = listOf(
-    DiscoverItem(
-        id = 1,
+    Article(
+        itemId = 1,
         itemType = DiscoverItemType.ARTICLE,
+        articleId = 1,
         title = "The Water that you eat",
         desc = "Need to shift to a more sustainable diet without compromising on major nutrients and calories"
     ),
-    DiscoverItem(
-        id = 2,
+    Podcast(
+        itemId = 2,
         itemType = DiscoverItemType.PODCAST,
+        podcastId = 1,
         title = "Voices for Water",
         desc = "Hear from experts"
     ),
-    DiscoverItem(
-        id = 3,
+    News(
+        itemId = 3,
         itemType = DiscoverItemType.NEWS,
+        newsId = 1,
         title = "Assam’s Jal Doots",
         desc = "Assam launches ambitious water scheme to train over 2 lakh students as 'Jal Doots'"
     ),
-    DiscoverItem(
-        id = 4,
+    Article(
+        itemId = 4,
         itemType = DiscoverItemType.ARTICLE,
+        articleId = 2,
         title = "Trading in virtual water",
         desc = "A study highlights the need to scale down the export of rice, maize, buffalo meat and other items to conserve groundwater in India."
     ),
-    DiscoverItem(
-        id = 5,
+    QuizItem(
+        itemId = 5,
         itemType = DiscoverItemType.QUIZ,
+        id = "quiz_1",
         title = "How much do you know about the water crisis?"
     ),
-    DiscoverItem(
-        id = 6,
+    News(
+        itemId = 6,
         itemType = DiscoverItemType.NEWS,
+        newsId = 2,
         title = "IPCC Climate Report - A Warning Call",
         desc = "Grounded action needed to ensure social and ecological justice"
-    ),
+    )
 )
 
-enum class DiscoverItemType {
 
-    ARTICLE,
-    PODCAST,
-    NEWS,
-    QUIZ
-}
+
+

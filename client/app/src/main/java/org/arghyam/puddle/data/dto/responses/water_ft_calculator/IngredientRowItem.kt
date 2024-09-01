@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class IngredientRowItem(
     @SerialName("id")
-    val id: Int?=null,
+    val id: Int,
     @SerialName("itemNo")
     val itemNo: Int,
     @SerialName("name")

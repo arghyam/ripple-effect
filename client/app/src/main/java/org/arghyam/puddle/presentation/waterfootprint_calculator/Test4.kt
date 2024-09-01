@@ -31,6 +31,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -48,6 +52,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import kotlinx.coroutines.flow.collectLatest
+import org.arghyam.puddle.BuildConfig
 import org.arghyam.puddle.R
 import org.arghyam.puddle.data.dto.responses.water_ft_calculator.CornerType
 import org.arghyam.puddle.data.dto.responses.water_ft_calculator.LayoutOne
@@ -57,8 +64,6 @@ import org.arghyam.puddle.presentation.waterfootprint_calculator.events.WaterFtC
 import org.arghyam.puddle.ui.theme.Color3
 import org.arghyam.puddle.ui.theme.Color5
 import org.arghyam.puddle.ui.theme.puddleFontFamily
-import kotlinx.coroutines.flow.collectLatest
-import org.arghyam.puddle.BuildConfig
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -70,6 +75,8 @@ fun Test4(
 ) {
 
     val selectedIngId = waterFtCalcViewModel.selectedIngredientId.intValue
+
+    var parentOffset by remember { mutableStateOf(0) }
 
 
     val fetchIngredientsState = waterFtCalcViewModel.fetchIngredientsState.collectAsState()
@@ -117,47 +124,28 @@ fun Test4(
 
         fetchIngredientsState.value.data.forEach { row ->
             LayoutOne(
-                height = if (selectedIngId == 1) {
-                    500
-                } else if (selectedIngId == 2) {
-                    1520
-                } else {
-                    3000
-                },
-                row = row
+                row = row,
+                selectedIngreId = selectedIngId,
             ) {
 
-                row.items.forEach { item ->
+                row.patternItems.forEach { item ->
 
 
 
                     Column(modifier = Modifier
                         .layoutId(item.name)) {
                         Box(
-                            //modifier = Modifier
-                                //.layoutId(item.name),
                             contentAlignment = Alignment.Center
                         ) {
 
                             AsyncImage(
                                 modifier = Modifier
-                                    .scale(
-                                        if (selectedIngId == item.id && selectedIngId != 0) {
-                                            item.scaleFactor
-                                        } else {
-                                            if (selectedIngId == 0) {
-                                                item.scaleFactor
-                                            } else {
-                                                item.scaleFactor - 0.15f
-                                            }
-
-                                        }
-                                    )
+                                    .scale(item.scaleFactor)
                                     .clickable(enabled = selectedIngId == 0) {
 
                                         waterFtCalcViewModel.onEvent(
                                             WaterFtCalcEvent.SelectIngredient(
-                                                item.id!!
+                                                item.id
                                             )
                                         )
                                     }
@@ -173,7 +161,8 @@ fun Test4(
 
 
                                 val existingAmt = waterFtCalcViewModel.findAmtOfIngredient(item.id!!)
-                                if (selectedIngId != item.id && existingAmt != "0" && !existingAmt.isNullOrBlank()) {
+
+                                if (selectedIngId != item.id && existingAmt != "0" && existingAmt.isNullOrBlank()) {
                                     AsyncImage(
                                         modifier = Modifier
                                             .size(
@@ -183,7 +172,7 @@ fun Test4(
                                                     item.sampleImageSize.dp - 20.dp
                                                 }
                                             ),
-                                        model = "${BuildConfig.SERVER_URL}${item.sampleImageUrl}",
+                                        model = ImageRequest.Builder(context).data(R.drawable.ixd_vegetables).build(),
                                         contentDescription = item.name + "image",
                                     )
                                 } else {
@@ -300,13 +289,14 @@ fun Test4(
 
                 }
 
-
             }
+
+
 
 
         }
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(150.dp))
         Row(
             modifier = Modifier.padding(10.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.End
