@@ -14,7 +14,7 @@ import { ForgotPasswordEmailNotSent, InvalidOTPCredentials, InvalidResetPassword
 import { User } from '../data/db_models/User';
 import { AuthError } from '../utils/errors/ErrorUtils';
 import * as dotenv from 'dotenv-flow';
-dotenv.config({ path: '../' })
+dotenv.config({ path: './' })
 
 
 
