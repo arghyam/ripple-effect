@@ -43,11 +43,9 @@ export const logger = winston.createLogger({
 
 const app = express()
 
-
-// Body parser middleware (already included in Express.js)
 app.use(express.json())
 
-app.use('/images', express.static(path.join(__dirname, 'resources','public')))
+app.use('/images', express.static(path.join('./resources','public')))
 
 
 app.use('/api/auth', authRouter)

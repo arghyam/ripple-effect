@@ -1,15 +1,16 @@
 {
   "name": "puddleserver",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@netlify/functions": "^2.8.1",
     "@types/node": "^20.14.10",
     "@types/otp-generator": "^4.0.2",
     "@types/sequelize": "^4.28.20",
@@ -21,11 +22,14 @@
     "express-rate-limit": "^7.2.0",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
+    "netlify-cli": "^17.34.3",
+    "netlify-lambda": "^2.0.16",
     "nodemailer": "^6.9.14",
     "otp-generator": "^4.0.1",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.3",
+    "serverless-http": "^3.2.0",
     "tslib": "^2.6.2",
     "uuid": "^10.0.0",
     "winston": "^3.13.0"
@@ -37,5 +41,6 @@
     "@types/nodemailer": "^6.4.15",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.5.4"
-  }
+  },
+  "description": ""
 }

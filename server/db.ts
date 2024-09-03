@@ -6,7 +6,7 @@ dotenv.config({ path: './' })
 const sequelize = new Sequelize(String(process.env.DB_NAME), String(process.env.DB_USERNAME), String(process.env.DB_PASSWORD),{
         host: String(process.env.DB_HOST),
         port: Number(process.env.DB_PORT),
-        dialect: process.env.Dialect as Dialect,
+        dialect: "postgres",
         ssl: true,
         dialectOptions: {
             ssl: {

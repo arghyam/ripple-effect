@@ -1,6 +1,7 @@
 
 
 export interface IngredientRes {
+  id: number
   itemNo: number
   name: string
   unit: string

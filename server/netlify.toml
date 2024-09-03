@@ -1,0 +1,10 @@
+[build]
+command = "npx tsc"
+publish = "dist"
+[functions]
+  external_node_modules = ["express"]
+  node_bundler = "esbuild"
+
+[dev]
+  targetPort = 3000
+  port = 3000

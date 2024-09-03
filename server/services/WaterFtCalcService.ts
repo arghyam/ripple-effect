@@ -63,6 +63,7 @@ export class WaterftCalcService {
       
             if (matchingIngredient) {
               processedItems.push({
+                  id: matchingIngredient.id,
                   itemNo: item.itemNo,
                   name: matchingIngredient.name,
                   unit: matchingIngredient.unit,
