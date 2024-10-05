@@ -29,6 +29,7 @@ sealed class Routes(
     data object CalculateResultScreen: Routes("calculate_result")
     data object DiscoverScreen: Routes("discover")
     data object ArticleScreen: Routes("article")
+    data object ArticleScreen: Routes("article")
     data object PlanScreen: Routes("plan")
     data object LeaderboardScreen: Routes("leaderboard")
     data object ProfileScreen: Routes("profile")

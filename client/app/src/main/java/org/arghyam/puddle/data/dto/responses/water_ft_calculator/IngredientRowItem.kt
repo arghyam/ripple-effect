@@ -38,6 +38,10 @@ data class IngredientRowItem(
     val pluseXOffSet: Float,
     @SerialName("pluseYOffSet")
     val pluseYOffSet: Float,
+    @SerialName("pluseXOffSet")
+    val pluseXOffSet: Float,
+    @SerialName("pluseYOffSet")
+    val pluseYOffSet: Float,
     @SerialName("minusXOffSet")
     val minusXOffSet: Float,
     @SerialName("minusYOffSet")
@@ -46,5 +50,6 @@ data class IngredientRowItem(
     val xOffset: Float,
     @SerialName("yOffset")
     val yOffset: Float
+
 
 )

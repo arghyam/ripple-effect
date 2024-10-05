@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -223,12 +226,19 @@ fun MainNavGraph(
         composable(Routes.DiscoverScreen.route) {
             DiscoverScreen(onNavigate = mainNavController::navigate)
         }
+            DiscoverScreen(onNavigate = mainNavController::navigate)
+        }
 
         composable(Routes.ArticleScreen.route) {
             ArticleScreen(onNavigateBack = {
                 mainNavController.popBackStack(Routes.ArticleScreen.route, inclusive = true)
             })
+        composable(Routes.ArticleScreen.route) {
+            ArticleScreen(onNavigateBack = {
+                mainNavController.popBackStack(Routes.ArticleScreen.route, inclusive = true)
+            })
         }
+
 
 
         composable(Routes.PlanScreen.route) {
