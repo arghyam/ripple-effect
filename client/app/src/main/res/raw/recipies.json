@@ -1,0 +1,274 @@
+[
+  {
+    "name": "Spaghetti Carbonara",
+    "totalWaterFootprint": 1200,
+    "totalIngredientSize": 4,
+    "ingredients": [
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Spaghetti",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 50.0,
+        "unit": "g",
+        "name": "Eggs",
+        "waterFootprint": 50
+      },
+      {
+        "quantity": 20.0,
+        "unit": "g",
+        "name": "Pecorino Romano",
+        "waterFootprint": 20
+      },
+      {
+        "quantity": 10.0,
+        "unit": "g",
+        "name": "Black Pepper",
+        "waterFootprint": 10
+      }
+    ]
+  },
+  {
+    "name": "Vegetable Stir-Fry",
+    "totalWaterFootprint": 800,
+    "totalIngredientSize": 5,
+    "ingredients": [
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Broccoli",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Carrots",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Bell Peppers",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Tofu",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Soy Sauce",
+        "waterFootprint": 100
+      }
+    ]
+  },
+  {
+    "name": "Chicken Curry",
+    "totalWaterFootprint": 1500,
+    "totalIngredientSize": 6,
+    "ingredients": [
+      {
+        "quantity": 200.0,
+        "unit": "g",
+        "name": "Chicken Breast",
+        "waterFootprint": 200
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Potatoes",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Onions",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Tomatoes",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Curry Powder",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Coconut Milk",
+        "waterFootprint": 100
+      }
+    ]
+  },
+  {
+    "name": "Salmon with Roasted Vegetables",
+    "totalWaterFootprint": 1000,
+    "totalIngredientSize": 4,
+    "ingredients": [
+      {
+        "quantity": 200.0,
+        "unit": "g",
+        "name": "Salmon Fillet",
+        "waterFootprint": 200
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Asparagus",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Zucchini",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Cherry Tomatoes",
+        "waterFootprint": 100
+      }
+    ]
+  },
+  {
+    "name": "Lentil Soup",
+    "totalWaterFootprint": 500,
+    "totalIngredientSize": 5,
+    "ingredients": [
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Red Lentils",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Carrots",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Celery",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Onion",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Vegetable Broth",
+        "waterFootprint": 100
+      }
+    ]
+  },
+  {
+    "name": "Avocado Toast",
+    "totalWaterFootprint": 800,
+    "totalIngredientSize": 3,
+    "ingredients": [
+      {
+        "quantity": 1.0,
+        "unit": "piece",
+        "name": "Avocado",
+        "waterFootprint": 800
+      },
+      {
+        "quantity": 1.0,
+        "unit": "slice",
+        "name": "Bread",
+        "waterFootprint": 10
+      },
+      {
+        "quantity": 10.0,
+        "unit": "g",
+        "name": "Salt",
+        "waterFootprint": 1
+      }
+    ]
+  },
+  {
+    "name": "Greek Salad",
+    "totalWaterFootprint": 500,
+    "totalIngredientSize": 5,
+    "ingredients": [
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Cucumbers",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Tomatoes",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Feta Cheese",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Olives",
+        "waterFootprint": 100
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Red Onion",
+        "waterFootprint": 100
+      }
+    ]
+  },
+  {
+    "name": "Pizza",
+    "totalWaterFootprint": 1200,
+    "totalIngredientSize": 5,
+    "ingredients": [
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Pizza Dough",
+        "waterFootprint": 200
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Tomato Sauce",
+        "waterFootprint": 200
+      },
+      {
+        "quantity": 100.0,
+        "unit": "g",
+        "name": "Mozzarella Cheese",
+        "waterFootprint": 200
+      },
+      {
+        "quantity": 50.0,
+        "unit": "g",
+        "name": "Pepperoni",
+        "waterFootprint": 100
+      }
+    ]
+  }
+  ]

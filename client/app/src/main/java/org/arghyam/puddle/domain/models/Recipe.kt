@@ -1,8 +1,14 @@
 package org.arghyam.puddle.domain.models
 
-import androidx.annotation.DrawableRes
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Recipe(
+    val id: String,
     val name: String,
-    @DrawableRes val image: Int
+    val unit: String,
+    val water_footprint: Double,
+    val ingredients: List<Ingredient>,
+    val createdAt: String,
+    val updatedAt: String
 )

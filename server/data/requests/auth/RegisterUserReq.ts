@@ -1,6 +1,7 @@
 
 export interface RegisterUserReq {
-    name: string,
-    email: string;
-    password: string;
+    name: string
+    email: string
+    photo_url: string | undefined
+    password: string
 }

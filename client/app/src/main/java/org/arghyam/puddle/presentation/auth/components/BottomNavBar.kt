@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.arghyam.puddle.R
 import org.arghyam.puddle.navigation.Routes
+import org.arghyam.puddle.ui.theme.Color2
 import org.arghyam.puddle.ui.theme.Color5
 import org.arghyam.puddle.ui.theme.puddleFontFamily
 
@@ -46,7 +47,7 @@ fun BottomNavBar(
 
 
     val screens = listOf(
-        BottomNavItem.Calculate,
+        BottomNavItem.Dashboard,
         BottomNavItem.Discover,
         BottomNavItem.Plan,
         BottomNavItem.Profile
@@ -67,7 +68,7 @@ fun BottomNavBar(
                 .clip(
                     RoundedCornerShape(25.dp)
                 )
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
+                .background(Color2)
                 .padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 5.dp)
                 ,
 
@@ -123,8 +124,8 @@ fun currentRoute(navController: NavHostController): String? {
 
 sealed class BottomNavItem(val route: String, val title: String, @DrawableRes val icon: Int) {
 
-    data object Calculate :
-        BottomNavItem(Routes.CalculateScreen.route, "Calculate", R.drawable.ixd_calculate)
+    data object Dashboard :
+        BottomNavItem(Routes.CalculateScreen.route, "Dashboard", R.drawable.ixd_calculate)
 
     data object Discover :
         BottomNavItem(Routes.DiscoverScreen.route, "Discover", R.drawable.ixd_discover)

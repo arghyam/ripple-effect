@@ -1,10 +1,7 @@
 import express from "express";
 import { container } from "../../di/container";
 import { TOKENS } from "../../di/tokens";
-import { handleAddIngredientRowItemRouteError, handleAddIngredientRowRouteError, handleCalculateWaterFootprintRouteError, handleGetIngredientsRowsRouteError } from "./errorhandling/ErrorResponses";
 import { CalcWaterFootPrintReq } from "../../data/requests/waterft_calc/CalcWaterFootprint";
-import { AddIngredientGroupPattern } from "../../data/requests/waterft_calc/AddIngredientGroupPattern";
-import { AddIngredientGroupPatternItem } from "../../data/requests/waterft_calc/AddIngredientGroupPatternItem";
 import { AddIngredient } from '../../data/requests/waterft_calc/AddIngredient';
 
 
@@ -16,58 +13,7 @@ const waterFtCalcService = container.get(TOKENS.waterFtCalcService);
 
 
 
-
-router.post('/add-ingredient-group-pattern', async (req, res) => {
-
-  try {
-    const request: AddIngredientGroupPattern = req.body
-
-    const result = await waterFtCalcService.AddIngredientGroupPattern(request.rank, request.size)
-
-    res.status(200).json(
-      {
-        status_code: 200,
-        ingredient_row: result,
-        message: "ingredient Row added successfully"
-      }
-    );
-
-
-  } catch (err) {
-
-    if (err instanceof Error) {
-      handleAddIngredientRowRouteError(err, res)
-    }
-
-  }
-});
-
-router.post('/add-ingredient-group-pattern-item', async (req, res) => {
-
-  try {
-    const request: AddIngredientGroupPatternItem = req.body
-
-    const result = await waterFtCalcService.addIngredientGroupPatternItem(request)
-
-    res.status(200).json(
-      {
-        status_code: 200,
-        ingredient_row_item: result,
-        message: "IngredientGroupPattern Item added successfully"
-      }
-    );
-
-
-  } catch (err) {
-
-    if (err instanceof Error) {
-      handleAddIngredientRowItemRouteError(err, res)
-    }
-
-  }
-});
-
-router.post('/add-ingredient', async(req, res) => {
+router.post('/add-ingredient', async (req, res, next) => {
   try {
     const request: AddIngredient = req.body
 
@@ -84,57 +30,132 @@ router.post('/add-ingredient', async(req, res) => {
 
   } catch (err) {
 
-    if (err instanceof Error) {
-      
-    }
+    next(err)
 
   }
 })
 
-router.get('/fetch-ingredients', async (req, res) => {
 
+router.get('/get-recipes', async (req, res, next) => {
   try {
-    const result = await waterFtCalcService.getIngredientsGroupPatternItems()
+    const page_size = Number(req.query.page_size)
+    const page = Number(req.query.page)
+    const query = String(req.query.query)
 
-    res.status(200).json(
-      {
-        status_code: 200,
-        data: result,
-        message: "ingredients data fetched successfully"
-      }
-    )
-
-
-  } catch (err) {
-
-    if (err instanceof Error) {
-      handleGetIngredientsRowsRouteError(err, res)
+    if (!page_size || !page) {
+      return res.status(400).json({
+        status_code: 400,
+        recipes: null,
+        message: "Query Data is required to get recipes"
+      })
     }
 
-  }
-});
+    const result = await waterFtCalcService.getRecipes(page_size, page, query)
 
-router.post('/calc-water-footprint', async (req, res) => {
+    res.status(200).json({
+      status_code: 200,
+      recipes: result,
+      message: "Recipes fetched successfully"
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.get('/get-recipe', async (req, res, next) => {
+  try {
+    const id = String(req.query.id)
+
+
+    if (!id) {
+      return res.status(400).json({
+        status_code: 400,
+        message: "Data is required to get recipes"
+      })
+    }
+
+    const result = await waterFtCalcService.getRecipe(id)
+
+    res.status(200).json({
+      status_code: 200,
+      recipe: result,
+      message: "Recipes fetched successfully"
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+
+
+router.post('/calc-water-footprint', async (req, res, next) => {
+  try {
+    const request: CalcWaterFootPrintReq = req.body;
+
+
+    if (!request.data || request.data.length === 0) {
+      return res.status(400).json({
+        status_code: 400,
+        message: "Data is required to calculate water footprint"
+      })
+    }
+
+    const result = await waterFtCalcService.calculateWaterFootprint(request.user_id, request.data)
+
+    res.status(200).json({
+      status_code: 200,
+      water_footprint: result,
+      message: "Water footprint calculated successfully"
+    })
+
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.get('/get-user-wft-progress', async (req, res, next) => {
   try {
 
-    const request: CalcWaterFootPrintReq = req.body
-    const result = await waterFtCalcService.calculateWaterFootprint(request)
+    const userId = req.query.userId as string
+
+
+    const result = await waterFtCalcService.getUserWftProgress(userId)
 
     res.status(200).json(
       {
         status_code: 200,
-        water_footprint: result,
+        queryResult: result,
         message: "water footprint calculated successfully"
       }
     );
   } catch (err) {
 
-    if (err instanceof Error) {
-      handleCalculateWaterFootprintRouteError(err, res)
-    }
+    next(err)
 
   }
-});
+})
+
+router.get('/get-user-wft', async (req, res, next) => {
+  try {
+
+    const userId = req.query.userId as string
 
 
-export default router;
+    const result = await waterFtCalcService.getUserWft(userId)
+
+    res.status(200).json(
+      {
+        status_code: 200,
+        user_total_waterfootprint: result,
+        message: "water footprint calculated successfully"
+      }
+    );
+  } catch (err) {
+
+    next(err)
+
+  }
+})
+
+
+export default router

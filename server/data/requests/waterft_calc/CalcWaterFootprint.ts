@@ -2,11 +2,11 @@
 export interface CalcWaterFootPrintReq {
 
     user_id: string,
-    data: IngredientReq[]
+    data: RecipeReq[]
 
 }
 
-interface IngredientReq {
-    ingredient_id: number,
+export interface RecipeReq {
+    recipe_id: string,
     amt: number
 }

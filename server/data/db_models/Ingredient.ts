@@ -3,26 +3,22 @@ import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 
 
 interface IngredientAttributes {
-    id: number
+    id: string
     name: string
     unit: string
     water_footprint: number
-    sampleImageUrl: string
+    last_updated: Date
     
 }
 
 interface IngredientCreationAttributes extends Optional<IngredientAttributes, 'id'> {}
 
 export class Ingredient extends Model<IngredientAttributes, IngredientCreationAttributes> {
-    declare id: number;
-    declare name: string;
-    declare unit: string;
-    declare water_footprint: number;
-    declare sampleImageUrl: string;
-    
-  
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    declare id: string
+    declare name: string
+    declare unit: string
+    declare water_footprint: number
+    declare last_updated: Date
   
   }
   
@@ -31,8 +27,7 @@ export class Ingredient extends Model<IngredientAttributes, IngredientCreationAt
     Ingredient.init(
         {
           id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.STRING,
             unique: true,
             primaryKey: true,
           },
@@ -49,16 +44,17 @@ export class Ingredient extends Model<IngredientAttributes, IngredientCreationAt
             type: DataTypes.DECIMAL,
             allowNull: false
           },
-          sampleImageUrl: {
-            type: DataTypes.STRING,
+          last_updated: {
+            type: DataTypes.DATE,
             allowNull: false
           }
+
           
         },
         {
           sequelize: sequelize,
-          tableName: 'ingredients',
-          timestamps: true
+          tableName: 'ripple_ingredients',
+          timestamps: false
         }
       ).sync({ alter: true })
 

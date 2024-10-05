@@ -4,29 +4,40 @@ import { TOKENS } from './tokens';
 import { AuthService } from '../services/AuthService';
 import { WaterFtCalcDAOImpl } from '../data/dao/waterft_calculator/WaterFtCalcDAOImpl';
 import { WaterftCalcService } from '../services/WaterFtCalcService';
+import { ProfileService } from '../services/ProfileService';
+import { LeaderboardService } from '../services/LeaderboardService';
 
 
 
-export const container = new Container();
+export const container = new Container()
 
 container
   .bind(TOKENS.userDao)
   .toInstance(UserDAOImpl)
-  .inTransientScope();
+  .inTransientScope()
 
-  container
+container
   .bind(TOKENS.waterFtCalculatorDao)
   .toInstance(WaterFtCalcDAOImpl)
-  .inTransientScope();
+  .inTransientScope()
 
 container
   .bind(TOKENS.authService)
   .toInstance(AuthService)
-  .inTransientScope();
+  .inTransientScope()
 
-  container
+container
   .bind(TOKENS.waterFtCalcService)
   .toInstance(WaterftCalcService)
-  .inTransientScope();
+  .inTransientScope()
 
+container
+  .bind(TOKENS.leaderboardService)
+  .toInstance(LeaderboardService)
+  .inTransientScope()
+
+container
+  .bind(TOKENS.profileService)
+  .toInstance(ProfileService)
+  .inTransientScope()
 

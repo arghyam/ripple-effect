@@ -18,7 +18,7 @@ sealed class Routes(
 
     data object AppGraph: Routes("app")
 
-    data object HomeScreen: Routes("home")
+    data object DashboardScreen: Routes("dashboard")
 
     data object QuizScreen: Routes("quiz")
 
@@ -30,6 +30,8 @@ sealed class Routes(
     data object DiscoverScreen: Routes("discover")
     data object ArticleScreen: Routes("article")
     data object PlanScreen: Routes("plan")
+    data object LeaderboardScreen: Routes("leaderboard")
     data object ProfileScreen: Routes("profile")
+    data object AddRecipeScreen: Routes("add_recipe")
 
 }

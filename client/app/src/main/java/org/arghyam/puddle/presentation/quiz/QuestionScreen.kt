@@ -82,6 +82,16 @@ fun QuestionScreen(
         else -> R.drawable.quiz_opt_3
     }
 
+    val drawableOption4Id = when (selectedOptionId) {
+        4 -> if (selectedOptionId == question.correctOptionId) {
+            R.drawable.q_opt_2_right
+        } else {
+            R.drawable.q_opt_2_wrong
+        }
+
+        else -> R.drawable.quiz_opt_2
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -274,7 +284,57 @@ fun QuestionScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(80.dp))
+
+        if (question.option4 != null) {
+            Spacer(modifier = Modifier.height(75.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    modifier = Modifier
+                        .scale(2.8f)
+                        .clickable {
+                            onSelectOption(4)
+                        },
+                    painter = painterResource(id = drawableOption4Id),
+                    contentDescription = "opt_4"
+                )
+
+                if (selectedOptionId == question.correctOptionId && selectedOptionId == 4) {
+                    Icon(
+                        modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
+                        painter = painterResource(id = R.drawable.ans_right_icon),
+                        contentDescription = "ans_right",
+                        tint = Color.Unspecified
+                    )
+                }
+
+                if (selectedOptionId != question.correctOptionId && selectedOptionId == 4) {
+                    Icon(
+                        modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
+                        painter = painterResource(id = R.drawable.ans_wrong_icon),
+                        contentDescription = "ans_right",
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Text(
+                    text = question.option4.text,
+                    style = TextStyle(
+                        color = Color6,
+                        fontFamily = openSansFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
 
         if (question.id + 1 > questionnaire.last().id) {
             Button(

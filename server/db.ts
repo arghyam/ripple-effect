@@ -1,5 +1,5 @@
-import { Dialect, Sequelize } from "sequelize";
-import * as dotenv from 'dotenv-flow';
+import { Dialect, Sequelize } from "sequelize"
+import * as dotenv from 'dotenv-flow'
 dotenv.config({ path: './' })
 
 
@@ -15,6 +15,6 @@ const sequelize = new Sequelize(String(process.env.DB_NAME), String(process.env.
               }
         }
     }
-);
+)
 
-export default sequelize;
+export default sequelize

@@ -72,10 +72,9 @@ fun DiscoverScreen(
             )
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
 
         LazyColumn(
-            modifier = Modifier.padding(horizontal = 10.dp),
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(list) {
@@ -84,6 +83,8 @@ fun DiscoverScreen(
                 Spacer(modifier = Modifier.height(30.dp))
             }
         }
+
+        Spacer(modifier = Modifier.height(400.dp))
 
 
     }
@@ -154,7 +155,7 @@ private fun DiscoverItem(
                         onNavigate(Routes.ArticleScreen.route)
                     }
                     if (discoverItem.itemType == DiscoverItemType.QUIZ) {
-                        onNavigate(Routes.QuizScreen.route + "quiz_id=${(discoverItem as QuizItem).id}")
+                        onNavigate(Routes.QuizScreen.route + "?quiz_id=${(discoverItem as QuizItem).id}")
                     }
                 },
             painter = painterResource(id = if (discoverItem.itemType == DiscoverItemType.PODCAST) R.drawable.podcast_discover_item_bg else R.drawable.discover_item_bg),

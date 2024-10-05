@@ -3,12 +3,12 @@ import { container } from '../../di/container';
 import { TOKENS } from '../../di/tokens';
 
 
-const router = express.Router();
+const router = express.Router()
 
-const leaderboardService = container.get(TOKENS.leaderboardService);
+const leaderboardService = container.get(TOKENS.leaderboardService)
 
 
-router.get('/get-leaderboard', async (req, res) => {
+router.get('/get-leaderboard', async (req, res, next) => {
     try {
         
         const userId = req.query.userId as string
@@ -17,23 +17,21 @@ router.get('/get-leaderboard', async (req, res) => {
         res.status(200).json(
             {
               status_code: 200,
-              result: result,
-              message: "rank updated successfully"
+              leaderboard: result,
+              message: "fetched leaderboard successfully"
             }
-          );
+          )
         
        
     
       } catch (err) {
         
-        if(err instanceof Error) {
-          //handlegetLeaderboardRouteError(err, res)
-        }
+        next(err)
         
       }
 })
 
-router.post('/update-rank', async (req, res) => {
+router.post('/update-rank', async (req, res, next) => {
     try {
         
         await leaderboardService.calculateAndSaveLeaderboardRank()
@@ -49,12 +47,10 @@ router.post('/update-rank', async (req, res) => {
     
       } catch (err) {
         
-        if(err instanceof Error) {
-          //handleresetPasswordRouteError(err, res)
-        }
+        next(err)
         
       }
 })
 
-export default router;
+export default router
 

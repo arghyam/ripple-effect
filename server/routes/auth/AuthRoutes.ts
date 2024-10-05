@@ -7,10 +7,8 @@ import { ResetPasswordReq } from '../../data/requests/auth/ResetPasswordReq';
 import { VerifyOTPReq } from '../../data/requests/auth/VerifyOTPReq';
 import { container } from '../../di/container';
 import { TOKENS } from '../../di/tokens';
-import { InvalidUserCredentials } from '../../utils/errors/ErrorCodes';
-import { handleRegisterRouteError, handleLoginRouteError, handleGentOTPRouteError, handleVerifyOTPRouteError, handleresetPasswordRouteError } from './errorhandling/ErrorResponses';
-import { AuthError } from '../../utils/errors/ErrorUtils';
-import jwt from 'jsonwebtoken';
+import { AuthError } from '../../utils/errors/AuthError';
+
 
 
 
@@ -20,11 +18,11 @@ const authService = container.get(TOKENS.authService);
 
 
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new AuthError("please enter correct format of details", InvalidUserCredentials)
+      throw new AuthError("please enter correct format of details", 'InvalidUserCredentials')
     }
     const userData: RegisterUserReq = req.body;
     const userResData = await authService.registerUser(userData)
@@ -42,18 +40,16 @@ router.post('/register', async (req, res) => {
     )
 
   } catch (err) {
-  
-    if(err instanceof Error) {
-      handleRegisterRouteError(err, res);
-    }
+
+    next(err)
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new AuthError("please enter correct format of details", InvalidUserCredentials)
+      throw new AuthError("please enter correct format of details", 'InvalidUserCredentials')
     }
 
     const userData: LoginUserReq = req.body;
@@ -72,14 +68,12 @@ router.post('/login', async (req, res) => {
     );
 
   } catch (err) {
-    
-    if(err instanceof Error) {
-      handleLoginRouteError(err, res);
-    }
+
+    next(err)
   }
 });
 
-router.post('/generate-otp', async (req, res) => {
+router.post('/generate-otp', async (req, res, next) => {
 
 
   try {
@@ -87,7 +81,7 @@ router.post('/generate-otp', async (req, res) => {
     const emailData: GenerateOTPReq = req.body
 
     const timestamp = await authService.generateForgotPasswordOTP(emailData.email)
-  
+
 
     res.status(200).json(
       {
@@ -98,21 +92,19 @@ router.post('/generate-otp', async (req, res) => {
     );
 
   } catch (err) {
-    
-    if(err instanceof Error) {
-      handleGentOTPRouteError(err, res);
-    }
+
+    next(err)
   }
 });
 
 
-router.post('/verify-otp', async (req, res) => {
+router.post('/verify-otp', async (req, res, next) => {
 
   try {
 
     const verifyOtpReq: VerifyOTPReq = req.body
 
-    const result = await authService.verifyOtp(verifyOtpReq.otp,verifyOtpReq.email, verifyOtpReq.created_on)
+    const result = await authService.verifyOtp(verifyOtpReq.otp, verifyOtpReq.email, verifyOtpReq.created_on)
 
     res.status(200).json(
       {
@@ -123,9 +115,7 @@ router.post('/verify-otp', async (req, res) => {
     );
 
   } catch (err) {
-    if(err instanceof Error) {
-      handleVerifyOTPRouteError(err, res);
-    }
+    next(err)
   }
 
 });
@@ -133,12 +123,12 @@ router.post('/verify-otp', async (req, res) => {
 const validateAuthorization = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
 
-  
+
   if (!authHeader) {
     return res.status(401).json({ message: 'Unauthorized: Missing authorization header' });
   }
 
- 
+
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
     return res.status(401).json({ message: 'Unauthorized: Invalid authorization format' });
@@ -148,38 +138,30 @@ const validateAuthorization = (req: express.Request, res: express.Response, next
 
 
   try {
-    
+
     next();
-  
+
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).json({ message: 'Unauthorized: Token expired' });
-    } else if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token signature' });
-    } else { 
-      
-      return res.status(500).json({ message: 'Internal Server Error' }); 
-    }
-    
+    next(error);
+
   }
 
-   
+
 }
 
 
-router.post('/reset-password', validateAuthorization, async (req, res) => {
+router.post('/reset-password', validateAuthorization, async (req, res, next) => {
 
   try {
     const reqest: ResetPasswordReq = req.body
 
-    
-
     const result = await authService.resetPassword(reqest.new_password, reqest.email)
 
-    if(result) {
+    if (result) {
       res.status(200).json(
         {
           status_code: 200,
+          reset_pwd_updated: true,
           message: "password reset successfully"
         }
       );
@@ -187,21 +169,20 @@ router.post('/reset-password', validateAuthorization, async (req, res) => {
       res.status(200).json(
         {
           status_code: 200,
+          reset_pwd_updated: false,
           message: "password reset failed"
         }
       );
     }
-    
-   
+
+
 
   } catch (err) {
-    
-    if(err instanceof Error) {
-      handleresetPasswordRouteError(err, res)
-    }
-    
+
+    next(err)
+
   }
-    
+
 })
 
 

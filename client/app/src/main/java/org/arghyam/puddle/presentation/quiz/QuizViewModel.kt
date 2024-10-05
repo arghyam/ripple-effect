@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.arghyam.puddle.domain.models.Quiz
-import org.arghyam.puddle.domain.models.quiz
+import org.arghyam.puddle.domain.models.quizList
 
 
 class QuizViewModel: ViewModel() {
@@ -40,11 +40,10 @@ class QuizViewModel: ViewModel() {
 
             is QuizEvent.FetchQuiz -> {
                 val quizId = event.quizId
-                if (quiz.id == quizId) {
-                    mQuiz = quiz
-                    _currentQuestionState.update {
-                        it.copy(currentQuestion = mQuiz!!.questionnaire[0])
-                    }
+
+                mQuiz = quizList.first { it.id == quizId }
+                _currentQuestionState.update {
+                    it.copy(currentQuestion = mQuiz!!.questionnaire[0])
                 }
 
 
@@ -69,7 +68,7 @@ class QuizViewModel: ViewModel() {
             is QuizEvent.ShowQuizResult -> {
                 shouldShowResult = true
             }
-            else -> Unit
+
 
         }
     }

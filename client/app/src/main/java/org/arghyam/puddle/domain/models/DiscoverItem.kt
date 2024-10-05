@@ -38,7 +38,7 @@ val list = listOf(
     QuizItem(
         itemId = 5,
         itemType = DiscoverItemType.QUIZ,
-        id = "quiz_1",
+        id = "quiz_2",
         title = "How much do you know about the water crisis?"
     ),
     News(

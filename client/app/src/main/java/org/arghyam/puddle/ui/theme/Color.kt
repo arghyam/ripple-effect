@@ -29,3 +29,5 @@ val ColorL5 = Color(0XFFE3DAF8)
 val ColorL6 = Color(0XFFEEF9BF)
 
 val ColorL7 = Color(0XFF638FC5)
+
+val graphLineColor = Color(0XFF3A3A3A)

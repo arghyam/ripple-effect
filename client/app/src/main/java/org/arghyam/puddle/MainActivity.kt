@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import org.arghyam.puddle.navigation.RootNavGraph
 import org.arghyam.puddle.navigation.Routes
+import org.arghyam.puddle.ui.theme.Color1
 import org.arghyam.puddle.ui.theme.PuddleTheme
 import org.koin.android.ext.android.inject
 
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color1
                 ) {
                     RootNavGraph(startDestination = if (!existingUserId.isNullOrBlank()) Routes.AppGraph.route else Routes.Login.route)
                 }

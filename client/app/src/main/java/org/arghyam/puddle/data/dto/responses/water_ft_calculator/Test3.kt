@@ -1,7 +1,6 @@
 package org.arghyam.puddle.data.dto.responses.water_ft_calculator
 
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
@@ -41,9 +40,7 @@ fun LayoutOne(
             }
         }
 
-        maxHeight += 20
-
-        Log.d("MAXHEIGHT IS", "this is a $maxHeight")
+        maxHeight += 100
 
         layout(width, maxHeight) {
 

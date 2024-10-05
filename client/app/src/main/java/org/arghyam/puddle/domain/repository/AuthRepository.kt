@@ -1,7 +1,7 @@
 package org.arghyam.puddle.domain.repository
 
-import org.arghyam.puddle.data.dto.requests.SignInRequest
-import org.arghyam.puddle.data.dto.requests.SignUpRequest
+import org.arghyam.puddle.data.dto.requests.auth.SignInRequest
+import org.arghyam.puddle.data.dto.requests.auth.SignUpRequest
 import org.arghyam.puddle.data.dto.responses.SendForgotPwdOtpRes
 import org.arghyam.puddle.domain.models.DataError
 import org.arghyam.puddle.domain.models.Result

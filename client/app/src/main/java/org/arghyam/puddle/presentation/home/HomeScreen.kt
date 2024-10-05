@@ -29,189 +29,189 @@ import androidx.constraintlayout.compose.ConstraintSet
 import org.arghyam.puddle.R
 import org.arghyam.puddle.ui.theme.puddleFontFamily
 
-@Preview(showSystemUi = true)
-@Composable
-fun HomeScreen() {
-
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0XFF00072D))
-    ) {
-        val constraints = if (minWidth < 600.dp) {
-            decoupledConstraints(margin = 16.dp) // Portrait constraints
-        } else {
-            decoupledConstraints(margin = 32.dp) // Landscape constraints
-        }
-
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize(),
-            constraintSet = constraints
-        ) {
-
-            Text(
-                modifier = Modifier
-                    .layoutId(HelloText),
-                text = "Hello!",
-                style = TextStyle(
-                    color = Color(0XFFEEF9BF),
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.W800,
-                    fontFamily = puddleFontFamily,
-                    lineHeight = 35.2.sp
-                )
-            )
-            Box(
-                modifier = Modifier
-                    .width(180.dp)
-                    .height(220.dp)
-                    .layoutId(CalculatorRef),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(id = R.drawable.v1),
-                    contentDescription = "test v1"
-                )
-
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier.size(150.dp),
-                        painter = painterResource(id = R.drawable.v1_icon),
-                        contentDescription = "test v1"
-                    )
-                    Text(
-                        modifier = Modifier.offset(y = -15.dp),
-                        text = "Calculate",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 18.sp
-                        )
-                    )
-                }
-
-
-            }
-
-            Box(
-                modifier = Modifier
-                    .width(190.dp)
-                    .height(220.dp)
-                    .layoutId(PlanRef),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(id = R.drawable.v2),
-                    contentDescription = "test v2"
-                )
-
-                Column(
-                    modifier = Modifier.fillMaxSize().offset(x = 10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier.size(120.dp),
-                        painter = painterResource(id = R.drawable.v2_icon),
-                        contentDescription = "test v2"
-                    )
-                    Text(
-                        modifier = Modifier.offset(y = -15.dp),
-                        text = "Plan",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 18.sp
-                        )
-                    )
-                }
-
-
-            }
-
-            Box(
-                modifier = Modifier
-                    .width(190.dp)
-                    .height(220.dp)
-                    .layoutId(DiscoverRef),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(id = R.drawable.v3),
-                    contentDescription = "test v3"
-                )
-
-                Column(
-                    modifier = Modifier.fillMaxSize().offset(x = -10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier.size(120.dp),
-                        painter = painterResource(id = R.drawable.v3_icon),
-                        contentDescription = "test v3"
-                    )
-                    Text(
-                        modifier = Modifier.offset(y = -15.dp),
-                        text = "Discover",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 18.sp
-                        )
-                    )
-                }
-
-
-            }
-
-            Box(
-                modifier = Modifier
-                    .width(190.dp)
-                    .height(220.dp)
-                    .layoutId(ProfileRef),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(id = R.drawable.v4),
-                    contentDescription = "test v4"
-                )
-
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        modifier = Modifier.size(120.dp),
-                        painter = painterResource(id = R.drawable.v4_icon),
-                        contentDescription = "test v4"
-                    )
-                    Text(
-                        modifier = Modifier.offset(y = -15.dp),
-                        text = "Profile",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 18.sp
-                        )
-                    )
-                }
-
-
-            }
-
-
-        }
-    }
-
-
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun HomeScreen() {
+//
+//    BoxWithConstraints(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color(0XFF00072D))
+//    ) {
+//        val constraints = if (minWidth < 600.dp) {
+//            decoupledConstraints(margin = 16.dp) // Portrait constraints
+//        } else {
+//            decoupledConstraints(margin = 32.dp) // Landscape constraints
+//        }
+//
+//        ConstraintLayout(
+//            modifier = Modifier
+//                .fillMaxSize(),
+//            constraintSet = constraints
+//        ) {
+//
+//            Text(
+//                modifier = Modifier
+//                    .layoutId(HelloText),
+//                text = "Hello!",
+//                style = TextStyle(
+//                    color = Color(0XFFEEF9BF),
+//                    fontSize = 32.sp,
+//                    fontWeight = FontWeight.W800,
+//                    fontFamily = puddleFontFamily,
+//                    lineHeight = 35.2.sp
+//                )
+//            )
+//            Box(
+//                modifier = Modifier
+//                    .width(180.dp)
+//                    .height(220.dp)
+//                    .layoutId(CalculatorRef),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Image(
+//                    modifier = Modifier.fillMaxSize(),
+//                    painter = painterResource(id = R.drawable.v1),
+//                    contentDescription = "test v1"
+//                )
+//
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Image(
+//                        modifier = Modifier.size(150.dp),
+//                        painter = painterResource(id = R.drawable.v1_icon),
+//                        contentDescription = "test v1"
+//                    )
+//                    Text(
+//                        modifier = Modifier.offset(y = -15.dp),
+//                        text = "Calculate",
+//                        style = TextStyle(
+//                            color = Color.White,
+//                            fontSize = 18.sp
+//                        )
+//                    )
+//                }
+//
+//
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .width(190.dp)
+//                    .height(220.dp)
+//                    .layoutId(PlanRef),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Image(
+//                    modifier = Modifier.fillMaxSize(),
+//                    painter = painterResource(id = R.drawable.v2),
+//                    contentDescription = "test v2"
+//                )
+//
+//                Column(
+//                    modifier = Modifier.fillMaxSize().offset(x = 10.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Image(
+//                        modifier = Modifier.size(120.dp),
+//                        painter = painterResource(id = R.drawable.v2_icon),
+//                        contentDescription = "test v2"
+//                    )
+//                    Text(
+//                        modifier = Modifier.offset(y = -15.dp),
+//                        text = "Plan",
+//                        style = TextStyle(
+//                            color = Color.White,
+//                            fontSize = 18.sp
+//                        )
+//                    )
+//                }
+//
+//
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .width(190.dp)
+//                    .height(220.dp)
+//                    .layoutId(DiscoverRef),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Image(
+//                    modifier = Modifier.fillMaxSize(),
+//                    painter = painterResource(id = R.drawable.v3),
+//                    contentDescription = "test v3"
+//                )
+//
+//                Column(
+//                    modifier = Modifier.fillMaxSize().offset(x = -10.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Image(
+//                        modifier = Modifier.size(120.dp),
+//                        painter = painterResource(id = R.drawable.v3_icon),
+//                        contentDescription = "test v3"
+//                    )
+//                    Text(
+//                        modifier = Modifier.offset(y = -15.dp),
+//                        text = "Discover",
+//                        style = TextStyle(
+//                            color = Color.White,
+//                            fontSize = 18.sp
+//                        )
+//                    )
+//                }
+//
+//
+//            }
+//
+//            Box(
+//                modifier = Modifier
+//                    .width(190.dp)
+//                    .height(220.dp)
+//                    .layoutId(ProfileRef),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Image(
+//                    modifier = Modifier.fillMaxSize(),
+//                    painter = painterResource(id = R.drawable.v4),
+//                    contentDescription = "test v4"
+//                )
+//
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Image(
+//                        modifier = Modifier.size(120.dp),
+//                        painter = painterResource(id = R.drawable.v4_icon),
+//                        contentDescription = "test v4"
+//                    )
+//                    Text(
+//                        modifier = Modifier.offset(y = -15.dp),
+//                        text = "Profile",
+//                        style = TextStyle(
+//                            color = Color.White,
+//                            fontSize = 18.sp
+//                        )
+//                    )
+//                }
+//
+//
+//            }
+//
+//
+//        }
+//    }
+//
+//
+//}
 
 private fun decoupledConstraints(
     margin: Dp

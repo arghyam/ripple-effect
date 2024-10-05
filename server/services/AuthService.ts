@@ -10,10 +10,9 @@ import Nodemailer from 'nodemailer';
 import OtpGenerator from 'otp-generator';
 import { VerifyOtpResData } from '../data/responses/auth/VerifyOtpResData';
 import { RegisterUserData } from '../domain/models/RegisterUserData';
-import { ForgotPasswordEmailNotSent, InvalidOTPCredentials, InvalidResetPasswordToken, InvalidUserCredentials, OTPValidityExpired, ResetPasswordTokenExpired } from '../utils/errors/ErrorCodes';
 import { User } from '../data/db_models/User';
-import { AuthError } from '../utils/errors/ErrorUtils';
 import * as dotenv from 'dotenv-flow';
+import { AuthError } from '../utils/errors/AuthError';
 dotenv.config({ path: './' })
 
 
@@ -21,17 +20,18 @@ dotenv.config({ path: './' })
 
 export class AuthService {
 
-    
+
     constructor(private readonly userDAO: UserDAO) { }
 
     async registerUser(userData: RegisterUserReq): Promise<User> {
 
-        const salt = bcrypt.genSaltSync(10);
+        const salt = bcrypt.genSaltSync(10)
         const hashedPassword = bcrypt.hashSync(userData.password, salt);
 
         const userdata: RegisterUserData = {
             name: userData.name,
             email: userData.email,
+            photo_url: userData.photo_url,
             password_hash: hashedPassword
         };
         const insertedUser = await this.userDAO.insertUser(userdata)
@@ -48,13 +48,13 @@ export class AuthService {
         const isMatch = bcrypt.compareSync(userData.password, user.password_hash);
 
         if (!isMatch) {
-            throw new AuthError("user with provided credential doesn't exist", InvalidUserCredentials)
+            throw new AuthError("user with provided credential doesn't exist", 'InvalidUserCredentials')
         }
 
-        
+
         const secret = String(process.env.JWT_SECRET)
         const payload = { user: { email: user.email, id: user.id } };
-        const token = jwt.sign(payload, secret, { expiresIn: '3600s' }); 
+        const token = jwt.sign(payload, secret, { expiresIn: '3600s' });
 
         const loginUserResData: LoginUserResData = {
             access_token: token,
@@ -93,39 +93,46 @@ export class AuthService {
             } as Nodemailer.TransportOptions
         );
 
-        const mailOptions = {
-            from: String(process.env.NODEMAILER_SENDER_MAIL),
-            to: email,
-            subject: 'Forgot password otp for Puddle App',
-            text: 'your forgot password otp is: ' + otp,
+
+
+        const sendMail = async () => {
+            try {
+                const mailOptions = {
+                    from: String(process.env.NODEMAILER_SENDER_MAIL),
+                    to: email,
+                    subject: 'Forgot password otp for Puddle App',
+                    text: 'your forgot password otp is: ' + otp,
+                };
+                const info = await transporter.sendMail(mailOptions);
+
+                console.log('Message sent: %s', info);
+            } catch (error) {
+                console.error('Error sending email:', error);
+            }
         };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error(error);
-                throw new AuthError("we're facing an issue to send an email: " + error.message, ForgotPasswordEmailNotSent);
-            
-
-            } else {
-                console.log('Email sent: %s', info);
-
-            }
-        });
+        sendMail().then(() => {
+            console.log('Email sent successfully.');
+        }).catch(console.error);
 
         return insertedOtp.generated_at
     }
 
     async verifyOtp(otp: string, email: string, timestamp: number): Promise<VerifyOtpResData> {
 
-    
+
 
         const otpRow = await this.userDAO.getOtp(email, timestamp)
 
 
-        const isMatch = bcrypt.compareSync(otp, otpRow.otp_hash);
+        try {
+            const isMatch = bcrypt.compareSync(otp, otpRow.otp_hash);
 
-        if (!isMatch) {
-            throw new AuthError("please enter valid otp", InvalidOTPCredentials)
+            if (!isMatch) {
+                throw new AuthError("please enter valid otp", 'InvalidOTPCredentials')
+            }
+        } catch (error) {
+            throw error
         }
 
         const now = new Date();
@@ -133,7 +140,7 @@ export class AuthService {
 
 
         if (otpRow.generated_at < fiveMinutesAgo) {
-            throw new AuthError("otp has been expired", OTPValidityExpired)
+            throw new AuthError("otp has been expired", 'OTPValidityExpired')
         }
 
         const secret = String(process.env.JWT_SECRET)
@@ -149,7 +156,7 @@ export class AuthService {
 
 
     async resetPassword(newPassword: string, email: string): Promise<Boolean> {
-        
+
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(newPassword, salt);
 

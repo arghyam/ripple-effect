@@ -1,11 +1,11 @@
 package org.arghyam.puddle.data.repoImpl
 
 import android.content.SharedPreferences
-import org.arghyam.puddle.data.dto.requests.ResetPwdReq
-import org.arghyam.puddle.data.dto.requests.SendForgotPwdOTPReq
-import org.arghyam.puddle.data.dto.requests.SignInRequest
-import org.arghyam.puddle.data.dto.requests.SignUpRequest
-import org.arghyam.puddle.data.dto.requests.VerifyForgotPwdOTPReq
+import org.arghyam.puddle.data.dto.requests.auth.ResetPwdReq
+import org.arghyam.puddle.data.dto.requests.auth.SendForgotPwdOTPReq
+import org.arghyam.puddle.data.dto.requests.auth.SignInRequest
+import org.arghyam.puddle.data.dto.requests.auth.SignUpRequest
+import org.arghyam.puddle.data.dto.requests.auth.VerifyForgotPwdOTPReq
 import org.arghyam.puddle.data.dto.responses.ResetPasswordResponse
 import org.arghyam.puddle.data.dto.responses.SendForgotPwdOtpRes
 import org.arghyam.puddle.data.dto.responses.VerifyForgotPasswordOtpResponse
