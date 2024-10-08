@@ -1,17 +1,25 @@
-import PropTypes from 'prop-types';
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 import RecipeCard from "./RecipeCard";
-import { useEffect, useState } from 'react';
+import { useEffect, useState,RefCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Recipe } from "../../screens/CalculateScreen";
 
-const RecipeGrid = ({ recipes, updateRecipeQuantity, lastRecipeElementRef }) => {
+
+
+interface RecipeGridProps {
+  recipes: Recipe[];
+  updateRecipeQuantity: (id: string, quantity: number) => void;
+  lastRecipeElementRef: RefCallback<HTMLDivElement>;
+}
+
+const RecipeGrid: React.FC<RecipeGridProps> = ({ recipes, updateRecipeQuantity, lastRecipeElementRef }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (recipes.length > 0) {
+      console.log('new recipegrid items', recipes);
       setLoading(false);
     }
-
   }, [recipes]);
 
   return (
@@ -42,17 +50,6 @@ const RecipeGrid = ({ recipes, updateRecipeQuantity, lastRecipeElementRef }) => 
       )}
     </Container>
   );
-};
-
-RecipeGrid.propTypes = {
-  recipes: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      // Add other recipe properties here
-    })
-  ).isRequired,
-  updateRecipeQuantity: PropTypes.func.isRequired,
-  lastRecipeElementRef: PropTypes.func.isRequired, // Add this prop type
 };
 
 export default RecipeGrid;

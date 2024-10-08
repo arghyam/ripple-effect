@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CSSProperties } from 'react';
 import { registerUser } from '../api/authApiService';
 
-const RegisterForm = () => {
-  const [name, setname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const RegisterForm: React.FC = () => {
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const userDetails = {
@@ -17,14 +18,11 @@ const RegisterForm = () => {
         password: password,
       };
       const response = await registerUser(userDetails);
-      
       alert(response.message);
       navigate('/login');
     } catch (error) {
-      
-      alert('Failed to login. Please check your credentials.');
+      alert('Failed to register. Please check your details.');
     }
-    
   };
 
   return (
@@ -37,7 +35,7 @@ const RegisterForm = () => {
             type="text"
             id="name"
             value={name}
-            onChange={(e) => setname(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
             style={styles.input}
             required
           />
@@ -48,7 +46,7 @@ const RegisterForm = () => {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             style={styles.input}
             required
           />
@@ -59,7 +57,7 @@ const RegisterForm = () => {
             type="password"
             id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             style={styles.input}
             required
           />
@@ -73,7 +71,7 @@ const RegisterForm = () => {
   );
 };
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     display: 'flex',
     justifyContent: 'center',

@@ -1,8 +1,17 @@
+import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import WFTBGImg from './wft_text_bg.png';
 
-const WaterFootprintResultDialog = ({ open, handleClose, footprint, handleShare, handleReset }) => {
+interface WaterFootprintResultDialogProps {
+  open: boolean;
+  handleClose: () => void;
+  footprint: number;
+  handleShare: () => void;
+  handleReset: () => void;
+}
+
+const WaterFootprintResultDialog: React.FC<WaterFootprintResultDialogProps> = ({ open, handleClose, footprint, handleShare, handleReset }) => {
   return (
     <Dialog open={open} onClose={handleClose} PaperProps={{
       sx: {
@@ -36,7 +45,7 @@ const WaterFootprintResultDialog = ({ open, handleClose, footprint, handleShare,
               transform: 'translate(-50%, -50%)',
             }}
           >
-            {parseInt(footprint, 10)} litres
+            {Math.floor(footprint)} litres
           </Typography>
         </div>
         <Typography variant="body1" align="center" style={{
@@ -55,4 +64,3 @@ const WaterFootprintResultDialog = ({ open, handleClose, footprint, handleShare,
 };
 
 export default WaterFootprintResultDialog;
-

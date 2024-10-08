@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {CSSProperties, useEffect, useRef, useState } from 'react';
 import BarChart from '../components/Barchart';
 import WFTBG from '../components/wft_calculator/wft_text_bg.png'
 import { FaShareAlt } from 'react-icons/fa';
@@ -6,36 +6,39 @@ import { getUserTotalWft, getUserWftProgress } from '../api/apiService';
 import { Modal, ModalBody, ModalFooter, ModalTitle } from 'react-bootstrap';
 import html2canvas from 'html2canvas';
 import axios from 'axios';
-import { display } from '@mui/system';
+import styled from 'styled-components';
 
 
+interface DayWft {
+  dayName: string;
+  water_footprint: number;
+}
+
+interface Platform {
+  url: string;
+}
 
 const DashboardScreen = () => {
-  const [dayWfts, setDayWfts] = useState([]);
-
-  const [mTotalWft, setMTotalWft] = useState('');
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  const [chartImage, setChartImage] = useState('');
-  const chartRef = useRef(null);
-  const shareButtonRef = useRef(null);
-  const [shortenedUrl, setShortenedUrl] = useState('');
-  const [isMobile, setIsMobile] = useState(window.innerWidth);
+  const [dayWfts, setDayWfts] = useState<DayWft[]>([]);
+  const [mTotalWft, setMTotalWft] = useState<number>(0);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [chartImage, setChartImage] = useState<string>('');
+  const chartRef = useRef<HTMLDivElement | null>(null);
+  const shareButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [shortenedUrl, setShortenedUrl] = useState<string>('');
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 760);
 
 
-  const fetchDayWfts = async (userId) => {
+  const fetchDayWfts = async (userId: string) => {
     try {
-
       const response = await getUserWftProgress(userId);
       setDayWfts(response.queryResult);
     } catch (error) {
       setDayWfts([]);
-      
     }
-
   };
 
-  const getmTotalWft = async (userId) => {
+  const getmTotalWft = async (userId: string) => {
     try {
       
       const response = await getUserTotalWft(userId);
@@ -55,16 +58,12 @@ const DashboardScreen = () => {
 
   
   useEffect(() => {
-    
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    const userInfo: { id: string } | null = JSON.parse(localStorage.getItem('userInfo') || 'null');
     if (userInfo && userInfo.id) {
       const userId = userInfo.id;
       fetchDayWfts(userId);
       getmTotalWft(userId);
-
     }
-    
-
   }, []);
 
   useEffect(() => {
@@ -76,12 +75,12 @@ const DashboardScreen = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [])
 
 
-  const shortenUrl = async (longUrl) => {
+  const shortenUrl = async (longUrl: string) => {
     try {
-      const response = await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+      const response = await axios.get<string>(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
       setShortenedUrl(response.data);
     } catch (error) {
       
@@ -90,22 +89,18 @@ const DashboardScreen = () => {
 
 
   const generateChartImage = () => {
-   
     // Temporarily hide the share button
     if (shareButtonRef.current) {
       shareButtonRef.current.style.display = 'none';
     }
+
     if (chartRef.current) {
-      
+      chartRef.current.style.paddingLeft = '20px'
       html2canvas(chartRef.current, {
-        backgroundColor: '#00072D', 
-        paddingLeft: 20, 
-        width: chartRef.current.clientWidth + 20, 
-        height: chartRef.current.clientHeight + 100
-      }).then(canvas => {
-        
-        
-        
+        backgroundColor: '#00072D',
+        width: chartRef.current.clientWidth + 20,
+        height: chartRef.current.clientHeight + 100,
+      }).then((canvas) => {
         const imageUrl = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.href = imageUrl;
@@ -114,25 +109,24 @@ const DashboardScreen = () => {
         link.click();
         document.body.removeChild(link);
         console.log('Image saved locally.');
-
+  
         // Restore the share button
         if (shareButtonRef.current) {
           shareButtonRef.current.style.display = '';
         }
-        // console.log(`generate chart excuc start 2`)
-        // const imageUrl = canvas.toDataURL('image/png');
-        // setChartImage(imageUrl);
-        // shortenUrl(imageUrl);
-        // console.log(`generated chart url ${shortenedUrl}`)
-        // setModalIsOpen(true);
+        setChartImage(imageUrl);
+        shortenUrl(imageUrl);
+        setModalIsOpen(true);
       });
     }
   };
-
-  const shareWaterFootprint = (platform, imageUrl) => {
+  
+ 
+  
+  const shareWaterFootprint = (platform: Platform, imageUrl: string) => {
     const url = `${platform.url}${encodeURIComponent(imageUrl)}`;
-    window.open(url, '_blank');
-  };
+    window.open(url, '_blank')
+  }
 
 
   const labels = dayWfts.map(day => day.dayName);
@@ -162,10 +156,11 @@ const DashboardScreen = () => {
   };
 
   return (
+    <StyledDashboard>
     <div style={styles.container}>
       <h2 style={styles.title}>Track Weekly water footprint progress</h2>
-      <div style={styles.content} ref={chartRef}>
-        <div style={styles.chartContainer}>
+      <div style={{ ...styles.content, flexDirection: isMobile ? 'column' : 'row', height:  isMobile ? '800px' : '300px' }} ref={chartRef}>
+        <div style={{...styles.chartContainer, height: isMobile ? '300px' : '300px'}}>
           <BarChart data={data} options={options} />
         </div>
         <div style={styles.infoContainer}>
@@ -199,11 +194,30 @@ const DashboardScreen = () => {
         </ModalFooter>
       </Modal>
     </div>
+    </StyledDashboard>
   );
     
 };
-const isMobile = window.innerWidth <= 600
-const styles = {
+
+const StyledDashboard = styled.nav`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  color: white;
+  flex-wrap: wrap;
+
+  @media (max-width: 760px)': {
+      content: {
+        flexDirection: 'column',
+        
+      
+      },
+    }
+`;
+
+
+const styles: { [key: string]: CSSProperties } = {
   container: {
     width: '100%',
     textAlign: 'center',
@@ -218,19 +232,17 @@ const styles = {
   },
   content: {
     display: 'flex',
-    flexDirection: isMobile ? 'column' : 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: '100px',
     paddingTop: '100px',
     width: '100%',
-    height:  isMobile ? '800px' : '300px',
     
   },
   chartContainer: {
     width: '100%',
     maxWidth: '600px',
-    height: isMobile ? '300px' : '300px',
+    
   },
   infoContainer: {
     display: 'flex',
@@ -277,14 +289,7 @@ const styles = {
   socialMediaOption: {
     cursor: 'pointer',
     margin: '10px 0',
-  },
-  '@media (max-width: 760px)': {
-      content: {
-        flexDirection: 'column',
-        
-      
-      },
-    },
+  }
     
 };
 

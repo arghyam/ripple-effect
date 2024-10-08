@@ -9,7 +9,7 @@ import ForgotPasswordForm from './components/ForgotPasswordForm';
 import PrivateRoute from './components/PrivateRoute';
 import NotAvailable from './components/NotAvailable';
 
-const AppContent = () => {
+const AppContent: React.FC = () => {
   const location = useLocation();
   const hideNavbarRoutes = ['/login', '/register', '/forgot-password'];
 
@@ -17,7 +17,7 @@ const AppContent = () => {
     <div style={{ paddingRight: 20, paddingLeft: 20 }}>
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <div style={{ width: '80%', margin: '0 auto' }}>
-      <Routes>
+        <Routes>
           <Route path="/login" element={<LoginForm />} />
           <Route path="/forgot-password" element={<ForgotPasswordForm />} />
           <Route path="/register" element={<RegisterForm />} />
@@ -26,13 +26,12 @@ const AppContent = () => {
           <Route path="/leaderboard" element={<PrivateRoute element={NotAvailable} />} />
           <Route path="/discover" element={<PrivateRoute element={NotAvailable} />} />
         </Routes>
-
       </div>
     </div>
   );
 };
 
-const App = () => (
+const App: React.FC = () => (
   <Router>
     <AppContent />
   </Router>

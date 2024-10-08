@@ -5,6 +5,7 @@ export interface IngredientData2 {
   name: string;
   unit: string;
   quantity: string;
+  
 }
 
 interface RecipeAttributes {
@@ -13,6 +14,7 @@ interface RecipeAttributes {
   unit: string;
   water_footprint: number;
   ingredients: IngredientData2[];
+  thumbnail_url: string;
 
 }
 
@@ -24,6 +26,7 @@ export class Recipe extends Model<RecipeAttributes, RecipeCreationAttributes> {
   declare unit: string;
   declare water_footprint: number;
   declare ingredients: IngredientData2[];
+  declare thumbnail_url: string;
   
 
   public readonly createdAt!: Date;
@@ -53,6 +56,10 @@ export function initRecipe(sequelize: Sequelize) {
       ingredients: {
         type: DataTypes.JSON,
         allowNull: false,
+      },
+      thumbnail_url: {
+        type: DataTypes.STRING,
+        allowNull: true,
       }
     },
     {

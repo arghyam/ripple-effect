@@ -1,7 +1,8 @@
 import React from 'react';
+import { CSSProperties } from 'react';
 
-const NotAvailable = () => {
-  const styles = {
+const NotAvailable: React.FC = () => {
+  const styles: { [key: string]: CSSProperties } = {
     container: {
       display: 'flex',
       justifyContent: 'center',
@@ -18,7 +19,7 @@ const NotAvailable = () => {
     svg: {
       width: '150px',
       height: '150px',
-      fill: '#F2DFA4', // Light yellow color
+      fill: '#F2DFA4'
     },
   };
 

@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/authApiService';
+import { CSSProperties } from 'react';
 
-const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+const LoginForm: React.FC = () => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const userDetails = {
@@ -19,22 +20,18 @@ const LoginForm = () => {
       const response = await loginUser(userDetails);
       
       alert(response.message);
-     if(response.access_token != null) {
-      localStorage.setItem('userInfo', JSON.stringify(response.user_info));
-      navigate('/');
-     }
-      
-    } catch (error) {
-     
+      if (response.access_token != null) {
+        localStorage.setItem('userInfo', JSON.stringify(response.user_info));
+        navigate('/');
+      }
+    } catch (error: any) {
       if (error.response && error.response.data && error.response.data.message) {
         setError(error.response.data.message);
       } else {
         setError('Failed to login. Please try again.');
       }
-      
     }
-  }
-  
+  };
 
   return (
     <div style={styles.container}>
@@ -48,7 +45,7 @@ const LoginForm = () => {
             type="text"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             style={styles.input}
             required
           />
@@ -59,7 +56,7 @@ const LoginForm = () => {
             type="password"
             id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             style={styles.input}
             required
           />
@@ -77,7 +74,7 @@ const LoginForm = () => {
   );
 };
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     display: 'flex',
     justifyContent: 'center',
