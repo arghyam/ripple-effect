@@ -1,8 +1,6 @@
 package org.arghyam.puddle.utils
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
@@ -16,20 +14,21 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 //OKHTTP Engine
-@RequiresApi(Build.VERSION_CODES.O)
+
 val ktorOKHTTPClient = HttpClient(OkHttp) {
     //Engine Configuration
     engine {
-        // this: OkHttpConfig
+
         config {
-            // this: OkHttpClient.Builder
+
             followRedirects(true)
-            connectTimeout(Duration.ofMillis(30000L))
-            //addInterceptor()
-            //addNetworkInterceptor()
+
+            readTimeout(30000L, TimeUnit.MILLISECONDS)
+            connectTimeout(30000L, TimeUnit.MILLISECONDS)
+
 
         }
 

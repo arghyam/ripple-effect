@@ -1,11 +1,11 @@
 
 
 export interface IngredientRes {
+  id: string
   itemNo: number
   name: string
   unit: string
   water_footprint: number
-  sampleImageUrl: string
   unselectedBgImageUrl: string
   selectedBgImageUrl: string
   sampleImageSize: number

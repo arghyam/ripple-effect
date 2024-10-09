@@ -1,12 +1,12 @@
-import { Dialect, Sequelize } from "sequelize";
-import * as dotenv from 'dotenv-flow';
-dotenv.config({ path: '../' })
+import { Dialect, Sequelize } from "sequelize"
+import * as dotenv from 'dotenv-flow'
+dotenv.config({ path: './' })
 
 
 const sequelize = new Sequelize(String(process.env.DB_NAME), String(process.env.DB_USERNAME), String(process.env.DB_PASSWORD),{
         host: String(process.env.DB_HOST),
         port: Number(process.env.DB_PORT),
-        dialect: process.env.DB_DIALECT as Dialect,
+        dialect: "postgres",
         ssl: true,
         dialectOptions: {
             ssl: {
@@ -15,6 +15,6 @@ const sequelize = new Sequelize(String(process.env.DB_NAME), String(process.env.
               }
         }
     }
-);
+)
 
-export default sequelize;
+export default sequelize

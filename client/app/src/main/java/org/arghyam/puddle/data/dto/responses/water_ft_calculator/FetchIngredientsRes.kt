@@ -12,8 +12,21 @@ data class FetchIngredientsRes(
 
 @Serializable
 data class IngredientRow(
-    @SerialName("patternId") val rowId: Int,
-    @SerialName("rank") val rowOrder: Int,
-    @SerialName("patternItems") val items: List<IngredientRowItem>
+    @SerialName("patternId") val patternId: Int,
+    @SerialName("rank") val rank: Int,
+    @SerialName("patternItems") val patternItems: List<IngredientRowItem>
+)
+
+
+data class IngredientState(
+    val isSelected: Boolean = false,
+    val amt:String = "",
+    val detail: IngredientRowItem
+)
+
+data class IngredientPattern(
+    val patternId: Int,
+    val rank: Int,
+    val patternItems: List<IngredientState>
 )
 

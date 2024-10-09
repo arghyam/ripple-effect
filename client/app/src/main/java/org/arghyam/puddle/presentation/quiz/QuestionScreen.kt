@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.arghyam.puddle.R
-import org.arghyam.puddle.domain.models.quiz
+import org.arghyam.puddle.domain.models.Question
 import org.arghyam.puddle.ui.theme.Color1
 import org.arghyam.puddle.ui.theme.Color6
 import org.arghyam.puddle.ui.theme.openSansFontFamily
@@ -42,17 +42,18 @@ import org.arghyam.puddle.ui.theme.puddleFontFamily
 
 @Composable
 fun QuestionScreen(
-    questionState: QuestionState,
+    questionnaire: List<Question>,
+    question: Question,
+    selectedOptionId: Int?,
     onNextQuestion: () -> Unit,
     onShowQuizResult: () -> Unit,
     onSelectOption: (Int) -> Unit,
     onNavigateBack: () -> Unit = {}
 
 ) {
-    val question = questionState.currentQuestion
 
-    val drawableOption1Id = when (questionState.selectedOptionId) {
-        1 -> if (questionState.selectedOptionId == question.correctOptionId) {
+    val drawableOption1Id = when (selectedOptionId) {
+        1 -> if (selectedOptionId == question.correctOptionId) {
             R.drawable.q_opt_1_right
         } else {
             R.drawable.q_opt_1_wrong
@@ -61,8 +62,8 @@ fun QuestionScreen(
         else -> R.drawable.quiz_opt_1
     }
 
-    val drawableOption2Id = when (questionState.selectedOptionId) {
-        2 -> if (questionState.selectedOptionId == question.correctOptionId) {
+    val drawableOption2Id = when (selectedOptionId) {
+        2 -> if (selectedOptionId == question.correctOptionId) {
             R.drawable.q_opt_2_right
         } else {
             R.drawable.q_opt_2_wrong
@@ -71,14 +72,24 @@ fun QuestionScreen(
         else -> R.drawable.quiz_opt_2
     }
 
-    val drawableOption3Id = when (questionState.selectedOptionId) {
-        3 -> if (questionState.selectedOptionId == question.correctOptionId) {
+    val drawableOption3Id = when (selectedOptionId) {
+        3 -> if (selectedOptionId == question.correctOptionId) {
             R.drawable.q_opt_3_right
         } else {
             R.drawable.q_opt_3_wrong
         }
 
         else -> R.drawable.quiz_opt_3
+    }
+
+    val drawableOption4Id = when (selectedOptionId) {
+        4 -> if (selectedOptionId == question.correctOptionId) {
+            R.drawable.q_opt_2_right
+        } else {
+            R.drawable.q_opt_2_wrong
+        }
+
+        else -> R.drawable.quiz_opt_2
     }
 
     Column(
@@ -145,7 +156,7 @@ fun QuestionScreen(
                 contentDescription = "opt_1"
             )
 
-            if (questionState.selectedOptionId == question.correctOptionId && questionState.selectedOptionId == 1) {
+            if (selectedOptionId == question.correctOptionId && selectedOptionId == 1) {
                 Icon(
                     modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
                     painter = painterResource(id = R.drawable.ans_right_icon),
@@ -154,7 +165,7 @@ fun QuestionScreen(
                 )
             }
 
-            if (questionState.selectedOptionId != question.correctOptionId && questionState.selectedOptionId == 1) {
+            if (selectedOptionId != question.correctOptionId && selectedOptionId == 1) {
                 Icon(
                     modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
                     painter = painterResource(id = R.drawable.ans_wrong_icon),
@@ -196,7 +207,7 @@ fun QuestionScreen(
                 contentDescription = "opt_2"
             )
 
-            if (questionState.selectedOptionId == question.correctOptionId && questionState.selectedOptionId == 2) {
+            if (selectedOptionId == question.correctOptionId && selectedOptionId == 2) {
                 Icon(
                     modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
                     painter = painterResource(id = R.drawable.ans_right_icon),
@@ -205,7 +216,7 @@ fun QuestionScreen(
                 )
             }
 
-            if (questionState.selectedOptionId != question.correctOptionId && questionState.selectedOptionId == 2) {
+            if (selectedOptionId != question.correctOptionId && selectedOptionId == 2) {
                 Icon(
                     modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
                     painter = painterResource(id = R.drawable.ans_wrong_icon),
@@ -243,7 +254,7 @@ fun QuestionScreen(
                 contentDescription = "opt_3"
             )
 
-            if (questionState.selectedOptionId == question.correctOptionId && questionState.selectedOptionId == 3) {
+            if (selectedOptionId == question.correctOptionId && selectedOptionId == 3) {
                 Icon(
                     modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
                     painter = painterResource(id = R.drawable.ans_right_icon),
@@ -252,7 +263,7 @@ fun QuestionScreen(
                 )
             }
 
-            if (questionState.selectedOptionId != question.correctOptionId && questionState.selectedOptionId == 3) {
+            if (selectedOptionId != question.correctOptionId && selectedOptionId == 3) {
                 Icon(
                     modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
                     painter = painterResource(id = R.drawable.ans_wrong_icon),
@@ -273,9 +284,59 @@ fun QuestionScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(80.dp))
 
-        if (questionState.currentQuestion.id + 1 > quiz.questionnaire.last().id) {
+        if (question.option4 != null) {
+            Spacer(modifier = Modifier.height(75.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    modifier = Modifier
+                        .scale(2.8f)
+                        .clickable {
+                            onSelectOption(4)
+                        },
+                    painter = painterResource(id = drawableOption4Id),
+                    contentDescription = "opt_4"
+                )
+
+                if (selectedOptionId == question.correctOptionId && selectedOptionId == 4) {
+                    Icon(
+                        modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
+                        painter = painterResource(id = R.drawable.ans_right_icon),
+                        contentDescription = "ans_right",
+                        tint = Color.Unspecified
+                    )
+                }
+
+                if (selectedOptionId != question.correctOptionId && selectedOptionId == 4) {
+                    Icon(
+                        modifier = Modifier.align(Alignment.TopEnd).offset(y = -20.dp).scale(2f),
+                        painter = painterResource(id = R.drawable.ans_wrong_icon),
+                        contentDescription = "ans_right",
+                        tint = Color.Unspecified
+                    )
+                }
+
+                Text(
+                    text = question.option4.text,
+                    style = TextStyle(
+                        color = Color6,
+                        fontFamily = openSansFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+        if (question.id + 1 > questionnaire.last().id) {
             Button(
                 modifier = Modifier
                     .align(Alignment.End),

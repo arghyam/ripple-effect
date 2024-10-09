@@ -1,11 +1,11 @@
 package org.arghyam.puddle.data.repoImpl
 
 import android.content.SharedPreferences
-import org.arghyam.puddle.data.dto.requests.ResetPwdReq
-import org.arghyam.puddle.data.dto.requests.SendForgotPwdOTPReq
-import org.arghyam.puddle.data.dto.requests.SignInRequest
-import org.arghyam.puddle.data.dto.requests.SignUpRequest
-import org.arghyam.puddle.data.dto.requests.VerifyForgotPwdOTPReq
+import org.arghyam.puddle.data.dto.requests.auth.ResetPwdReq
+import org.arghyam.puddle.data.dto.requests.auth.SendForgotPwdOTPReq
+import org.arghyam.puddle.data.dto.requests.auth.SignInRequest
+import org.arghyam.puddle.data.dto.requests.auth.SignUpRequest
+import org.arghyam.puddle.data.dto.requests.auth.VerifyForgotPwdOTPReq
 import org.arghyam.puddle.data.dto.responses.ResetPasswordResponse
 import org.arghyam.puddle.data.dto.responses.SendForgotPwdOtpRes
 import org.arghyam.puddle.data.dto.responses.VerifyForgotPasswordOtpResponse
@@ -15,13 +15,13 @@ import org.arghyam.puddle.domain.models.DataError
 import org.arghyam.puddle.domain.models.Result
 import org.arghyam.puddle.domain.models.User
 import org.arghyam.puddle.domain.repository.AuthRepository
-import org.arghyam.puddle.utils.SERVER_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
+import org.arghyam.puddle.BuildConfig
 
 class AuthRepoImpl(
     private val client: HttpClient,
@@ -31,7 +31,7 @@ class AuthRepoImpl(
         return try {
 
             val res = client.post {
-                url("$SERVER_URL/api/auth/login")
+                url("${BuildConfig.SERVER_URL}/api/auth/login")
                 setBody(signInRequest)
             }.body<SignInResponse>()
 
@@ -54,7 +54,7 @@ class AuthRepoImpl(
         return try {
 
             val res = client.post {
-                url("$SERVER_URL/api/auth/register")
+                url("${BuildConfig.SERVER_URL}/api/auth/register")
                 setBody(signUpRequest)
             }.body<SignUpResponse>()
 
@@ -69,7 +69,7 @@ class AuthRepoImpl(
         return try {
 
             val res = client.post {
-                url("$SERVER_URL/api/auth/generate-otp")
+                url("${BuildConfig.SERVER_URL}/api/auth/generate-otp")
                 setBody(SendForgotPwdOTPReq(email))
             }.body<SendForgotPwdOtpRes>()
 
@@ -88,7 +88,7 @@ class AuthRepoImpl(
         return try {
 
             val res = client.post {
-                url("$SERVER_URL/api/auth/verify-otp")
+                url("${BuildConfig.SERVER_URL}/api/auth/verify-otp")
                 setBody(VerifyForgotPwdOTPReq(email, otpGenerationTimestamp, otp))
             }
 
@@ -114,7 +114,7 @@ class AuthRepoImpl(
             val accToken = sharedPref.getString("reset_password_token", "")
             val res = client.post {
                 header("Authorization", "Bearer $accToken")
-                url("$SERVER_URL/api/auth/reset-password")
+                url("${BuildConfig.SERVER_URL}/api/auth/reset-password")
                 setBody(ResetPwdReq(email, newPassword))
             }.body<ResetPasswordResponse>()
 

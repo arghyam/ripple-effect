@@ -7,6 +7,5 @@ data class IngredientCalcState(
     val id: Int,
     val name: String,
     val unit: String,
-    val category: String,
     val amt: String = "", // Fill-up by users
 )

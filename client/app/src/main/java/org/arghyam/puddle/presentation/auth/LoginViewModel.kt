@@ -3,7 +3,7 @@ package org.arghyam.puddle.presentation.auth
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.arghyam.puddle.data.dto.requests.SignInRequest
+import org.arghyam.puddle.data.dto.requests.auth.SignInRequest
 import org.arghyam.puddle.domain.repository.AuthRepository
 import org.arghyam.puddle.domain.utils.handleResult
 import org.arghyam.puddle.presentation.auth.events.LoginEvent

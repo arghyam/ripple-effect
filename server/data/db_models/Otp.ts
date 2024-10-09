@@ -44,7 +44,7 @@ export function initOtp(sequelize: Sequelize) {
     },
     {
       sequelize,
-      tableName: 'otps'
+      tableName: 'ripple_otps'
     }
   ).sync({ alter: true });
 

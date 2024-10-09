@@ -1,15 +1,13 @@
 
-import { GetIngredientRowDAOError, GetIngredientRowItemDAOError, GetIngredientRowItemsDAOError, GetIngredientRowsDAOError, GetWaterConsumptionOfIngredientDAOError, IngredientNotFoundError, InsertIngredientRowDAOError, InsertIngredientRowItemDAOError, InsertWaterFtCalcResultDAOError, UnknownDatabaseError } from '../../../utils/errors/ErrorCodes';
-import { DatabaseError, WaterFtCalcError } from '../../../utils/errors/ErrorUtils';
 import { WaterFtCalcDAO } from './WaterFtCalcDAO';
-import { IngredientGroupPatternItem } from '../../db_models/IngredientGroupPatternItem';
 import { Ingredient } from '../../db_models/Ingredient';
 import { WaterFtCalcResult } from '../../db_models/WaterFtCalcResult';
 import { v6 as uuidv6 } from "uuid";
-import { AddIngredientGroupPatternItem } from '../../requests/waterft_calc/AddIngredientGroupPatternItem';
-import { IngredientGroupPattern } from '../../db_models/IngredientGroupPattern';
 import { AddIngredient } from '../../requests/waterft_calc/AddIngredient';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
+import { logger } from '../../..';
+import { Recipe } from '../../db_models/Recipe';
+import { NotFoundError } from '../../../utils/errors/NotFoundError';
 
 
 const FileName = "WaterFtCalcDAOImpl"
@@ -17,229 +15,218 @@ const FileName = "WaterFtCalcDAOImpl"
 export class WaterFtCalcDAOImpl implements WaterFtCalcDAO {
 
 
+  async getRecipies(pageSize: number, page: number, query: string): Promise<Recipe[]> {
+    try {
+
+      const offset = (page - 1) * pageSize;
+      const recipes = await Recipe.findAll({
+        where: { name: { [Op.iLike]: `%${query}%` } },
+        limit: pageSize,
+        offset: offset,
+      });
+
+      if (recipes.length === 0) {
+        throw new NotFoundError(`Recipes not found`, 'RECIPE_NOT_FOUND');
+      }
+      return recipes
+
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getRecipe(id: string): Promise<Recipe> {
+    try {
+
+      const recipe = await Recipe.findByPk(id)
+
+      if (!recipe) {
+        throw new NotFoundError(`Recipe not found`, 'RECIPE_NOT_FOUND');
+      }
+      return recipe
+
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getWaterFtCalcResult(userId: string, date: Date): Promise<WaterFtCalcResult> {
+    try {
+
+      date.setHours(0, 0, 0)
+      logger.info(`date obj is: ${date}`)
+      const result = await WaterFtCalcResult.findOne({
+        where: {
+          user_id: userId,
+          generated_at: {
+            [Op.gte]: date,
+            [Op.lte]: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+          }
+        }
+      })
+
+      if (result == null) {
+        throw new NotFoundError(`WaterFtCalcResult Record not found with date: ${date}`, 'RECORD_NOT_FOUND')
+      }
+
+      return result
+
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getWaterFtCalcResults(userId: string, startDate: Date, endDate: Date): Promise<WaterFtCalcResult[]> {
+    try {
+
+      const result = await WaterFtCalcResult.findAll({
+        where: {
+          user_id: userId,
+          generated_at: {
+            [Op.gte]: startDate,
+            [Op.lte]: endDate
+          }
+        }
+      })
+
+      return result
+
+    } catch (error) {
+      throw error
+    }
+
+  }
+
+
   async getIngredient(ingredientId: number): Promise<Ingredient> {
     try {
 
-      const ingredient = await Ingredient.findOne({ where: { id: ingredientId} })
-      if (ingredient == null) {
-        throw new WaterFtCalcError("Row item not found", GetIngredientRowItemDAOError)
+      const ingredient = await Ingredient.findOne({ where: { id: ingredientId } })
+      if (!ingredient) {
+        throw new NotFoundError(`Ingredient with id: ${ingredientId} not found`, 'INGREDIENT_NOT_FOUND')
       }
       return ingredient
     } catch (error) {
-      if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, InsertIngredientRowDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- getIngredientRowItem`, UnknownDatabaseError);
-      }
+      throw error
     }
   }
+
+  async getIngredientByName(name: string): Promise<Ingredient> {
+    try {
+
+      const ingredient = await Ingredient.findOne({ where: { name: name } })
+      if (!ingredient) {
+        throw new NotFoundError(`Ingredient with name: ${name} not found`, 'INGREDIENT_NOT_FOUND')
+      }
+      return ingredient
+    } catch (error) {
+      throw error
+    }
+  }
+
+
   async getIngredients(): Promise<Ingredient[]> {
     try {
 
       const ingredients = await Ingredient.findAll()
-      if (ingredients == null) {
-        throw new WaterFtCalcError("Row items not found", GetIngredientRowItemsDAOError)
+      if (!ingredients) {
+        throw new NotFoundError('No ingredients found', 'INGREDIENTS_NOT_FOUND')
       }
       return ingredients
     } catch (error) {
-      if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, GetIngredientRowItemsDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- getIngredientRowItems`, UnknownDatabaseError);
-      }
+      throw error
     }
   }
-  
 
-  async insertIngredientGroupPattern(rank: number, size: number): Promise<IngredientGroupPattern> {
-    try {
-      const insertedPattern = await IngredientGroupPattern.create({ rank: rank, size: size })
-      return insertedPattern
-    } catch (error) {
-      if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, InsertIngredientRowDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- insertIngredientRow`, UnknownDatabaseError);
-      }
-    }
-  }
-  async insertIngredientGroupPatternItem(
-    insertReq: AddIngredientGroupPatternItem
-): Promise<IngredientGroupPatternItem> {
-    try {
-
-      const insertedItem = await IngredientGroupPatternItem.create(
-        {
-          itemNo: insertReq.itemNo,
-          patternId: insertReq.patternId,
-          unselectedBgImageUrl: insertReq.unselectedBgImageUrl,
-          selectedBgImageUrl: insertReq.selectedBgImageUrl,
-          sampleImageSize: insertReq.sampleImageSize,
-          scaleFactor: insertReq.scaleFactor,
-          iconScalefactor: insertReq.iconScalefactor,
-          cornerType: insertReq.cornerType,
-          doneXOffSet: insertReq.doneXOffSet,
-          doneYOffSet: insertReq.doneYOffSet,
-          pluseXOffSet: insertReq.pluseXOffSet,
-          pluseYOffSet: insertReq.pluseYOffSet,
-          minusXOffSet: insertReq.minusXOffSet,
-          minusYOffSet: insertReq.minusYOffSet,
-          xOffset: insertReq.xOffset,
-          yOffset: insertReq.yOffset
-        }
-      )
-      return insertedItem
-    } catch (error) {
-
-
-      if (error instanceof Error) {
-        throw new DatabaseError(error.message, InsertIngredientRowItemDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- insertIngredientRowItem`, UnknownDatabaseError);
-      }
-    }
-  }
 
   async insertIngredient(insertReq: AddIngredient): Promise<Ingredient> {
     try {
-      console.log(`inserted ingre daoimpl: ${insertReq.name} ${insertReq.unit} ${insertReq.water_footprint} ${insertReq.sampleImageUrl}`)
-      const insertedIngredient = await Ingredient.create({ 
+
+      const insertedIngredient = await Ingredient.create({
         name: insertReq.name,
         unit: insertReq.unit,
         water_footprint: insertReq.water_footprint,
-        sampleImageUrl: insertReq.sampleImageUrl
-       })
+        last_updated: new Date()
+      })
       return insertedIngredient
     } catch (error) {
-      if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, InsertIngredientRowDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- insertIngredientRow`, UnknownDatabaseError);
-      }
+      throw error
     }
   }
 
-  async insertWaterFtCalcResult(userId: string, water_footprint: number): Promise<WaterFtCalcResult> {
+  async insertWaterFtCalcResult(userId: string, water_footprint: number, transaction: Transaction): Promise<Boolean> {
     try {
 
-      const id = uuidv6()
-      const result = await WaterFtCalcResult.create({
-        id: id,
-        user_id: userId,
-        water_footprint: water_footprint
-      })
-      
-      return result
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new DatabaseError(error.message, InsertWaterFtCalcResultDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- insertWaterFtCalcResult`, UnknownDatabaseError);
-      }
-    }
-  }
+      const today = new Date()
+      const existingRecord = await WaterFtCalcResult.findOne(
+        {
+          where: {
+            user_id: userId,
+            generated_at: {
+              [Op.gte]: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+              [Op.lte]: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+            }
 
-  async getIngredientGroupPattern(patternId: number): Promise<IngredientGroupPattern> {
-    try {
-      const pattern = await IngredientGroupPattern.findOne({ where: { id: patternId } })
-      if (pattern == null) {
-        throw new WaterFtCalcError("Pattern not found", GetIngredientRowDAOError)
-      }
-      return pattern
-    } catch (error) {
-      if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, InsertIngredientRowDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- getIngredientRow`, UnknownDatabaseError);
-      }
-    }
-  }
-  async getIngredientGroupPatterns(): Promise<IngredientGroupPattern[]> {
-    try {
-      const patterns = await IngredientGroupPattern.findAll()
-      if (patterns == null) {
-        throw new WaterFtCalcError("Rows not found", GetIngredientRowsDAOError)
-      }
-      return patterns
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new DatabaseError(error.message, GetIngredientRowsDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- getIngredientRows`, UnknownDatabaseError);
-      }
-    }
-  }
-
-  async getIngredientGroupPatternItem(patternId: number, itemNo: number): Promise<IngredientGroupPatternItem> {
-    try {
-
-      const item = await IngredientGroupPatternItem.findOne({ where: { id: patternId, itemNo: itemNo } })
-      if (item == null) {
-        throw new WaterFtCalcError("Row item not found", GetIngredientRowItemDAOError)
-      }
-      return item
-    } catch (error) {
-      if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, InsertIngredientRowDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- getIngredientRowItem`, UnknownDatabaseError);
-      }
-    }
-  }
-  async getIngredientGroupPatternItems(patternId: number, startItemNo: number, size: number): Promise<IngredientGroupPatternItem[]> {
-    try {
-
-      const items = await IngredientGroupPatternItem.findAll({
-        where: {
-          itemNo: {
-            [Op.lte]: startItemNo + size,
-            [Op.gte]: startItemNo
-          }
+          },
+          transaction
         }
-      })
-      
-      if (items == null) {
-        throw new WaterFtCalcError("Row items not found", GetIngredientRowItemsDAOError)
-      }
-      return items
-    } catch (error) {
-      if (error instanceof Error) {
+      )
 
-        throw new DatabaseError(error.message, GetIngredientRowItemsDAOError);
+      if (!existingRecord) {
+
+        const id = uuidv6()
+        const now = new Date()
+        const result = await WaterFtCalcResult.create({
+          id: id,
+          user_id: userId,
+          water_footprint: water_footprint,
+          generated_at: now
+
+        })
+
+        return result != null
       } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- getIngredientRowItems`, UnknownDatabaseError);
+      
+
+        const now = new Date()
+        const [updatedCount] = await WaterFtCalcResult.update({
+          water_footprint: water_footprint,
+          generated_at: now
+        },
+          {
+            where: {
+              user_id: userId,
+              id: existingRecord.id
+            }
+          }
+        )
+
+        return updatedCount == 1
       }
+
+
+
+    } catch (error) {
+      throw error
     }
   }
-  
 
 
-  async getWaterConsumptionOfIngredient(ingredientId: number): Promise<number> {
+
+
+  async getWaterConsumptionOfRecipe(recipeId: string): Promise<number> {
     try {
 
-      const ingredient = await Ingredient.findByPk(ingredientId);
+      const recipe = await Recipe.findByPk(recipeId);
 
-      if (ingredient == null) {
-        throw new WaterFtCalcError("ingredient is not available", IngredientNotFoundError)
+      if (!recipe) {
+        throw new NotFoundError("Recipe is not available", 'RECIPE_NOT_FOUND');
       }
 
-      return ingredient.water_footprint
+      return recipe.water_footprint
 
     } catch (error) {
-      if (error instanceof WaterFtCalcError) {
-        throw error
-      } else if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, GetWaterConsumptionOfIngredientDAOError);
-      } else {
-        throw new DatabaseError(`e is not a instance of Error: ${FileName} --- getWaterConsumptionOfIngredient`, UnknownDatabaseError);
-      }
+      throw error
     }
   }
 

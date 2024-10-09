@@ -176,10 +176,23 @@ fun RootNavGraph(
                     )
 
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+
+                        val routeList = listOf(
+                            "${Routes.AddRecipeScreen.route}?recipe_id={recipe_id}",
+                            Routes.ProfileScreen.route,
+                            Routes.CalculateScreen.route,
+                            Routes.CalculateResultScreen.route
+                        )
+                        val currentRoute = navBackStackEntry?.destination?.route
+
+                        val isMatchFound = routeList.any {
+                            it == currentRoute
+                        }
+
                         BottomNavBar(
                             modifier = Modifier,
-                            currentRoute = navBackStackEntry?.destination?.route,
-                            isVisible = true,
+                            currentRoute = currentRoute,
+                            isVisible = !isMatchFound,
                             onNavigate = mainNavController::navigate
                         )
                     }
@@ -192,6 +205,8 @@ fun RootNavGraph(
 
     }
 }
+
+
 
 @Composable
 inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {

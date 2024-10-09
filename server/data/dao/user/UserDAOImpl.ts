@@ -1,15 +1,72 @@
 import { Otp } from "../../db_models/Otp";
 import { RegisterUserData } from "../../../domain/models/RegisterUserData";
 import { User } from "../../db_models/User";
-import { FetchUserByEmail, InsertOTPUserDAO, InsertUserUSerDAO, IsEmailExistUserDAO, OTPNotFoundInDB, UnknownDatabaseError, UserNotFoundInDB } from "../../../utils/errors/ErrorCodes";
-import { AuthError, DatabaseError } from "../../../utils/errors/ErrorUtils";
 import { UserDAO } from "./UserDAO";
 import { v6 as uuidv6 } from "uuid";
+import sequelize from "../../../db";
+import { Transaction } from "sequelize";
+import { NotFoundError } from "../../../utils/errors/NotFoundError";
+import { logger } from "../../..";
+
 
 
 
 
 export class UserDAOImpl implements UserDAO {
+
+  
+  async getUserWft(userId: string): Promise<number> {
+    try {
+
+      const user = await User.findOne(
+        { where: { id: userId } }
+      )
+
+      if(user == null) {
+        throw new NotFoundError(`User Not Found with id: ${userId}`, 'USER_NOT_FOUND');
+      }
+      return user.total_water_footprint
+    } catch (error) {
+      throw error
+    }
+  }
+  async updateUserWft(userId: string, incrementAmt: number, transaction: Transaction): Promise<Boolean> {
+    try {
+
+      const [updatedCount] = await User.update(
+        { 
+          total_water_footprint: sequelize.literal(`total_water_footprint + ${sequelize.escape(incrementAmt)}`)
+        },
+        { 
+          where: { id: userId },
+          transaction 
+        }
+      )
+
+      
+      return updatedCount === 1;
+    } catch (error) {
+      throw error
+    }
+  }
+  async updateProfile(userId: string, name: string | undefined, email: string | undefined, phone_number: string | undefined, photo_url: string | undefined): Promise<Boolean> {
+    try {
+      const [updatedCount] = await User.update(
+        { 
+          name: name,
+          email: email,
+          phone_number: phone_number,
+          photo_url: photo_url
+
+        }, 
+        { where: { id: userId } }
+      )
+      return updatedCount == 1
+    } catch (error) {
+      throw error
+    }
+  }
+
 
   async fetchUserById(id: string): Promise<User> {
     try {
@@ -19,42 +76,28 @@ export class UserDAOImpl implements UserDAO {
         }
       });
       if (user == null) {
-        throw new AuthError("user with id: " + id + " is not found in the database", UserNotFoundInDB)
+        throw new NotFoundError(`User Not Found with id: ${id}`, 'USER_NOT_FOUND');
       }
       return user;
     } catch (error) {
-
-      if (error instanceof AuthError) {
-        throw error
-      } else if (error instanceof Error) {
-        throw new DatabaseError(error.message, FetchUserByEmail);
-      } else {
-        throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- fetchUserById", UnknownDatabaseError);
-      }
+      throw error
     }
   }
   async fetchUsers(): Promise<User[]> {
     try {
       return await User.findAll()
     } catch (error) {
-      throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- fetchUsers", UnknownDatabaseError);
+      throw error
     }
   }
-  async updateUserRank(userId: string, rank: number): Promise<Boolean> {
-    try {
-      const [updatedCount] = await User.update({ leaderboard_rank: rank }, { where: { id: userId } })
-      return updatedCount == 1
-    } catch (error) {
-      throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- updateUserRank", UnknownDatabaseError);
-    }
-  }
+  
 
   async updatePassword(email: string, password: string): Promise<Boolean> {
     try {
       const [updatedCount] = await User.update({ password_hash: password }, { where: { email: email } });
       return updatedCount == 1
     } catch (error) {
-      throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- updatePassword", UnknownDatabaseError);
+      throw error
     }
   }
 
@@ -65,14 +108,7 @@ export class UserDAOImpl implements UserDAO {
       const otpData = await Otp.create({ id: id, email: email, otp_hash: otp, generated_at: now.getTime() })
       return otpData
     } catch (error) {
-      if (error instanceof AuthError) {
-        throw error
-      } else if (error instanceof Error) {
-
-        throw new DatabaseError(error.message, InsertOTPUserDAO);
-      } else {
-        throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- insertOtp", UnknownDatabaseError);
-      }
+      throw error
     }
   }
 
@@ -88,19 +124,13 @@ export class UserDAOImpl implements UserDAO {
       });
 
       if (otpRow == null) {
-        throw new AuthError("otp with email: " + email + "doesn't exist in the database", OTPNotFoundInDB)
+        throw new NotFoundError(`OTP with ${email} doesn't exist`, 'OTP_NOT_FOUND');
+        
       }
 
       return otpRow
     } catch (error) {
-      if (error instanceof AuthError) {
-        throw error
-      } else if (error instanceof Error) {
-
-        throw new DatabaseError("error.message", IsEmailExistUserDAO);
-      } else {
-        throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- getOtp", UnknownDatabaseError);
-      }
+      throw error
     }
   }
 
@@ -111,16 +141,10 @@ export class UserDAOImpl implements UserDAO {
 
     try {
       const userId = uuidv6();
-      const user = await User.create({ id: userId, name: userData.name, email: userData.email, password_hash: userData.password_hash, leaderboard_rank: 0, total_water_footprint: 0})
+      const user = await User.create({ id: userId, name: userData.name, email: userData.email, photo_url: "userData.photo_url", password_hash: userData.password_hash, total_water_footprint: 0})
       return user
     } catch (error) {
-      if (error instanceof AuthError) {
-        throw error
-      } else if (error instanceof Error) {
-        throw new DatabaseError(error.message, InsertUserUSerDAO);
-      } else {
-        throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- insertUser", UnknownDatabaseError);
-      }
+      throw error
     }
 
 
@@ -136,18 +160,12 @@ export class UserDAOImpl implements UserDAO {
         }
       });
       if (user == null) {
-        throw new AuthError("user with email: " + email + " is not found in the database", UserNotFoundInDB)
+        throw new NotFoundError(`User Not Found with email: ${email}`, 'USER_NOT_FOUND');
       }
       return user;
     } catch (error) {
 
-      if (error instanceof AuthError) {
-        throw error
-      } else if (error instanceof Error) {
-        throw new DatabaseError(error.message, FetchUserByEmail);
-      } else {
-        throw new DatabaseError("e is not a instance of Error: UserDAOImpl --- fetchUserByEmail", UnknownDatabaseError);
-      }
+      throw error
     }
 
 

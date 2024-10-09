@@ -1,6 +1,6 @@
 interface LeaderboardResponse {
     entries: LeaderboardEntry[]
-    myRank: LeaderboardEntry
+    mEntry: LeaderboardEntry
 }
 
 

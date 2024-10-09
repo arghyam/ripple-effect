@@ -5,6 +5,7 @@ interface WaterFtCalcResultAttributes {
   id: string
   user_id: string
   water_footprint: number
+  generated_at: Date
 
 };
 
@@ -14,9 +15,7 @@ export class WaterFtCalcResult extends Model<WaterFtCalcResultAttributes, WaterF
   declare id: number
   declare user_id: string
   declare water_footprint: number
-
-  public readonly createdAt!: Date
-
+  declare generated_at: Date
 
 }
 
@@ -37,15 +36,19 @@ export function initWaterFtCalcResult(sequelize: Sequelize) {
           },
         },
         water_footprint: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.DECIMAL,
+          allowNull: false
+        },
+        generated_at: {
+          type: DataTypes.DATE,
           allowNull: false
         }
   
       },
       {
         sequelize: sequelize,
-        tableName: 'water_ft_calc_results',
-        timestamps: true
+        tableName: 'ripple_water_ft_calc_results',
+        timestamps: false
   
       }
     ).sync({

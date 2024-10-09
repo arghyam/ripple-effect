@@ -2,7 +2,7 @@ package org.arghyam.puddle.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.arghyam.puddle.data.dto.requests.SignUpRequest
+import org.arghyam.puddle.data.dto.requests.auth.SignUpRequest
 import org.arghyam.puddle.domain.repository.AuthRepository
 import org.arghyam.puddle.domain.utils.handleResult
 import org.arghyam.puddle.presentation.auth.events.RegisterEvent

@@ -1,4 +1,6 @@
+import { injected } from "brandi";
 import { UserDAO } from "../data/dao/user/UserDAO";
+import { TOKENS } from "../di/tokens";
 
 
 export class LeaderboardService {
@@ -12,8 +14,7 @@ export class LeaderboardService {
         const entries = users.map((user) => ({
             userId: user.id,
             name: user.name,
-            water_footprint: user.total_water_footprint,
-            rank: user.leaderboard_rank
+            water_footprint: user.total_water_footprint
         }))
 
         const user = await this.dao.fetchUserById(userId)
@@ -21,34 +22,30 @@ export class LeaderboardService {
 
         const res = {
             entries: entries,
-            myRank: {
+            mEntry: {
                 userId: userId,
                 name: user.name,
                 water_footprint: user.total_water_footprint,
-                rank: user.leaderboard_rank
+               
             }
         } as LeaderboardResponse
 
         return res
     }
 
-    async calculateAndSaveLeaderboardRank() {
+    async calculateAndSaveLeaderboardRank(): Promise<number> {
         const users = await this.dao.fetchUsers()
         users.sort((a, b) => a.total_water_footprint - b.total_water_footprint)
 
         let rank = 1;
         users.forEach(user => {
-            user.leaderboard_rank = rank
             rank++
         })
 
-
-        for (const user of users) {
-            await this.dao.updateUserRank(user.id, user.leaderboard_rank)
-        }
-
-
+        return rank
     }
 
 
 }
+
+injected(LeaderboardService, TOKENS.userDao);

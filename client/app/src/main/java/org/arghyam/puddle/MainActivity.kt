@@ -1,6 +1,7 @@
 package org.arghyam.puddle
 
 import android.content.SharedPreferences
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,17 +12,26 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import org.arghyam.puddle.navigation.RootNavGraph
 import org.arghyam.puddle.navigation.Routes
+import org.arghyam.puddle.ui.theme.Color1
 import org.arghyam.puddle.ui.theme.PuddleTheme
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
     private val sharedPref by inject<SharedPreferences>()
+
+    private val sharedPref by inject<SharedPreferences>()
     override fun onCreate(savedInstanceState: Bundle?) {
 
         enableEdgeToEdge()
+        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
+
+        val existingUserId = sharedPref.getString("userId", "")
+
+
 
         val existingUserId = sharedPref.getString("userId", "")
 
@@ -31,10 +41,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             PuddleTheme {
 
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color1
                 ) {
+                    RootNavGraph(startDestination = if (!existingUserId.isNullOrBlank()) Routes.AppGraph.route else Routes.Login.route)
                     RootNavGraph(startDestination = if (!existingUserId.isNullOrBlank()) Routes.AppGraph.route else Routes.Login.route)
                 }
             }
