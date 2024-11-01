@@ -124,6 +124,17 @@ PgAdmin
 | ![](https://github.com/user-attachments/assets/450571a0-0c48-4726-85ef-cc0fa8a11af6) | ![](https://github.com/user-attachments/assets/f61c6e56-2491-44ec-b2b9-31bbb39be4e1) | ![](https://github.com/user-attachments/assets/a46464a9-c130-47f6-87a6-69e364108b77) |
 | Image 10 | Image 11 | Image 12 |
 | ![](https://github.com/user-attachments/assets/6098809c-f742-4d21-9a2f-200152631e72) | ![](https://github.com/user-attachments/assets/65b0c595-fa85-48db-a0c4-564265689bba) | ![](https://github.com/user-attachments/assets/e6ad038f-b356-4405-8877-4b19adeb5962) |
+| Image 13 |
+|![leaderboard](https://github.com/user-attachments/assets/deb2a516-62dd-4854-9a78-bb4a5ade98eb) |
+
+![dashboard-web](https://github.com/user-attachments/assets/b9c1bfba-6148-447e-b649-3622dff66fa8)
+
+![calculate-1](https://github.com/user-attachments/assets/1ce83c28-bf05-4898-9a93-8ceaacf0c89c)
+
+![calculate-2](https://github.com/user-attachments/assets/43a40521-1ec1-419d-8280-4295dd054316)
+
+![calculate-result](https://github.com/user-attachments/assets/e4a66fde-a094-4737-9823-7c18d688c0b0)
+
 
 
  

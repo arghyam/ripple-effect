@@ -1,4 +1,4 @@
-import express from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { validationResult } from 'express-validator';
 import { GenerateOTPReq } from '../../data/requests/auth/GenerateOTPReq';
 import { LoginUserReq } from '../../data/requests/auth/LoginUserReq';
@@ -12,7 +12,7 @@ import { AuthError } from '../../utils/errors/AuthError';
 
 
 
-const router = express.Router();
+const router = Router();
 
 const authService = container.get(TOKENS.authService);
 
@@ -120,34 +120,29 @@ router.post('/verify-otp', async (req, res, next) => {
 
 });
 
-const validateAuthorization = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const validateAuthorization = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
-
   if (!authHeader) {
-    return res.status(401).json({ message: 'Unauthorized: Missing authorization header' });
+    res.status(401).json({
+      message:
+        'Unauthorized: Missing authorization header'
+    });
+    return;
   }
-
 
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    return res.status(401).json({ message: 'Unauthorized: Invalid authorization format' });
+    res.status(401).json({
+      message: 'Unauthorized: Invalid authorization format'
+    });
+    return;
   }
 
 
+  next();
+};
 
-
-  try {
-
-    next();
-
-  } catch (error) {
-    next(error);
-
-  }
-
-
-}
 
 
 router.post('/reset-password', validateAuthorization, async (req, res, next) => {

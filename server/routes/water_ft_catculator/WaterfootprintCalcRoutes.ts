@@ -1,4 +1,4 @@
-import express from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { container } from "../../di/container";
 import { TOKENS } from "../../di/tokens";
 import { CalcWaterFootPrintReq } from "../../data/requests/waterft_calc/CalcWaterFootprint";
@@ -6,12 +6,41 @@ import { AddIngredient } from '../../data/requests/waterft_calc/AddIngredient';
 
 
 
-const router = express.Router();
+const router = Router();
 
 
 const waterFtCalcService = container.get(TOKENS.waterFtCalcService);
 
 
+
+router.post('/calc-water-footprint', async (req, res, next) => {
+  try {
+    const request: CalcWaterFootPrintReq = req.body;
+
+
+    if (!request.data || request.data.length === 0) {
+      res.status(400).json({
+        status_code: 400,
+        water_footprint: null,
+        message: "Data is required to calculate water footprint"
+      })
+      return
+    }
+
+   
+
+const result = await waterFtCalcService.calculateWaterFootprint(request.user_id, request.data)
+
+    res.status(200).json({
+      status_code: 200,
+      water_footprint: "result",
+      message: "Water footprint calculated successfully"
+    })
+
+  } catch (error) {
+    next(error)
+  }
+})
 
 router.post('/add-ingredient', async (req, res, next) => {
   try {
@@ -36,6 +65,8 @@ router.post('/add-ingredient', async (req, res, next) => {
 })
 
 
+
+
 router.get('/get-recipes', async (req, res, next) => {
   try {
     const page_size = Number(req.query.page_size)
@@ -43,11 +74,12 @@ router.get('/get-recipes', async (req, res, next) => {
     const query = String(req.query.query)
 
     if (!page_size || !page) {
-      return res.status(400).json({
+      res.status(400).json({
         status_code: 400,
         recipes: null,
         message: "Query Data is required to get recipes"
       })
+      return
     }
 
     const result = await waterFtCalcService.getRecipes(page_size, page, query)
@@ -68,10 +100,11 @@ router.get('/get-recipe', async (req, res, next) => {
 
 
     if (!id) {
-      return res.status(400).json({
+      res.status(400).json({
         status_code: 400,
         message: "Data is required to get recipes"
       })
+      return
     }
 
     const result = await waterFtCalcService.getRecipe(id)
@@ -88,30 +121,6 @@ router.get('/get-recipe', async (req, res, next) => {
 
 
 
-router.post('/calc-water-footprint', async (req, res, next) => {
-  try {
-    const request: CalcWaterFootPrintReq = req.body;
-
-
-    if (!request.data || request.data.length === 0) {
-      return res.status(400).json({
-        status_code: 400,
-        message: "Data is required to calculate water footprint"
-      })
-    }
-
-    const result = await waterFtCalcService.calculateWaterFootprint(request.user_id, request.data)
-
-    res.status(200).json({
-      status_code: 200,
-      water_footprint: result,
-      message: "Water footprint calculated successfully"
-    })
-
-  } catch (error) {
-    next(error)
-  }
-})
 
 router.get('/get-user-wft-progress', async (req, res, next) => {
   try {
