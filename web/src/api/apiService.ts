@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'http://localhost:8080/api/user'; // Replace with your API URL
+const API_URL = 'https://ripple-api.buckets.growsoc.arpan.xyz/api/user'; // Replace with your API URL
 
 interface IngredientData2 {
   id: string;

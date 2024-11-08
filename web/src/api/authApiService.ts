@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/auth';
+const API_URL = 'https://ripple-api.buckets.growsoc.arpan.xyz/api/auth';
 
 interface RegisterUserReq {
   name: string;
