@@ -6,13 +6,11 @@
     "build": "npx tsc",
     "start": "node dist/index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["nodejs", "express", "server"],
+  "author": "Keval Kanpariya",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^22.8.4",
-    "@types/otp-generator": "^4.0.2",
-    "@types/sequelize": "^4.28.20",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "brandi": "^5.0.0",
@@ -24,15 +22,14 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.14",
     "otp-generator": "^4.0.1",
-<<<<<<< HEAD
     "pg": "^8.13.1",
-=======
->>>>>>> upstream/main
     "sequelize": "^6.37.3",
     "uuid": "^11.0.2",
     "winston": "^3.13.0"
   },
   "devDependencies": {
+    "@types/otp-generator": "^4.0.2",
+    "@types/sequelize": "^4.28.20",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
@@ -42,5 +39,5 @@
     "@types/uuid": "^10.0.0",
     "typescript": "^5.5.4"
   },
-  "description": ""
+  "description": "A Node.js server for handling various backend operations"
 }

@@ -1,6 +1,10 @@
 import axios from "axios";
+import * as dotenv from 'dotenv-flow'
+dotenv.config({ path: './' })
 
-const API_URL = 'https://ripple-api.buckets.growsoc.arpan.xyz/api/user'; // Replace with your API URL
+
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const API_URL = `${SERVER_URL}/api/user`; // Replace with your API URL
 
 interface IngredientData2 {
   id: string;
