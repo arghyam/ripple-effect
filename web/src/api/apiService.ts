@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as dotenv from 'dotenv-flow'
-dotenv.config({ path: './' })
+dotenv.config({ path: '../../' })
 
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
