@@ -1,6 +1,5 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Navbar from './components/navbar/Navbar';
+import Navbar from './components/Navbar';
 import LoginForm from './components/LoginForm';
 import CalculateScreen from './screens/CalculateScreen';
 import DashboardScreen from './screens/DashboardScreen';
@@ -9,14 +8,14 @@ import ForgotPasswordForm from './components/ForgotPasswordForm';
 import PrivateRoute from './components/PrivateRoute';
 import NotAvailable from './components/NotAvailable';
 
-const AppContent: React.FC = () => {
+const AppContent = () => {
   const location = useLocation();
   const hideNavbarRoutes = ['/login', '/register', '/forgot-password'];
 
   return (
-    <div style={{ paddingRight: 20, paddingLeft: 20 }}>
+    <div>
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
-      <div style={{ width: '80%', margin: '0 auto' }}>
+      <div>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
           <Route path="/forgot-password" element={<ForgotPasswordForm />} />
@@ -31,7 +30,7 @@ const AppContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => (
+const App = () => (
   <Router>
     <AppContent />
   </Router>

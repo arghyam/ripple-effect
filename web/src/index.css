@@ -1,15 +1,15 @@
-:root {
-  --bg-color: #00072D; /* Replace with your desired color */
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   margin: 0;
+  background: #f1f1f1;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-color) !important;
 }
 
 code {
@@ -17,17 +17,22 @@ code {
     monospace;
 }
 
-@keyframes ripple {
+/*
+
+
+ */
+
+/* @keyframes ripple {
   to {
     transform: scale(4);
     opacity: 0;
   }
 }
 
-.ripple {
+/* .ripple {
   position: absolute;
   border-radius: 50%;
   transform: scale(0);
   animation: ripple 0.6s linear;
   background-color: rgba(255, 255, 255, 0.7);
-}
+} */

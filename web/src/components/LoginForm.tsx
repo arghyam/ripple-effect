@@ -1,24 +1,19 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/authApiService';
-import { CSSProperties } from 'react';
+
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const userDetails = {
-        email: email,
-        password: password,
-      };
-      const response = await loginUser(userDetails);
-      
+      const userDetails = { email, password };
+      const response = await loginUser(userDetails); // Assume loginUser is defined elsewhere
       alert(response.message);
       if (response.access_token != null) {
         localStorage.setItem('userInfo', JSON.stringify(response.user_info));
@@ -34,111 +29,60 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>Login</h2>
-        
-        {error && <div style={styles.error}>{error}</div>}
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="email">Email</label>
+    <div className="flex justify-center items-center h-screen">
+      <form onSubmit={handleSubmit} className="bg-white px-10 py-20 rounded-3xl  shadow-md w-full max-w-md border-2">
+        <h1 className="text-5xl font-display font-semibold">Welcome Back</h1>
+        <p className="font-display font-medium text-lg text-gray-500 mt-4">Welcome back! Please login</p>
+    
+        <div className="mb-4 mt-8">
+          <label htmlFor="email" className="text-lg font-medium">Email</label>
           <input
             type="text"
             id="email"
             value={email}
+            placeholder='example@gmail.com'
             onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-            style={styles.input}
+            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent font-body"
             required
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="password">Password</label>
+        <div className="mb-6">
+          <label htmlFor="password" className="text-lg font-medium">Password</label>
           <input
             type="password"
             id="password"
+            placeholder='********'
             value={password}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-            style={styles.input}
+            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent font-body"
             required
           />
         </div>
-        <div style={styles.forgotPassword}>
-          <a href="/forgot-password" style={styles.forgotPasswordLink}>Forgot Password?</a>
+        <div className="mt-8 flex justify-between items-center">
+          <div>
+          <input
+              type="checkbox"
+              id="remember"
+            />
+          <label htmlFor="remember" className='ml-2 font-medium text-base font-body'>Remember for 30 days</label>
+          </div>
+          <button id="forgot-password" className="font-medium text-base text-primary"><a href='/forgot-password'>Forgot Password?</a></button>
+          
         </div>
-        <button type="submit" style={styles.button}>Login</button>
-        <div style={styles.register}>
+        <div className="flex justify-end mb-4">
+          
+        </div>
+       
+        <button type="submit" className="mt-8 w-full py-3 px-4 bg-primary text-white rounded-xl font-display ">Login</button>
+        <div className="mt-4 text-center">
           <span>Don't have an account? </span>
-          <a href="/register" style={styles.registerLink}>Register</a>
+          <a href="/register" className="font-medium text-base text-primary hover:underline">Register</a>
         </div>
+        {error && <div className="text-red-500 mb-1 text-center">{error}</div>}
       </form>
     </div>
   );
 };
 
-const styles: { [key: string]: CSSProperties } = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    //backgroundColor: '#f7f7f7',
-  },
-  form: {
-    backgroundColor: '#fff',
-    padding: '60px',
-    borderRadius: '8px',
-    boxShadow: '0 0 15px rgba(0, 0, 0, 0.1)',
-    width: '400px',
-  },
-  heading: {
-    marginBottom: '30px',
-    color: '#333',
-    textAlign: 'center',
-  },
-  inputGroup: {
-    marginBottom: '25px',
-  },
-  label: {
-    display: 'block',
-    marginBottom: '8px',
-    color: '#333',
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-  },
-  forgotPassword: {
-    textAlign: 'right',
-    marginBottom: '20px',
-  },
-  forgotPasswordLink: {
-    color: '#007BFF',
-    textDecoration: 'none',
-  },
-  button: {
-    width: '100%',
-    padding: '12px',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    fontSize: '16px',
-    cursor: 'pointer',
-  },
-  register: {
-    marginTop: '20px',
-    textAlign: 'center',
-  },
-  registerLink: {
-    color: '#007BFF',
-    textDecoration: 'none',
-  },
-  error: {
-    color: 'red',
-    marginBottom: '20px',
-    textAlign: 'center',
-  },
-};
-
 export default LoginForm;
+
