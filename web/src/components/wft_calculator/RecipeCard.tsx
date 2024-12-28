@@ -111,14 +111,6 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, updateRecipeQuantity })
     }
   }
 
-  const DefaultSVG = () => (
-    <svg width="100%" height="200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="24" height="24" fill="#E0E0E0"/>
-      <text x="12" y="12" textAnchor="middle" dy=".3em" fill="#888">No Image</text>
-    </svg>
-
-  )
-    
 
   return (
     <CardWrapper>

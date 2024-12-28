@@ -5,7 +5,6 @@ import { FaShareAlt } from 'react-icons/fa';
 import { getUserTotalWft, getUserWftProgress } from '../api/apiService';
 import { Modal, ModalBody, ModalFooter, ModalTitle } from 'react-bootstrap';
 import html2canvas from 'html2canvas';
-import axios from 'axios';
 import styled from 'styled-components';
 
 
@@ -25,7 +24,6 @@ const DashboardScreen = () => {
   const [chartImage, setChartImage] = useState<string>('');
   const chartRef = useRef<HTMLDivElement | null>(null);
   const shareButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [shortenedUrl, setShortenedUrl] = useState<string>('');
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 760);
 
 
@@ -78,14 +76,7 @@ const DashboardScreen = () => {
   }, [])
 
 
-  const shortenUrl = async (longUrl: string) => {
-    try {
-      const response = await axios.get<string>(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
-      setShortenedUrl(response.data);
-    } catch (error) {
-      
-    }
-  };
+
 
 
   const generateChartImage = () => {
@@ -115,7 +106,6 @@ const DashboardScreen = () => {
           shareButtonRef.current.style.display = '';
         }
         setChartImage(imageUrl);
-        shortenUrl(imageUrl);
         setModalIsOpen(true);
       });
     }

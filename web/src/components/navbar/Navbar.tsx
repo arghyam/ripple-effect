@@ -279,16 +279,7 @@ const MenuItem = styled.div<{ isActive: boolean }>`
   }
 `;
 
-const ActiveMenuItem = styled(MenuItem)`
-  color: #F2DFA4;
-`;
 
-const Icon = styled.div`
-  color: #00072D;
-  font-size: 20px;
-  margin-right: 8px;
-  margin-left: 4px;
-`;
 
 const LoginButton = styled.button`
   background: none;
@@ -351,9 +342,7 @@ const DropdownItem = styled.div`
   font-weight: bold;
 `;
 
-const DropdownItemIcon = styled.div`
-  margin-right: 10px;
-`;
+
 
 
 export default Navbar;
