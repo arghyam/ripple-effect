@@ -1,7 +1,7 @@
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import { Recipe } from '../../screens/CalculateScreen';
+import { Recipe } from '../../domain/models/Recipe';
 
 interface RecipeCardProps {
   recipe: Recipe;

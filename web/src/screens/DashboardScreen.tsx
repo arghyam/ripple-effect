@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BarChart from '../components/Barchart';
 import WFTBG from '../components/wft_calculator/wft_text_bg.png';
 import { FaShareAlt } from 'react-icons/fa';
-import html2canvas from 'html2canvas';
 import ShareModal from '../components/ShareModel';
 import { useInjection } from 'brandi-react';
 import { TOKENS } from '../di/tokens';
@@ -20,10 +19,10 @@ const DashboardScreen: React.FC = () => {
   const [dayWfts, setDayWfts] = useState<DayWft[]>([]);
   const [mTotalWft, setMTotalWft] = useState<number>(0);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-  const [chartImage, setChartImage] = useState<string>('');
-  const chartRef = useRef<HTMLDivElement | null>(null);
-  const shareButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 760);
+  // const [chartImage, setChartImage] = useState<string>('');
+  // const chartRef = useRef<HTMLDivElement | null>(null);
+  // const shareButtonRef = useRef<HTMLButtonElement | null>(null);
+
 
 
   const [userName, setUserName] = useState<string>('');
@@ -59,47 +58,38 @@ const DashboardScreen: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 760);
-    };
+ 
 
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  // const generateChartImage = () => {
+  //   setModalIsOpen(true);
+  //   if (shareButtonRef.current) {
+  //     shareButtonRef.current.style.display = 'none';
+  //   }
 
-  const generateChartImage = () => {
-    setModalIsOpen(true);
-    if (shareButtonRef.current) {
-      shareButtonRef.current.style.display = 'none';
-    }
+  //   if (chartRef.current) {
+  //     chartRef.current.style.paddingLeft = '20px';
+  //     html2canvas(chartRef.current, {
+  //       backgroundColor: '#00072D',
+  //       width: chartRef.current.clientWidth + 20,
+  //       height: chartRef.current.clientHeight + 100,
+  //     }).then((canvas) => {
+  //       const imageUrl = canvas.toDataURL('image/png');
+  //       const link = document.createElement('a');
+  //       link.href = imageUrl;
+  //       link.download = 'chart.png';
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //       console.log('Image saved locally.');
 
-    if (chartRef.current) {
-      chartRef.current.style.paddingLeft = '20px';
-      html2canvas(chartRef.current, {
-        backgroundColor: '#00072D',
-        width: chartRef.current.clientWidth + 20,
-        height: chartRef.current.clientHeight + 100,
-      }).then((canvas) => {
-        const imageUrl = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = imageUrl;
-        link.download = 'chart.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        console.log('Image saved locally.');
-
-        if (shareButtonRef.current) {
-          shareButtonRef.current.style.display = '';
-        }
-        setChartImage(imageUrl);
+  //       if (shareButtonRef.current) {
+  //         shareButtonRef.current.style.display = '';
+  //       }
+  //       setChartImage(imageUrl);
         
-      });
-    }
-  };
+  //     });
+  //   }
+  // };
 
   
   const handleCopyLink = () => { 
@@ -107,9 +97,6 @@ const DashboardScreen: React.FC = () => {
     alert('Link copied to clipboard'); 
   }
 
-  const closeModal = () => {
-    setModalIsOpen(false)
-  }
 
   const labels = dayWfts.map(day => day.dayName);
   const yAxisData = dayWfts.map(day => day.water_footprint);
