@@ -2,22 +2,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import BarChart from '../components/Barchart';
 import WFTBG from '../components/wft_calculator/wft_text_bg.png';
 import { FaShareAlt } from 'react-icons/fa';
-import { getUserTotalWft, getUserWftProgress } from '../api/apiService';
-import { Modal, ModalBody, ModalFooter, ModalTitle } from 'react-bootstrap';
 import html2canvas from 'html2canvas';
-import styled from 'styled-components';
 import ShareModal from '../components/ShareModel';
+import { useInjection } from 'brandi-react';
+import { TOKENS } from '../di/tokens';
 
 interface DayWft {
   dayName: string;
   water_footprint: number;
 }
 
-interface Platform {
-  url: string;
-}
 
 const DashboardScreen: React.FC = () => {
+
+  const userRepository = useInjection(TOKENS.userRepository);
+
   const [dayWfts, setDayWfts] = useState<DayWft[]>([]);
   const [mTotalWft, setMTotalWft] = useState<number>(0);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
@@ -26,9 +25,12 @@ const DashboardScreen: React.FC = () => {
   const shareButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 760);
 
+
+  const [userName, setUserName] = useState<string>('');
+
   const fetchDayWfts = async (userId: string) => {
     try {
-      const response = await getUserWftProgress(userId);
+      const response = await userRepository.getUserWftProgress(userId);
       setDayWfts(response.queryResult);
     } catch (error) {
       setDayWfts([]);
@@ -37,26 +39,23 @@ const DashboardScreen: React.FC = () => {
 
   const getmTotalWft = async (userId: string) => {
     try {
-      const response = await getUserTotalWft(userId);
+      const response = await userRepository.getUserTotalWft(userId);
       setMTotalWft(response.user_total_waterfootprint);
     } catch (error) {
       setMTotalWft(0);
-      alert('Error in calculating water footprint');
+      // alert('Error in calculating water footprint');
     }
   };
 
-  const socialMediaOptions = [
-    { name: 'Facebook', url: 'https://www.facebook.com/sharer/sharer.php?u=' },
-    { name: 'Twitter', url: 'https://twitter.com/share?url=' },
-    { name: 'LinkedIn', url: 'https://www.linkedin.com/shareArticle?mini=true&url=' }
-  ];
+
 
   useEffect(() => {
-    const userInfo: { id: string } | null = JSON.parse(localStorage.getItem('userInfo') || 'null');
+    const userInfo: { id: string, name: string } | null = JSON.parse(localStorage.getItem('userInfo') || 'null');
     if (userInfo && userInfo.id) {
       const userId = userInfo.id;
       fetchDayWfts(userId);
       getmTotalWft(userId);
+      setUserName(userInfo.name);
     }
   }, []);
 
@@ -102,10 +101,7 @@ const DashboardScreen: React.FC = () => {
     }
   };
 
-  const shareWaterFootprint = (platform: Platform, imageUrl: string) => {
-    const url = `${platform.url}${encodeURIComponent(imageUrl)}`;
-    window.open(url, '_blank');
-  };
+  
   const handleCopyLink = () => { 
     navigator.clipboard.writeText('https://apps.indiawaterportal.org/'); 
     alert('Link copied to clipboard'); 
@@ -143,7 +139,8 @@ const DashboardScreen: React.FC = () => {
 
   return (
     <div className="w-full text-center pt-12 mb-5">
-      <h2 className="text-3xl mb-6 text-primary font-display font-bold">Track Your Weekly Water Footprint Progress</h2>
+      <h2 className="text-4xl mb-6 text-black font-display font-bold">Hi, {userName}</h2>
+      <h2 className="text-3xl mb-6 text-primary font-body font-bold">Track Your Weekly Water Footprint Progress</h2>
       <div className="flex flex-col md:flex-row justify-center items-center gap-8 pt-12 w-full px-5">
         <div className="w-full h-72 p-6 max-w-md rounded-lg border border-gray-300 shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
           <BarChart data={data} options={options} />
@@ -166,10 +163,11 @@ const DashboardScreen: React.FC = () => {
           </button>
         </div>
       </div>
+      
+      
       <ShareModal isModalOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} onCopy={handleCopyLink} />
     </div>
   );
 };
 
 export default DashboardScreen;
-

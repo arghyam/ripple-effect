@@ -1,7 +1,7 @@
 import React, { useEffect, useState, RefCallback } from 'react';
 import RecipeCard from './RecipeCard';
-import { Recipe } from '../../screens/CalculateScreen';
 import Shimmer from '../Shimmer';
+import { Recipe } from '../../domain/models/Recipe';
 
 interface RecipeGridProps {
   recipes: Recipe[];

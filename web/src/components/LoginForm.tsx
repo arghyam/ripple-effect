@@ -1,9 +1,12 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../api/authApiService';
+import { TOKENS } from '../di/tokens';
+import { useInjection } from 'brandi-react';
 
 
-const LoginForm: React.FC = () => {
+const LoginForm  = () => {
+
+  const authRepository = useInjection(TOKENS.authRepository);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +16,7 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     try {
       const userDetails = { email, password };
-      const response = await loginUser(userDetails); // Assume loginUser is defined elsewhere
+      const response = await authRepository.loginUser(userDetails); // Assume loginUser is defined elsewhere
       alert(response.message);
       if (response.access_token != null) {
         localStorage.setItem('userInfo', JSON.stringify(response.user_info));
@@ -85,4 +88,5 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
+
 

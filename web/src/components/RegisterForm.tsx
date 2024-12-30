@@ -1,8 +1,12 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../api/authApiService';
+import { useInjection } from 'brandi-react';
+import { TOKENS } from '../di/tokens';
 
-const RegisterForm: React.FC = () => {
+const RegisterForm = () => {
+
+  const authRepository = useInjection(TOKENS.authRepository);
+  
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -16,7 +20,7 @@ const RegisterForm: React.FC = () => {
         email,
         password,
       };
-      const response = await registerUser(userDetails); // Assume registerUser is defined elsewhere
+      const response = await authRepository.registerUser(userDetails); // Assume registerUser is defined elsewhere
       alert(response.message);
       navigate('/login');
     } catch (error) {

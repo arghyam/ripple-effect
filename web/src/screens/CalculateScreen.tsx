@@ -4,18 +4,17 @@ import { useWaterFootprint } from '../hooks/useWaterfootprint';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalculator } from '@fortawesome/free-solid-svg-icons';
 import WaterFootprintResultDialog from '../components/wft_calculator/WaterFootprintResultDialog'
-import { fetchRecipes } from '../api/apiService'
 import Searchbar from '../components/Searchbar';
+import { useInjection } from 'brandi-react';
+import { TOKENS } from '../di/tokens';
+import { Recipe } from '../domain/models/Recipe';
 
-export interface Recipe {
-  id: string;
-  name: string;
-  quantity: number;
-  water_footprint: number;
-  thumbnail_url: string;
-}
+
 
 const CalculateScreen: React.FC = () => {
+
+  const userRepository = useInjection(TOKENS.userRepository);
+  
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [previousQuery, setPreviousQuery] = useState<string>('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -41,7 +40,7 @@ const CalculateScreen: React.FC = () => {
 
   const fetchRecipesCallback = useCallback(async (searchQuery: string, page: number, pageSize: number) => {
     try {
-      const response = await fetchRecipes(searchQuery, page, pageSize);
+      const response = await userRepository.fetchRecipes(searchQuery, page, pageSize);
       const transformedRecipes = response.recipes.map((recipe: any) => ({
         ...recipe,
         quantity: Number(recipe.quantity) || 0,
@@ -58,7 +57,7 @@ const CalculateScreen: React.FC = () => {
 
       setHasMore(response.recipes.length > 0);
     } catch (error) {
-      alert('Error fetching recipes');
+      // alert('Error fetching recipes');
     }
   }, []);
 
