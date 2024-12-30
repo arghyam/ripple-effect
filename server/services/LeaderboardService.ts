@@ -1,6 +1,7 @@
 import { injected } from "brandi";
 import { UserDAO } from "../data/dao/user/UserDAO";
 import { TOKENS } from "../di/tokens";
+import { logger } from "..";
 
 
 export class LeaderboardService {
@@ -16,16 +17,25 @@ export class LeaderboardService {
             name: user.name,
             water_footprint: user.total_water_footprint
         }))
+        
+        const sortedEntries = entries.sort((a, b) => a.water_footprint - b.water_footprint);
+
+        const rankedEntries = sortedEntries.map((entry, index) => ({ ...entry, rank: index + 1 }));
+        const top3Entries = rankedEntries.slice(0, 3);
 
         const user = await this.dao.fetchUserById(userId)
 
+        const userRank = rankedEntries.find(entry => entry.userId === userId)?.rank || null
+
 
         const res = {
-            entries: entries,
+            entries: rankedEntries,
+            top3Entries: top3Entries,
             mEntry: {
                 userId: userId,
                 name: user.name,
                 water_footprint: user.total_water_footprint,
+                rank: userRank
                
             }
         } as LeaderboardResponse

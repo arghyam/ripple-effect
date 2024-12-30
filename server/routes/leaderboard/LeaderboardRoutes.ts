@@ -1,6 +1,7 @@
 import express from 'express';
 import { container } from '../../di/container';
 import { TOKENS } from '../../di/tokens';
+import { logger } from '../..';
 
 
 const router = express.Router()
@@ -13,6 +14,8 @@ router.get('/get-leaderboard', async (req, res, next) => {
         
         const userId = req.query.userId as string
         const result = await leaderboardService.getLeaderboard(userId)
+
+        logger.info(`logggger:-------${res}`)
     
         res.status(200).json(
             {
