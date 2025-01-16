@@ -1,7 +1,6 @@
 import { injected } from "brandi";
 import { UserDAO } from "../data/dao/user/UserDAO";
 import { TOKENS } from "../di/tokens";
-import { logger } from "..";
 
 
 export class LeaderboardService {

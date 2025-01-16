@@ -15,6 +15,5 @@ export class LeaderboardRepoImpl implements LeaderboardRepository {
           }
     }
     
-  
 }
   
