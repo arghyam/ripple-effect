@@ -22,34 +22,6 @@ data class IngredientRowItem(
     val unselectedBgImageUrl: String,
     @SerialName("selectedBgImageUrl")
     val selectedBgImageUrl: String,
-    @SerialName("sampleImageSize")
-    val sampleImageSize: Float,
-    @SerialName("scaleFactor")
-    val scaleFactor: Float,
-    @SerialName("iconScalefactor")
-    val iconScaleFactor: Float,
-    @SerialName("cornerType")
-    val cornerType: String,
-    @SerialName("doneXOffSet")
-    val doneXOffSet: Float,
-    @SerialName("doneYOffSet")
-    val doneYOffSet: Float,
-    @SerialName("pluseXOffSet")
-    val pluseXOffSet: Float,
-    @SerialName("pluseYOffSet")
-    val pluseYOffSet: Float,
-    @SerialName("pluseXOffSet")
-    val pluseXOffSet: Float,
-    @SerialName("pluseYOffSet")
-    val pluseYOffSet: Float,
-    @SerialName("minusXOffSet")
-    val minusXOffSet: Float,
-    @SerialName("minusYOffSet")
-    val minusYOffSet: Float,
-    @SerialName("xOffset")
-    val xOffset: Float,
-    @SerialName("yOffset")
-    val yOffset: Float
 
 
 )

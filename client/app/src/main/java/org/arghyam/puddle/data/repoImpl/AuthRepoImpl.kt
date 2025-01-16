@@ -1,6 +1,21 @@
 package org.arghyam.puddle.data.repoImpl
 
 import android.content.SharedPreferences
+import android.os.Build
+import androidx.annotation.RequiresExtension
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ResponseException
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
+import io.ktor.http.HttpStatusCode
+import io.ktor.utils.io.errors.IOException
+import kotlinx.serialization.SerializationException
+import org.arghyam.puddle.BuildConfig
 import org.arghyam.puddle.data.dto.requests.auth.ResetPwdReq
 import org.arghyam.puddle.data.dto.requests.auth.SendForgotPwdOTPReq
 import org.arghyam.puddle.data.dto.requests.auth.SignInRequest
@@ -15,18 +30,12 @@ import org.arghyam.puddle.domain.models.DataError
 import org.arghyam.puddle.domain.models.Result
 import org.arghyam.puddle.domain.models.User
 import org.arghyam.puddle.domain.repository.AuthRepository
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.request.url
-import org.arghyam.puddle.BuildConfig
 
 class AuthRepoImpl(
     private val client: HttpClient,
     private val sharedPref: SharedPreferences
 ): AuthRepository {
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override suspend fun signIn(signInRequest: SignInRequest): Result<User, DataError> {
         return try {
 
@@ -44,9 +53,21 @@ class AuthRepoImpl(
             }
 
 
-        } catch (e: Exception) {
+        } catch (e: ClientRequestException) {
+            e.printStackTrace()
+            handleHttpResponseException(e)
+        } catch (e: ServerResponseException) {
+            e.printStackTrace()
+            handleHttpResponseException(e)
+        } catch (e: IOException) {
             e.printStackTrace()
             Result.Error(DataError.Network.SERVER_ERROR)
+        } catch (e: SerializationException) {
+            e.printStackTrace()
+            Result.Error(DataError.Network.SERIALIZATION)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.Error(DataError.Network.UNKNOWN)
         }
     }
 
@@ -134,4 +155,48 @@ class AuthRepoImpl(
         }
     }
 
+    private fun <T> handleHttpResponseException(e: ResponseException): Result<T, DataError> {
+        return when (e.response.status) {
+
+            HttpStatusCode.BadRequest -> {
+                Result.Error(DataError.Network.BAD_REQUEST)
+            }
+            HttpStatusCode.Unauthorized -> {
+                Result.Error(DataError.Network.UNAUTHORIZED)
+            }
+            HttpStatusCode.Forbidden -> {
+                Result.Error(DataError.Network.FORBIDDEN)
+            }
+            HttpStatusCode.NotFound -> {
+                Result.Error(DataError.Network.NOT_FOUND)
+            }
+            HttpStatusCode.PayloadTooLarge -> {
+                Result.Error(DataError.Network.PAYLOAD_TOO_LARGE)
+            }
+            HttpStatusCode.RequestTimeout -> {
+                Result.Error(DataError.Network.REQUEST_TIMEOUT)
+            }
+            HttpStatusCode.UnsupportedMediaType -> {
+                Result.Error(DataError.Network.UNSUPPORTED_MEDIA_TYPE)
+            }
+            HttpStatusCode.Conflict -> {
+                Result.Error(DataError.Network.CONFLICT)
+            }
+            HttpStatusCode.InternalServerError -> {
+                Result.Error(DataError.Network.INTERNAL_SERVER_ERROR)
+            }
+            HttpStatusCode.ServiceUnavailable -> {
+                Result.Error(DataError.Network.SERVICE_UNAVAILABLE)
+            }
+            HttpStatusCode.GatewayTimeout -> {
+                Result.Error(DataError.Network.GATEWAY_TIMEOUT)
+            }
+            else -> {
+                Result.Error(DataError.Network.UNKNOWN)
+            }
+        }
+    }
+
+
 }
+

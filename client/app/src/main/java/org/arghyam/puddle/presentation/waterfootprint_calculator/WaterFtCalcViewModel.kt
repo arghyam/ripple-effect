@@ -43,9 +43,7 @@ data class RecipeWithQuantity(
 )
 class WaterFtCalcViewModel(
     private val waterFtCalcRepo: WaterFtCalcRepository,
-    private val sharedPref: SharedPreferences
-    private val waterFtCalcRepo: WaterFtCalcRepository,
-    private val sharedPref: SharedPreferences
+    private val sharedPref: SharedPreferences,
 ) : ViewModel() {
 
     private val _recipesWithQuantityState = MutableStateFlow<List<RecipeWithQuantity>>(listOf())

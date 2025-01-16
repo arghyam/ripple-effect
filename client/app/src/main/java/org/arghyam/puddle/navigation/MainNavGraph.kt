@@ -226,19 +226,12 @@ fun MainNavGraph(
         composable(Routes.DiscoverScreen.route) {
             DiscoverScreen(onNavigate = mainNavController::navigate)
         }
-            DiscoverScreen(onNavigate = mainNavController::navigate)
-        }
 
         composable(Routes.ArticleScreen.route) {
             ArticleScreen(onNavigateBack = {
                 mainNavController.popBackStack(Routes.ArticleScreen.route, inclusive = true)
             })
-        composable(Routes.ArticleScreen.route) {
-            ArticleScreen(onNavigateBack = {
-                mainNavController.popBackStack(Routes.ArticleScreen.route, inclusive = true)
-            })
         }
-
 
 
         composable(Routes.PlanScreen.route) {

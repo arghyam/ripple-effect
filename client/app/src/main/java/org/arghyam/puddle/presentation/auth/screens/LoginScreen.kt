@@ -99,6 +99,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(50.dp))
 
         Text(
+            modifier = Modifier,
             text = "Login",
             style = TextStyle(
                 fontWeight = FontWeight.ExtraBold,
@@ -109,7 +110,7 @@ fun LoginScreen(
             )
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -120,14 +121,14 @@ fun LoginScreen(
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(380.dp)
-                    .clip(RoundedCornerShape(15.dp)),
-                painter = painterResource(id = R.drawable.img),
+                    .height(203.dp)
+                    ,
+                painter = painterResource(id = R.drawable.img_1),
                 contentDescription = "logo",
                 contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.height(0.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             Text(
                 modifier = Modifier.align(Alignment.Start),
@@ -151,8 +152,12 @@ fun LoginScreen(
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(15.dp)),
+                    .clip(RoundedCornerShape(15.dp))
+                    ,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                placeholder = {
+                    Text(text = "example@gmail.com")
+                },
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
@@ -193,6 +198,9 @@ fun LoginScreen(
                 } else {
                     PasswordVisualTransformation()
                 },
+                placeholder = {
+                    Text(text = "******")
+                },
                 trailingIcon = {
 
                     IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
@@ -226,7 +234,7 @@ fun LoginScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(23.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

@@ -60,11 +60,8 @@ fun RootNavGraph(
             RegisterScreen(
                 registerViewModel = viewModel,
                 onNavigate = {
-                    navController.navigate(it) {
-                        popUpTo(Routes.Register.route) {
-                            inclusive = true
-                        }
-                    }
+                    navController.popBackStack()
+
                 }
             )
         }
