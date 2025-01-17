@@ -18,15 +18,3 @@ data class IngredientRow(
 )
 
 
-data class IngredientState(
-    val isSelected: Boolean = false,
-    val amt:String = "",
-    val detail: IngredientRowItem
-)
-
-data class IngredientPattern(
-    val patternId: Int,
-    val rank: Int,
-    val patternItems: List<IngredientState>
-)
-

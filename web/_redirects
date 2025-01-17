@@ -1,0 +1,8 @@
+/*    /index.html   200
+
+# Redirects from what the browser requests to what we serve
+/login                /login
+/blog/my-post.php    /blog/my-post
+/news                /blog
+/cuties              https://www.petsofnetlify.com
+/authors/c%C3%A9line /authors/about-c%C3%A9line

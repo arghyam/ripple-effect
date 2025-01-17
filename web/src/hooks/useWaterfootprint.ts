@@ -1,5 +1,6 @@
+import { useInjection } from 'brandi-react';
 import { useState } from 'react';
-import { calcWaterfootprint } from '../api/apiService';
+import { TOKENS } from '../di/tokens';
 
 interface RecipeReq {
   recipe_id: string;
@@ -11,10 +12,12 @@ interface UserInfo {
 }
 
 export const useWaterFootprint = () => {
+
+  const userRepository = useInjection(TOKENS.userRepository);
   const [totalWaterFootprint, setTotalWaterFootprint] = useState<number>(0);
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
- 
+
 
   const calculateTotalWaterFootprint = async (req: RecipeReq[]) => {
     try {
@@ -24,7 +27,7 @@ export const useWaterFootprint = () => {
       const userInfo: UserInfo | null = JSON.parse(localStorage.getItem('userInfo') || 'null');
       if (userInfo && userInfo.id) {
         const userId = userInfo.id;
-        const response = await calcWaterfootprint(userId, req);
+        const response = await userRepository.calcWaterfootprint(userId, req);
         setTotalWaterFootprint(response.water_footprint);
       } else {
         alert('User information not found in localStorage');

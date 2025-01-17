@@ -1,67 +1,12 @@
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState, ChangeEvent } from 'react';
-import { Card, CardImg, CardBody, CardTitle, CardText, Button, Form } from 'react-bootstrap';
-import styled, { keyframes, css } from 'styled-components';
-import { Recipe } from '../../screens/CalculateScreen';
-
-
+import { Recipe } from '../../domain/models/Recipe';
 
 interface RecipeCardProps {
   recipe: Recipe;
   updateRecipeQuantity: (id: string, quantity: number) => void;
 }
-
-const PlaceholderImage = styled.svg`
-  width: 100%;
-  height: 200px; /* Fixed size */
-  background-color: #e0e0e0;
-  display: block;
-`
-
-const moveUp = keyframes`
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-5px);
-  }
-`;
-
-const moveDown = keyframes`
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(5px);
-  }
-`;
-
-const CardWrapper = styled(Card)`
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
-
-const QuantityControl = styled.div<{ animate: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ${(props) =>
-    props.animate === 'increase' &&
-    css`
-      animation: ${moveUp} 0.3s ease-out;
-    `}
-
-  ${(props) =>
-    props.animate === 'decrease' &&
-    css`
-      animation: ${moveDown} 0.3s ease-out;
-    `}
-`;
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, updateRecipeQuantity }) => {
   const [quantity, setQuantity] = useState<number>(recipe.quantity);
@@ -107,60 +52,57 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, updateRecipeQuantity })
       updateRecipeQuantity(recipe.id, newQuantity);
       setAnimate('decrease');
       setTimeout(() => setAnimate(''), 300);
-
     }
-  }
-
+  };
 
   return (
-    <CardWrapper>
-      <Card className="card">
-      {recipe.thumbnail_url ? (
-          <CardImg variant="top" src={recipe.thumbnail_url} className="card-img-top" style={{ width: '100%', height: '200px' }} />
+    <div className="transition transform hover:scale-105">
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+        {recipe.thumbnail_url ? (
+          <img src={recipe.thumbnail_url} alt={recipe.name} className="w-full h-48 object-cover" />
         ) : (
-          <PlaceholderImage>
-            <rect width="100%" height="100%" fill="#e0e0e0" />
-            <text x="50%" y="50%" textAnchor="middle" fill="#888" fontSize="20px">No Image Available</text>
-          </PlaceholderImage>
+          <div className="bg-gray-200 w-full h-48 flex items-center justify-center">
+            <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+              <rect width="100%" height="100%" fill="#e0e0e0" />
+              <text x="50%" y="50%" textAnchor="middle" fill="#888" fontSize="20px">
+                No Image Available
+              </text>
+            </svg>
+          </div>
         )}
-      <CardBody className="card-body">
-        <CardTitle className="card-title">{recipe.name}</CardTitle>
-        <CardText className="card-text">{Math.round(recipe.water_footprint)} L per 1 Serving</CardText>
-
-        {!showQuantity && (
-          <Button 
-            onClick={handleAddClick} 
-            style={{ width: '100%', display: 'block', margin: '0 auto' }}
-          >
-            Add
-          </Button>
-        )}
-
-        {showQuantity && (
-           <QuantityControl animate={animate}>
-            <Button variant="secondary" onClick={decreaseQuantity} style={{ margin: '0 10px' }}>
-              <FontAwesomeIcon icon={faMinus} />
-            </Button>
-            <Form.Group controlId="formQuantity" style={{ margin: '0 10px' }}>
-              <Form.Control
+        <div className="p-4">
+          <h3 className="text-xl font-bold">{recipe.name}</h3>
+          <p className="text-gray-700">{Math.round(recipe.water_footprint)} L per 1 Serving</p>
+          {!showQuantity && (
+            <button
+              onClick={handleAddClick}
+              className="mt-4 w-full py-2 bg-primary text-white rounded-lg hover:bg-green-600 transition duration-200"
+            >
+              Add
+            </button>
+          )}
+          {showQuantity && (
+            <div
+              className={`flex items-center mt-4 ${animate === 'increase' ? 'animate-bounce-up' : animate === 'decrease' ? 'animate-bounce-down' : ''}`}
+            >
+              <button onClick={decreaseQuantity} className="px-2 py-1 bg-gray-300 rounded-lg mr-2">
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+              <input
                 type="number"
                 value={quantity}
                 onChange={handleQuantityChange}
                 min="1"
-                style={{ width: '50px', textAlign: 'center' }}
+                className="w-12 text-center py-1 border border-gray-300 rounded-lg"
               />
-            </Form.Group>
-            <Button variant="secondary" onClick={increaseQuantity} style={{ margin: '0 10px' }} >
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
-          
-           </QuantityControl>
-            
-        )}
-      </CardBody>
-    </Card>
-    </CardWrapper>
-    
+              <button onClick={increaseQuantity} className="px-2 py-1 bg-gray-300 rounded-lg ml-2">
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 

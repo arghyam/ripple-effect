@@ -1,9 +1,12 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generateOtp, resetPassword, verifyOtp } from '../api/authApiService';
 import { CSSProperties } from 'react';
+import { useInjection } from 'brandi-react';
+import { TOKENS } from '../di/tokens';
 
 const ForgotPasswordForm: React.FC = () => {
+
+  const authRepository = useInjection(TOKENS.authRepository);
   const [email, setEmail] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
@@ -16,7 +19,7 @@ const ForgotPasswordForm: React.FC = () => {
   const handleRequestOtp = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await generateOtp({ email });
+      const response = await authRepository.generateOtp({ email });
 
       alert(`${response.message}`);
       if (response.created_on !== null) {
@@ -31,7 +34,7 @@ const ForgotPasswordForm: React.FC = () => {
   const handleVerifyOtp = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await verifyOtp({ email, otp, created_on: forgotPwdOtpTp });
+      const response = await authRepository.verifyOtp({ email, otp, created_on: forgotPwdOtpTp });
 
       if (response.access_token) {
         alert(`${response.message}`);
@@ -47,7 +50,7 @@ const ForgotPasswordForm: React.FC = () => {
   const handleUpdatePassword = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await resetPassword({ email, new_password: newPassword, authToken });
+      const response = await authRepository.resetPassword({ email, new_password: newPassword, authToken });
 
       alert(`${response.message}`);
       alert('Your password has been updated');

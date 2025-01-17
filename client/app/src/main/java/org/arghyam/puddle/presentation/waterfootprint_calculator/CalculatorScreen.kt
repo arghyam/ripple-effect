@@ -71,9 +71,7 @@ fun CalculatorScreen(
     val query by viewModel.query.collectAsState()
     val recipes = viewModel.mRecipes.collectAsLazyPagingItems()
     val recipeWithQuantityList by viewModel.recipesWithQuantityState.collectAsState()
-    val context = LocalContext.current
 
-    var isSRTopBarVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
         viewModel.eventFlow.collectLatest {
@@ -82,8 +80,8 @@ fun CalculatorScreen(
                     onNavigate(Routes.CalculateResultScreen.route + "?" + "water_footprint=${it.result}")
                 }
 
-                WaterFtCalcUiEvent.WFCOnboardCompleted -> TODO()
-                WaterFtCalcUiEvent.WaterFootprintCalculationFailed -> TODO()
+                WaterFtCalcUiEvent.WFCOnboardCompleted -> {}
+                WaterFtCalcUiEvent.WaterFootprintCalculationFailed -> {}
             }
         }
     }
@@ -96,13 +94,15 @@ fun CalculatorScreen(
 
 
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 110.dp, bottom = 10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp, top = 110.dp, bottom = 10.dp),
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
 
-            items( recipes.itemSnapshotList.items, key = {it.id}) { recipe ->
+            items(items = recipes.itemSnapshotList.items, key = {it.id}) { recipe ->
 
                 recipe.let {
                     val existingRecipeWithQuantity = recipeWithQuantityList.firstOrNull { it.recipeId == recipe.id }

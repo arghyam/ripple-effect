@@ -1,10 +1,7 @@
-import { Col, Container, Row, Spinner } from "react-bootstrap";
-import RecipeCard from "./RecipeCard";
-import { useEffect, useState,RefCallback } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Recipe } from "../../screens/CalculateScreen";
-
-
+import React, { useEffect, useState, RefCallback } from 'react';
+import RecipeCard from './RecipeCard';
+import Shimmer from '../Shimmer';
+import { Recipe } from '../../domain/models/Recipe';
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -23,32 +20,29 @@ const RecipeGrid: React.FC<RecipeGridProps> = ({ recipes, updateRecipeQuantity, 
   }, [recipes]);
 
   return (
-    <Container>
+    <div className="mt-8 container mx-auto px-8">
       {loading ? (
-        <Spinner animation="border" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 px-4"> 
+          {[...Array(12)].map((_, index) => ( <Shimmer key={index} /> ))} 
+        </div>
       ) : (
-        <Row className="gy-4"> {/* Add vertical spacing between rows */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 px-4">
           {recipes.map((recipe, index) => (
-            <Col
+            <div
               key={recipe.id}
-              xs={12}
-              sm={6}
-              md={4}
-              lg={3}
               ref={index === recipes.length - 1 ? lastRecipeElementRef : null}
+              className="col-span-1"
             >
-              <div>
-                <RecipeCard
-                  key={recipe.id}
-                  recipe={recipe}
-                  updateRecipeQuantity={updateRecipeQuantity}
-                />
-              </div>
-            </Col>
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                updateRecipeQuantity={updateRecipeQuantity}
+              />
+            </div>
           ))}
-        </Row>
+        </div>
       )}
-    </Container>
+    </div>
   );
 };
 

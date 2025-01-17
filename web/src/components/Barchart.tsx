@@ -34,7 +34,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, options }) => {
   };
 
   return (
-    <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+    <div className="relative h-full w-full">
       <Bar data={data} options={{ ...options, ...responsiveOptions }} />
     </div>
   );

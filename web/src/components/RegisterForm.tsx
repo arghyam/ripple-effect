@@ -1,9 +1,12 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CSSProperties } from 'react';
-import { registerUser } from '../api/authApiService';
+import { useInjection } from 'brandi-react';
+import { TOKENS } from '../di/tokens';
 
-const RegisterForm: React.FC = () => {
+const RegisterForm = () => {
+
+  const authRepository = useInjection(TOKENS.authRepository);
+  
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -13,11 +16,11 @@ const RegisterForm: React.FC = () => {
     e.preventDefault();
     try {
       const userDetails = {
-        name: name,
-        email: email,
-        password: password,
+        name,
+        email,
+        password,
       };
-      const response = await registerUser(userDetails);
+      const response = await authRepository.registerUser(userDetails); // Assume registerUser is defined elsewhere
       alert(response.message);
       navigate('/login');
     } catch (error) {
@@ -26,110 +29,54 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>Register</h2>
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="name">Name</label>
+    <div className="flex justify-center items-center h-screen">
+      <form onSubmit={handleSubmit} className="bg-white px-10 py-20 rounded-3xl  shadow-md w-full max-w-md border-2">
+      <h1 className="text-5xl font-display font-semibold">Welcome Back</h1>
+      <p className="font-display font-medium text-lg text-gray-500 mt-4">Welcome back! Please register your details</p>
+        <div className="mb-4 mt-8">
+          <label htmlFor="name" className="text-lg font-medium">Name</label>
           <input
             type="text"
             id="name"
+             placeholder='John Doe'
             value={name}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-            style={styles.input}
+            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent font-body"
             required
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="email">Email</label>
+        <div className="mb-4">
+          <label htmlFor="email" className="text-lg font-medium">Email</label>
           <input
             type="email"
             id="email"
             value={email}
+             placeholder='example@gmail.com'
             onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-            style={styles.input}
+            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent font-body"
             required
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label} htmlFor="password">Password</label>
+        <div className="mb-6">
+          <label htmlFor="password" className="text-lg font-medium">Password</label>
           <input
             type="password"
             id="password"
             value={password}
+             placeholder='*******'
             onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-            style={styles.input}
+            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent font-body"
             required
           />
         </div>
-        <button type="submit" style={styles.button}>Register</button>
-        <div style={styles.footer}>
-          <a href="/login" style={styles.loginLink}>Already have an account? Login</a>
+        <button type="submit" className="mt-8 w-full py-3 px-4 bg-primary text-white rounded-xl font-display">Register</button>
+        <div className="mt-4 text-center">
+          <span>Don't have an account? </span>
+          <a href="/login" className="font-medium text-base text-primary hover:underline">Login</a>
         </div>
       </form>
     </div>
   );
-};
-
-const styles: { [key: string]: CSSProperties } = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    //backgroundColor: '#f7f7f7',
-  },
-  form: {
-    backgroundColor: '#fff',
-    padding: '60px',
-    borderRadius: '8px',
-    boxShadow: '0 0 15px rgba(0, 0, 0, 0.1)',
-    width: '400px',
-  },
-  heading: {
-    marginBottom: '30px',
-    color: '#333',
-    textAlign: 'center',
-  },
-  inputGroup: {
-    marginBottom: '25px',
-  },
-  label: {
-    display: 'block',
-    marginBottom: '8px',
-    color: '#333',
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-  },
-  button: {
-    width: '100%',
-    padding: '12px',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    fontSize: '16px',
-    cursor: 'pointer',
-  },
-  footer: {
-    marginTop: '20px',
-    textAlign: 'center',
-  },
-  loginLink: {
-    color: '#007BFF',
-    textDecoration: 'none',
-  },
-  wrapper: {
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: '#F2DFA4', // Light yellow background
-    borderRadius: '15px', // Rounded corners
-    padding: '10px 20px',
-  },
 };
 
 export default RegisterForm;

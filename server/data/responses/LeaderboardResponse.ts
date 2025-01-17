@@ -1,4 +1,5 @@
 interface LeaderboardResponse {
+    top3Entries: LeaderboardEntry[]
     entries: LeaderboardEntry[]
     mEntry: LeaderboardEntry
 }
