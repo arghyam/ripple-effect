@@ -21,7 +21,6 @@
     "axios": "^1.7.7",
     "brandi-react": "^5.0.0",
     "chart.js": "^4.4.6",
-    "dotenv-flow": "^4.1.0",
     "html2canvas": "^1.4.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
