@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
-import WFTBGImg from './wft_text_bg.png';
 
 interface WaterFootprintResultDialogProps {
   open: boolean;
@@ -28,7 +27,7 @@ const WaterFootprintResultDialog: React.FC<WaterFootprintResultDialogProps> = ({
       <DialogContent>
         <div style={{ position: 'relative', textAlign: 'center' }}>
           <img
-            src={WFTBGImg}
+            src="./wft_text_bg.png"
             alt="Water Footprint"
             style={{ display: 'block', margin: '0 auto', width: '50%' }}
           />

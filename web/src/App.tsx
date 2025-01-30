@@ -8,6 +8,7 @@ import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import PrivateRoute from "./components/PrivateRoute";
 import NotAvailable from "./components/NotAvailable";
 import LeaderboardScreen from "./screens/LeaderboardScreen";
+import { Toaster } from "react-hot-toast";
 
 const AppContent = () => {
   const location = useLocation();
@@ -15,6 +16,7 @@ const AppContent = () => {
 
   return (
     <div>
+      <Toaster />
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
       <Routes>

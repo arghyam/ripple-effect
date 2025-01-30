@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import LogoutModal from "./LogoutModal";
 
 
@@ -11,6 +11,7 @@ const Navbar = () => {
     const handleMenu = () => { setIsMenuOpen(!isMenuOpen); }
     const location = useLocation();
     const [userName, setUserName] = useState<string>('');
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -24,7 +25,8 @@ const Navbar = () => {
     const handleLogout = () => { // Clear local storage data 
         localStorage.clear();
         setLogoutModalOpen(false); // Redirect to login page 
-        window.location.href = '/login';
+        navigate('/login')
+
     };
 
 

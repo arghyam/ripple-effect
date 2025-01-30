@@ -1,26 +1,31 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { TOKENS } from '../di/tokens';
 import { useInjection } from 'brandi-react';
-
+import { toast } from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import { ClipLoader } from 'react-spinners';
 
 const LoginForm  = () => {
-
   const authRepository = useInjection(TOKENS.authRepository);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [ripple, setRipple] = useState<{ x: number; y: number } | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
       const userDetails = { email, password };
-      const response = await authRepository.loginUser(userDetails); // Assume loginUser is defined elsewhere
-      alert(response.message);
+      const response = await authRepository.loginUser(userDetails);
       if (response.access_token != null) {
         localStorage.setItem('userInfo', JSON.stringify(response.user_info));
-        navigate('/');
+        toast.success('Login Successful!');
+        setTimeout(() => navigate('/'), 700); // Delay navigation for smooth transition
       }
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.message) {
@@ -28,12 +33,29 @@ const LoginForm  = () => {
       } else {
         setError('Failed to login. Please try again.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
+  const createRipple = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const button = event.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    setRipple({ x, y });
+    setTimeout(() => setRipple(null), 600);
+  };
+
   return (
-    <div className="flex justify-center items-center h-screen">
-      <form onSubmit={handleSubmit} className="bg-white px-10 py-20 rounded-3xl  shadow-md w-full max-w-md border-2">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.6, ease: 'easeInOut' }}
+      className="flex justify-center items-center h-screen"
+    >
+      <form onSubmit={handleSubmit} className="bg-white px-10 py-20 rounded-3xl shadow-md w-full max-w-md border-2 relative overflow-hidden">
         <h1 className="text-5xl font-display font-semibold">Welcome Back</h1>
         <p className="font-display font-medium text-lg text-gray-500 mt-4">Welcome back! Please login</p>
     
@@ -47,6 +69,7 @@ const LoginForm  = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent font-body"
             required
+            disabled={loading}
           />
         </div>
         <div className="mb-6">
@@ -59,6 +82,7 @@ const LoginForm  = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent font-body"
             required
+            disabled={loading}
           />
         </div>
         <div className="mt-8 flex justify-between items-center">
@@ -66,27 +90,35 @@ const LoginForm  = () => {
           <input
               type="checkbox"
               id="remember"
+              disabled={loading}
             />
           <label htmlFor="remember" className='ml-2 font-medium text-base font-body'>Remember for 30 days</label>
           </div>
-          <button id="forgot-password" className="font-medium text-base text-primary"><a href='/forgot-password'>Forgot Password?</a></button>
-          
+          <Link to="/forgot-password" className="font-medium text-base text-primary hover:underline">Forgot Password?</Link>
         </div>
-        <div className="flex justify-end mb-4">
-          
-        </div>
-       
-        <button type="submit" className="mt-8 w-full py-3 px-4 bg-primary text-white rounded-xl font-display ">Login</button>
+        
+        <button 
+          type="submit" 
+          className={`relative overflow-hidden mt-8 w-full py-3 px-4 bg-primary text-white rounded-xl font-display flex justify-center items-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-opacity-90 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`} 
+          disabled={loading}
+          onClick={createRipple}
+        >
+          {loading ? <ClipLoader size={24} color="#fff" /> : 'Login'}
+          {ripple && (
+            <span 
+              className="absolute w-16 h-16 bg-white opacity-30 rounded-full transform scale-0 animate-ripple" 
+              style={{ left: ripple.x - 32, top: ripple.y - 32 }}
+            />
+          )}
+        </button>
         <div className="mt-4 text-center">
           <span>Don't have an account? </span>
-          <a href="/register" className="font-medium text-base text-primary hover:underline">Register</a>
+          <Link to="/register" className="font-medium text-base text-primary hover:underline">Register</Link>
         </div>
         {error && <div className="text-red-500 mb-1 text-center">{error}</div>}
       </form>
-    </div>
+    </motion.div>
   );
 };
 
 export default LoginForm;
-
-
