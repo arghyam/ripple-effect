@@ -32,7 +32,7 @@ const Navbar = () => {
         <nav className="px-10 flex bg-white justify-between items-center">
 
 
-            <a href="#" id="brand">
+            <a href="/" id="brand">
                 <img className="object-cover max-h-12" src="./app_logo.avif" alt="Logo" />
             </a>
             <div className="hidden md:flex gap-12" id="nav-menu">
