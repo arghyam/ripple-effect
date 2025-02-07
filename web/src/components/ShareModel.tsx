@@ -5,17 +5,17 @@ interface ShareModalProps {
     onClose: () => void;
     onCopy: () => void;
     chartImage: string;  // Base64 image or URL
-    craftedMessage: string;  // Custom message
+    craftedMessage: string; 
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({isModalOpen, onClose, onCopy, chartImage, craftedMessage}) => {
     if (!isModalOpen) return null;
 
-    // Function to handle the download of the chart image
+    
     const handleDownload = () => {
         const link = document.createElement('a');
         link.href = chartImage; // The Base64 or image URL
-        link.download = 'chart-image.png'; // Name the image file (can be '.jpg' or '.png')
+        link.download = 'chart-image.png'; 
         link.click();
     };
 
@@ -35,7 +35,6 @@ const ShareModal: React.FC<ShareModalProps> = ({isModalOpen, onClose, onCopy, ch
     };
 
     const handleInstagramShare = () => {
-        const message = "Check out this awesome chart!";
         const imageUrl = "https://www.example.com/image.jpg"; // URL to the image you'd like to share
         
         // Instagram share URL Scheme

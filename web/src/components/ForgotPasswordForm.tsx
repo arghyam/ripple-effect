@@ -67,7 +67,7 @@ const ForgotPasswordForm: React.FC = () => {
     setLoading(true);
     try {
       const response = await authRepository.resetPassword({ email, new_password: newPassword, authToken });
-      toast.success('Your password has been updated');
+      toast.success(`${response.message}`);
       navigate('/login');
     } catch (error: any) {
       toast.error(error.message);

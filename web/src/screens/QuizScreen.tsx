@@ -11,7 +11,7 @@ interface Question {
   answer: string;
   optionA: string;
   optionB: string;
-  optionC: string;
+  optionC: string;  
   optionD: string;
 }
 
@@ -119,16 +119,15 @@ const QuizPage: React.FC = () => {
             index > unlockedQuestionIndex ? "opacity-50 pointer-events-none" : ""
           } ${isCurrentQuestion ? "ring-2 ring-primary" : ""}`}
         >
-          {/* ✅ Timer for Mobile (Visible Only on Small Screens) */}
+
           <div className="flex items-center justify-between mb-4">
-            {/* Question Number */}
-            {/* Question Number + Question Text Combined with Perfect Alignment */}
+
             <h2 className="text-lg font-semibold text-gray-900 flex items-start gap-2">
             <span className="bg-primary text-white text-sm px-3 py-1 rounded-full flex items-center justify-center min-w-[30px] text-center">
                 {index + 1}.
             </span>
             <span className="flex-1 leading-tight text-justify">{question.question}</span>
-            {/* ✅ Mobile Timer (Shows Timer or "N/A" if Undefined) */}
+ 
             <div className="md:hidden flex items-center bg-gray-100 px-3 py-1 rounded-full">
               {currentTimer !== undefined ? (
                 <>
@@ -148,7 +147,7 @@ const QuizPage: React.FC = () => {
             
           </div>
 
-          {/* ✅ Answer Options */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {["A", "B", "C", "D"].map((option) => {
               const optionKey = `option${option}`;
@@ -173,13 +172,11 @@ const QuizPage: React.FC = () => {
                   onClick={() => handleAnswerSelection(index, optionKey)}
                   disabled={!!selectedAnswers[index] || timers[index] === 0}
                 >
-                  {/* Left Aligned Option Label */}
                   <span className="absolute left-3 font-bold text-gray-600">{option}.</span>
 
-                  {/* Text Aligned with Padding */}
                   <span className="ml-8">{question[optionKey as keyof Question]}</span>
 
-                  {/* Show Correct Answer in Green if Wrong Answer is Selected */}
+
                   {isSelected && <span className="absolute right-4 text-white font-bold">✓</span>}
                 </Button>
               );
