@@ -14,7 +14,17 @@ export default {
         surface: '#ffffff', 
         error: '#e0245e', 
         gray50: '#808080',
-        gray300: '#696969'
+        gray300: '#696969',
+        indigo: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          600: '#4f46e5',
+          700: '#4338ca',
+        },
+        purple: {
+          600: '#9333ea',
+          700: '#7e22ce',
+        }
       },
       fontFamily: {
         'display': ['Poppins', 'sans-serif'],

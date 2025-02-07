@@ -1,0 +1,83 @@
+[
+    {
+      "question": "Which crop uses the least water to produce 1 kilogram of yield?",
+      "optionA": "Wheat - 1,800 liters",
+      "optionB": "Corn - 900 liters",
+      "optionC": "Potatoes - 300 liters",
+      "optionD": "Avocados - 2,000 liters",
+      "answer": "optionC"
+    },
+    {
+      "question": "Which crop is generally considered to be more water-efficient compared to others?",
+      "optionA": "Rice",
+      "optionB": "Barley",
+      "optionC": "Cotton",
+      "optionD": "Soybeans",
+      "answer": "optionB"
+    },
+    {
+      "question": "On average, how much water is required to produce 1 kilogram of rice?",
+      "optionA": "1,000 liters",
+      "optionB": "2,500 liters",
+      "optionC": "3,500 liters",
+      "optionD": "4,500 liters",
+      "answer": "optionC"
+    },
+    {
+      "question": "Which of the following crops requires the least amount of water to grow?",
+      "optionA": "Rice",
+      "optionB": "Almonds",
+      "optionC": "Lentils",
+      "optionD": "Sugarcane",
+      "answer": "optionC"
+    },
+    {
+      "question": "Which of the following is a low water-intensive crop that can be used as a staple food?",
+      "optionA": "Wheat",
+      "optionB": "Sorghum",
+      "optionC": "Corn",
+      "optionD": "Oats",
+      "answer": "optionB"
+    },
+    {
+      "question": "What is the most water-efficient way to grow vegetables?",
+      "optionA": "Flood irrigation",
+      "optionB": "Drip irrigation",
+      "optionC": "Sprinkler irrigation",
+      "optionD": "Rain-fed farming",
+      "answer": "optionB"
+    },
+    {
+      "question": "Growing which of these fruits requires the most water?",
+      "optionA": "Apples",
+      "optionB": "Bananas",
+      "optionC": "Oranges",
+      "optionD": "Avocados",
+      "answer": "optionD"
+    },
+    {
+      "question": "By how much can water usage be reduced by switching from beef to chicken in a diet?",
+      "optionA": "20%",
+      "optionB": "40%",
+      "optionC": "70%",
+      "optionD": "90%",
+      "answer": "optionC"
+    },
+    {
+      "question": "How many liters of water are required to produce 1 liter of almond milk?",
+      "optionA": "300 liters",
+      "optionB": "600 liters",
+      "optionC": "900 liters",
+      "optionD": "1,200 liters",
+      "answer": "optionB"
+    },
+    {
+      "question": "How much water is typically used to produce one cup of coffee?",
+      "optionA": "50 liters",
+      "optionB": "100 liters",
+      "optionC": "140 liters",
+      "optionD": "200 liters",
+      "answer": "optionC"
+    }
+  ]
+  

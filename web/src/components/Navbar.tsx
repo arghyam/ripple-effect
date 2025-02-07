@@ -33,10 +33,17 @@ const Navbar = () => {
     return (
         <nav className="px-10 flex bg-white justify-between items-center">
 
+            <Link
+                to="/"
+                id="brand"
+            >
+                <img
+                    src="./app_logo.avif"
+                    alt="IndiaWaterPortal Logo"
+                    className="hidden md:block h-10 w-auto object-contain"
+                />
+            </Link>
 
-            <a href="/" id="brand">
-                <img className="object-cover max-h-12" src="./app_logo.avif" alt="Logo" />
-            </a>
             <div className="hidden md:flex gap-12" id="nav-menu">
                 <Link
                     to="/"
@@ -95,47 +102,47 @@ const Navbar = () => {
                 </div>
                 <div className="mt-6">
 
-                <button className='w-full' onClick={handleMenu}>
-                <Link
-                        to="/"
-                        className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/' ? 'bg-primary text-white' : ''}` }
-                    >
-                        <i className="fas fa-tachometer-alt mr-2"></i>
-                        <span className="text-xl">Dashboard</span>
-                    </Link>
-                </button>
-                    
+                    <button className='w-full' onClick={handleMenu}>
+                        <Link
+                            to="/"
+                            className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/' ? 'bg-primary text-white' : ''}`}
+                        >
+                            <i className="fas fa-tachometer-alt mr-2"></i>
+                            <span className="text-xl">Dashboard</span>
+                        </Link>
+                    </button>
 
-                <button className='w-full' onClick={handleMenu}>
-                <Link
-                        to="/calculate"
-                        className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/calculate' ? 'bg-primary text-white' : ''}`}
-                    >
-                        <i className="fa-solid fa-calculator mr-2"></i>
-                        <span className="text-xl">Calculate</span>
-                    </Link>
-                </button>
-                    
 
-                <button className='w-full' onClick={handleMenu}><Link
+                    <button className='w-full' onClick={handleMenu}>
+                        <Link
+                            to="/calculate"
+                            className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/calculate' ? 'bg-primary text-white' : ''}`}
+                        >
+                            <i className="fa-solid fa-calculator mr-2"></i>
+                            <span className="text-xl">Calculate</span>
+                        </Link>
+                    </button>
+
+
+                    <button className='w-full' onClick={handleMenu}><Link
                         to="/leaderboard"
                         className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/leaderboard' ? 'bg-primary text-white' : ''}`}
                     >
                         <i className="fa-solid fa-trophy mr-2"></i>
                         <span className="text-xl">Leaderboard</span>
                     </Link></button>
-                    
+
 
                     <button className='w-full' onClick={handleMenu}>
-                    <Link
-                        to="/discover"
-                        className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/discover' ? 'bg-primary text-white' : ''}`}
-                    >
-                        <i className="fa-solid fa-compass mr-2"></i>
-                        <span className="text-xl">Discover</span>
-                    </Link>
+                        <Link
+                            to="/discover"
+                            className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/discover' ? 'bg-primary text-white' : ''}`}
+                        >
+                            <i className="fa-solid fa-compass mr-2"></i>
+                            <span className="text-xl">Discover</span>
+                        </Link>
                     </button>
-                    
+
 
 
                 </div>
