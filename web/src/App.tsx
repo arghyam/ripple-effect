@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation, BrowserRouter } from "react-router-dom";
+import { Route, Routes, useLocation, BrowserRouter, matchPath } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
 import CalculateScreen from "./screens/CalculateScreen";
@@ -11,15 +11,21 @@ import { Toaster } from "react-hot-toast";
 import QuizPage from "./screens/QuizScreen";
 import { QuizProvider } from "./context/QuizContext";
 import DiscoverScreen from "./screens/DiscoverScreen";
+import QuizHistoryPage from "./screens/QuizHistoryScreen";
+import DashboardTestScreen from "./screens/DashboardTestScreen";
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavbarRoutes = ["/login", "/register", "/forgot-password", "/quiz"];
+  const hideNavbarRoutes = ["/login", "/register", "/forgot-password", "/quiz/:quizId"];
+
+  const hideNavbar = hideNavbarRoutes.some((pattern) =>
+    matchPath({ path: pattern, end: true }, location.pathname)
+  );
 
   return (
     <div>
       <Toaster />
-      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+      {!hideNavbar && <Navbar />}
       <QuizProvider>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
@@ -42,9 +48,20 @@ const AppContent = () => {
             element={<PrivateRoute element={<DiscoverScreen />} />}
           />
           <Route
-            path="/quiz"
+            path="/quiz/:quizId"
             element={<PrivateRoute element={<QuizPage />} />}
           />
+
+          <Route
+            path="/quiz-history"
+            element={<PrivateRoute element={<QuizHistoryPage />} />}
+          />
+          <Route
+            path="/dashboard-test"
+            element={<PrivateRoute element={<DashboardTestScreen />} />}
+          />
+          
+
         </Routes>
       </QuizProvider>
       

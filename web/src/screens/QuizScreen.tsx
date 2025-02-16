@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuiz } from "../context/QuizContext";
 import { Button } from "../components/Button";
 import { AlertCircle, CheckCircle2, Clock } from "lucide-react";
-import questionsData from "../data/questions.json";
 import QuizHeader from "../components/QuizHeader";
+import { QuizRepoImpl } from "../data/repoImpl/QuizRepoImpl";
+import { QuestionAttributes } from "../data/models/quiz/Quiz";
+import { TOKENS } from "../di/tokens";
+import { useInjection } from "brandi-react";
 
-interface Question {
-  question: string;
-  answer: string;
-  optionA: string;
-  optionB: string;
-  optionC: string;  
-  optionD: string;
-}
 
 const QuizPage: React.FC = () => {
-  const { questions, setQuestions, setScore, score } = useQuiz();
+  const { quizId } = useParams();
+  const { questions, setQuestions, setScore, score, title, setTitle } = useQuiz();
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string | null>>({});
   const [unlockedQuestionIndex, setUnlockedQuestionIndex] = useState<number>(0);
   const [timers, setTimers] = useState<number[]>(Array(questions.length).fill(30));
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirmReset, setShowConfirmReset] = useState<boolean>(false);
+   const quizRepository = useInjection(TOKENS.quizRepository);
 
   const navigate = useNavigate();
   const currentProgress = ((unlockedQuestionIndex + 1) / questions.length) * 100;
@@ -49,10 +46,37 @@ const QuizPage: React.FC = () => {
     }
   }, [timers, unlockedQuestionIndex, selectedAnswers]);
 
-  useEffect(() => {
-    setQuestions(questionsData)
 
-  }, [setQuestions])
+  useEffect(() => {
+    const fetchQuizWithId = async () => {
+    try {
+    const quizRepo = new QuizRepoImpl();
+    const quiz = await quizRepo.getQuizById(quizId as string);
+    setQuestions(quiz.questions);
+    setTitle(quiz.quiz.title);
+    } catch (error) {
+    console.error("Error fetching quiz questions:", error);
+    }
+    };
+    fetchQuizWithId();
+    }, [setQuestions]);
+
+  const handleSumitQuiz = async () => {
+    const userInfo: { id: string; name: string } | null = JSON.parse(localStorage.getItem('userInfo') || 'null');
+    if (userInfo && userInfo.id && quizId) {
+      await quizRepository.createQuizScore(
+        quizId,
+        userInfo.id,
+        title,
+        score,
+        attemptedQuestions,
+        questions.length
+      )
+      navigate('/discover');
+    }
+    
+  }
+  
 
   const moveToNextQuestion = () => {
     if (unlockedQuestionIndex < questions.length - 1) {
@@ -109,7 +133,7 @@ const QuizPage: React.FC = () => {
 
           {questions.length > 0 && (
   <div className="space-y-8">
-    {questions.map((question: Question, index: number) => {
+    {questions.map((question: QuestionAttributes, index: number) => {
       const currentTimer = timers[index]; // Fetch the timer for the current question
       const isCurrentQuestion = index === unlockedQuestionIndex;
       return (
@@ -174,7 +198,8 @@ const QuizPage: React.FC = () => {
                 >
                   <span className="absolute left-3 font-bold text-gray-600">{option}.</span>
 
-                  <span className="ml-8">{question[optionKey as keyof Question]}</span>
+                  <span className="ml-8">{String(question[optionKey as keyof QuestionAttributes])}</span>
+
 
 
                   {isSelected && <span className="absolute right-4 text-white font-bold">✓</span>}
@@ -229,7 +254,7 @@ const QuizPage: React.FC = () => {
                 Retry Quiz
               </Button>
               <Button
-                onClick={() => navigate("/")}
+                onClick={handleSumitQuiz}
                 className="flex-1 bg-indigo-600 hover:bg-indigo-700"
               >
                 Finish

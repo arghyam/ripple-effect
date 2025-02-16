@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       colors: { 
-        primary: '#4798af', 
+        primary: '#4798af',
+        custom: '#2d6a7d',
         secondary: '#14171a', 
         accent: '#657786', 
         background: '#ffffff', 
@@ -24,13 +25,25 @@ export default {
         purple: {
           600: '#9333ea',
           700: '#7e22ce',
-        }
+        },
       },
       fontFamily: {
         'display': ['Poppins', 'sans-serif'],
         'body': ['Inter', 'sans-serif']
+      },
+      spacing: {
+        '128': '32rem',
+      },
+      backgroundImage: {
+        'water-pattern': "url('/assets/water-pattern.svg')",
+      },
+      boxShadow: {
+        'soft': '0 4px 24px -2px rgba(99, 102, 241, 0.1)',
       }
+
     }
   },
-  plugins: [],
+  plugins: [
+    
+  ],
 }
