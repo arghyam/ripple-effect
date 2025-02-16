@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import RecipeGrid from '../components/wft_calculator/RecipeGrid';
 import { useWaterFootprint } from '../hooks/useWaterfootprint';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalculator } from '@fortawesome/free-solid-svg-icons';
 import WaterFootprintResultDialog from '../components/wft_calculator/WaterFootprintResultDialog'
 import Searchbar from '../components/Searchbar';
 import { useInjection } from 'brandi-react';
 import { TOKENS } from '../di/tokens';
 import { Recipe } from '../domain/models/Recipe';
+import { AnimatePresence, motion } from 'framer-motion';
+import { FaCalculator, FaRedo, FaSearch } from 'react-icons/fa';
 
 
 
@@ -135,23 +135,89 @@ const CalculateScreen: React.FC = () => {
   }
 
   return (
-    <div className='mt-5'>
-      <Searchbar query={searchQuery} onQueryChange={setSearchQuery} onSearch={() => setSearchQuery('')} />
-      <RecipeGrid recipes={updatedRecipes} updateRecipeQuantity={updateRecipeQuantity} lastRecipeElementRef={lastRecipeElementObserver} />
-      {addedRecipes.some(recipe => recipe.quantity > 0) && (
-        <div className="sticky bottom-0 w-full bg-green-100 py-2 flex justify-between items-center text-white">
-          <div className="text-green-800 text-lg font-bold ml-5">
-            {addedRecipes.filter(recipe => recipe.quantity > 0).length} Recipes Added
-          </div>
-          <button onClick={onCalculate} className="py-2 px-4 text-lg rounded-lg cursor-pointer mr-5 flex items-center bg-green-800 text-white">
-            <FontAwesomeIcon icon={faCalculator} className="mr-2" />
-            Calculate!
-          </button>
-        </div>
-      )}
-      <WaterFootprintResultDialog open={open} handleClose={handleClose} handleShare={handleShare} handleReset={handleReset} footprint={totalWaterFootprint} />
-    </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen p-4 md:p-8 bg-gray-50"
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <motion.div
+          initial={{ y: -20 }}
+          animate={{ y: 0 }}
+          className="mb-8 text-center md:text-left"
+        >
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+            Water Footprint Calculator
+          </h1>
+          <p className="text-gray-600 flex items-center justify-center md:justify-start gap-2">
+            <FaSearch className="text-primary" />
+            Search and calculate water usage for your recipes
+          </p>
+        </motion.div>
+
+        {/* Search Section */}
+        <motion.div
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          className="mb-8"
+        >
+          <Searchbar 
+            query={searchQuery} 
+            onQueryChange={setSearchQuery} 
+            onSearch={() => setSearchQuery('')}
+          
+          />
+        </motion.div>
+
+        {/* Recipe Grid */}
+        <RecipeGrid 
+          recipes={updatedRecipes} 
+          updateRecipeQuantity={updateRecipeQuantity} 
+          lastRecipeElementRef={lastRecipeElementObserver}
+        />
+
+        {/* Floating Action Buttons */}
+        <AnimatePresence>
+          {addedRecipes.some(recipe => recipe.quantity > 0) && (
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              className="fixed bottom-6 right-6 flex gap-4"
+            >
+              <button
+                onClick={handleReset}
+                className="p-4 bg-white text-primary rounded-full shadow-xl hover:shadow-2xl transition-all flex items-center"
+              >
+                <FaRedo className="text-xl" />
+              </button>
+              
+              <button
+                onClick={onCalculate}
+                className="p-6 bg-primary text-white rounded-full shadow-xl hover:shadow-2xl transition-all flex items-center gap-2"
+              >
+                <FaCalculator className="text-xl" />
+                <span className="hidden md:inline">Calculate</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Result Dialog */}
+        <WaterFootprintResultDialog 
+          open={open} 
+          handleClose={handleClose} 
+          handleShare={handleShare} 
+          handleReset={handleReset} 
+          footprint={totalWaterFootprint}
+        />
+      </div>
+    </motion.div>
   );
 };
+
+
+
 
 export default CalculateScreen;

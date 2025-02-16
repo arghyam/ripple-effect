@@ -1,172 +1,191 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import LogoutModal from "./LogoutModal";
 
-
-
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [userName, setUserName] = useState<string>('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
-    const [isMenuOpen, setIsMenuOpen] = useState(false); // Function to handle menu button click 
-    const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
-    const handleMenu = () => { setIsMenuOpen(!isMenuOpen); }
-    const location = useLocation();
-    const [userName, setUserName] = useState<string>('');
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+    if (userInfo?.id) setUserName(userInfo.name);
+  }, []);
 
-
-    useEffect(() => {
-        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-        if (userInfo && userInfo.id) {
-            setUserName(userInfo.name);
-        }
-
-    }, []);
-
-    const handleLogout = () => { // Clear local storage data 
-        localStorage.clear();
-        setLogoutModalOpen(false); // Redirect to login page 
-        window.location.href = '/login';
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
     };
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-    return (
-        <nav className="px-10 flex bg-white justify-between items-center">
+  const handleLogout = () => {
+    localStorage.clear();
+    setLogoutModalOpen(false);
+    navigate('/login');
+  };
 
+  const navLinks = [
+    { path: "/", name: "Dashboard", icon: "fa-tachometer-alt" },
+    { path: "/calculate", name: "Calculate", icon: "fa-calculator" },
+    { path: "/leaderboard", name: "Leaderboard", icon: "fa-trophy" },
+    { path: "/discover", name: "Discover", icon: "fa-compass" },
+  ];
 
-            <a href="/" id="brand">
-                <img className="object-cover max-h-12" src="./app_logo.avif" alt="Logo" />
-            </a>
-            <div className="hidden md:flex gap-12" id="nav-menu">
-                <Link
-                    to="/"
-                    className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/' ? 'bg-primary text-white' : ''}`}
-                >
-                    <i className="fas fa-tachometer-alt mr-2"></i>
-                    <span className="text-xl">Dashboard</span>
-                </Link>
+  return (
+    <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          {/* Logo */}
+          <Link to="/" className="flex-shrink-0">
+            <img
+              src="./app_logo.avif"
+              alt="Logo"
+              className="h-10 w-auto object-contain transform hover:scale-105 transition-transform"
+            />
+          </Link>
 
-                <Link
-                    to="/calculate"
-                    className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/calculate' ? 'bg-primary text-white' : ''}`}
-                >
-                    <i className="fa-solid fa-calculator mr-2"></i>
-                    <span className="text-xl">Calculate</span>
-                </Link>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`flex items-center px-3 py-2 rounded-md text-lg font-medium transition-all ${
+                  location.pathname === link.path 
+                    ? "text-primary bg-primary/10"
+                    : "text-gray-600 hover:text-primary hover:bg-gray-50"
+                }`}
+              >
+                <i className={`fas ${link.icon} mr-2`} />
+                {link.name}
+              </Link>
+            ))}
+          </div>
 
-                <Link
-                    to="/leaderboard"
-                    className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/leaderboard' ? 'bg-primary text-white' : ''}`}
-                >
-                    <i className="fa-solid fa-trophy mr-2"></i>
-                    <span className="text-xl">Leaderboard</span>
-                </Link>
-
-                <Link
-                    to="/discover"
-                    className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/discover' ? 'bg-primary text-white' : ''}`}
-                >
-                    <i className="fa-solid fa-compass mr-2"></i>
-                    <span className="text-xl">Discover</span>
-                </Link>
-            </div>
-            <button className="hidden md:flex gap-4 items-center border border-gray-400 px-6 py-2 rounded-lg hover:border-gray-600 " data-modal-target="deleteModal" data-modal-toggle="deleteModal" onClick={() => setLogoutModalOpen(true)} type="button">
-                <div className="flex items-center gap-2">
-                    <i className="fa-solid fa-user"></i>
-                    <span>{userName}</span>
-                </div>
-                <div className="border border-black"></div> {/* Vertical Divider */}
-                <i className="fa-solid fa-arrow-right-from-bracket"></i>
+          {/* Profile Section */}
+          <div className="hidden md:flex items-center relative" ref={profileRef}>
+            <button
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              className="flex items-center space-x-2 group focus:outline-none"
+            >
+              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary font-semibold">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <i className={`fas fa-chevron-down text-gray-500 text-sm transition-transform ${
+                showProfileMenu ? "rotate-180" : ""
+              }`} />
             </button>
 
-
-            <button className="p-2 md:hidden" onClick={handleMenu}>
-                <i className="fa-solid fa-bars text-gray-600"></i>
-            </button>
-
-            <div id="nav-dialog" className={`fixed z-10 md:hidden bg-background inset-0 p-3 ${isMenuOpen ? 'block' : 'hidden'}`}>
-                <div id="nav-bar" className="flex justify-between">
-                    <a href="#" id="brand" className="flex gap-2 items-center">
-                        <img className="object-cover  max-h-12" src="./app_logo.avif" alt="Logo" />
-                    </a>
-                    <button className="p-2 md:hidden" onClick={handleMenu}>
-                        <i className="fa-solid fa-xmark text-gray-600"></i>
-                    </button>
+            {/* Profile Dropdown */}
+            {showProfileMenu && (
+              <div className="absolute right-0 top-12 w-56 bg-white rounded-lg shadow-xl border border-gray-100 animate-fade-in">
+                <div className="py-1">
+                  <button
+                    onClick={() => navigate('/quiz-history')}
+                    className="w-full px-4 py-3 flex items-center text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    <i className="fas fa-history mr-3 text-gray-500" />
+                    Quiz History
+                  </button>
+                  <button
+                    onClick={() => navigate('/dashboard-test')}
+                    className="w-full px-4 py-3 flex items-center text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    <i className="fas fa-tachometer-alt mr-3 text-gray-500" />
+                    New Dashboard Demo
+                  </button>
+                  <button
+                    onClick={() => setLogoutModalOpen(true)}
+                    className="w-full px-4 py-3 flex items-center text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    <i className="fas fa-sign-out-alt mr-3 text-gray-500" />
+                    Logout
+                  </button>
                 </div>
-                <div className="mt-6">
+              </div>
+            )}
+          </div>
 
-                <button className='w-full' onClick={handleMenu}>
-                <Link
-                        to="/"
-                        className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/' ? 'bg-primary text-white' : ''}` }
-                    >
-                        <i className="fas fa-tachometer-alt mr-2"></i>
-                        <span className="text-xl">Dashboard</span>
-                    </Link>
-                </button>
-                    
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none"
+          >
+            <i className={`fas ${isMenuOpen ? "fa-times" : "fa-bars"} text-xl`} />
+          </button>
+        </div>
+      </div>
 
-                <button className='w-full' onClick={handleMenu}>
-                <Link
-                        to="/calculate"
-                        className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/calculate' ? 'bg-primary text-white' : ''}`}
-                    >
-                        <i className="fa-solid fa-calculator mr-2"></i>
-                        <span className="text-xl">Calculate</span>
-                    </Link>
-                </button>
-                    
-
-                <button className='w-full' onClick={handleMenu}><Link
-                        to="/leaderboard"
-                        className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/leaderboard' ? 'bg-primary text-white' : ''}`}
-                    >
-                        <i className="fa-solid fa-trophy mr-2"></i>
-                        <span className="text-xl">Leaderboard</span>
-                    </Link></button>
-                    
-
-                    <button className='w-full' onClick={handleMenu}>
-                    <Link
-                        to="/discover"
-                        className={`flex items-center font-display font-medium m-3 p-3 hover:bg-primary hover:text-white rounded-lg ${location.pathname === '/discover' ? 'bg-primary text-white' : ''}`}
-                    >
-                        <i className="fa-solid fa-compass mr-2"></i>
-                        <span className="text-xl">Discover</span>
-                    </Link>
-                    </button>
-                    
-
-
-                </div>
-
-                <div className="h-[1px] bg-gray300"></div>
-                <button className="mt-6 w-full flex gap-2 items-center px-6 py-2 rounded-lg hover:bg-gray50" onClick={() => setLogoutModalOpen(true)}>
-                    <i className="fa-solid fa-user"></i>
-                    <span>{userName}</span>
-                </button>
-
-
+      {/* Mobile Menu */}
+      <div
+        ref={mobileMenuRef}
+        className={`md:hidden fixed inset-y-0 right-0 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary font-semibold">
+              {userName.charAt(0).toUpperCase()}
             </div>
+            <span className="text-gray-700 font-medium">{userName}</span>
+          </div>
+        </div>
 
+        <div className="py-4">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => setIsMenuOpen(false)}
+              className={`flex items-center px-6 py-3 text-gray-700 hover:bg-gray-50 ${
+                location.pathname === link.path ? "bg-gray-50 border-l-4 border-primary" : ""
+              }`}
+            >
+              <i className={`fas ${link.icon} mr-3 w-5 text-center`} />
+              {link.name}
+            </Link>
+          ))}
 
-            <LogoutModal isOpen={isLogoutModalOpen} onClose={() => setLogoutModalOpen(false)} onConfirm={handleLogout} />
+          <div className="mt-4 border-t border-gray-100">
+            <button
+              onClick={() => navigate('/quiz-history')}
+              className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
+            >
+              <i className="fas fa-history mr-3 text-gray-500" />
+              Quiz History
+            </button>
+            <button
+              onClick={() => setLogoutModalOpen(true)}
+              className="w-full px-6 py-3 flex items-center text-gray-700 hover:bg-gray-50"
+            >
+              <i className="fas fa-sign-out-alt mr-3 text-gray-500" />
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
 
-
-
-
-
-        </nav>
-
-
-
-
-
-    );
-}
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+      />
+    </nav>
+  );
+};
 
 export default Navbar;
-
-
-
-
-
-

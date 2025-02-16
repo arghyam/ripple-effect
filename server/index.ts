@@ -5,6 +5,7 @@ import testRouter from './routes/TestRoute';
 import profileRouter from './routes/profile/ProfileRoutes'
 import leaderboardRouter from './routes/leaderboard/LeaderboardRoutes'
 import waterFtCalcRouter from './routes/water_ft_catculator/WaterfootprintCalcRoutes';
+import quizRouter from './routes/quiz/QuizRoutes';
 import { initUser, User } from './data/db_models/User';
 import sequelize from './db';
 import { initOtp } from './data/db_models/Otp';
@@ -14,7 +15,9 @@ import { initIngredient } from './data/db_models/Ingredient';
 import { initRecipe } from './data/db_models/Recipe';
 import errorHandler from './utils/middleware/errorHandler';
 import cors from 'cors';
-
+import { initQuizScore } from './data/db_models/QuizScore';
+import { initQuiz, Quiz } from './data/db_models/Quiz';
+import { initQuestion, Question } from './data/db_models/Question';
 
 
 initUser(sequelize)
@@ -25,9 +28,16 @@ initRecipe(sequelize)
 
 initWaterFtCalcResult(sequelize)
 
-
 User.hasMany(WaterFtCalcResult, { foreignKey: 'user_id' })
 WaterFtCalcResult.belongsTo(User, { foreignKey: 'user_id' })
+
+initQuizScore(sequelize)
+initQuiz(sequelize)
+initQuestion(sequelize)
+
+Quiz.hasMany(Question, { foreignKey: "quizId", onDelete: "CASCADE" });
+Question.belongsTo(Quiz, { foreignKey: "quizId", onDelete: "CASCADE" });
+
 
 
 export const logger = winston.createLogger({
@@ -51,6 +61,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 app.use(errorHandler)
 
@@ -68,7 +79,14 @@ app.use('/api/profile', profileRouter)
 
 app.use('/api/leaderboard', leaderboardRouter)
 
-app.use('/test', testRouter)
+app.use('/api/quiz', quizRouter)
+
+
+app._router.stack.forEach((middleware: any) => {
+  if (middleware.route) { 
+      console.log(`📌 ${Object.keys(middleware.route.methods).toString().toUpperCase()} ${middleware.route.path}`);
+  }
+});
 
 
 app.get('/', (_, res) => {

@@ -14,7 +14,6 @@ const RecipeGrid: React.FC<RecipeGridProps> = ({ recipes, updateRecipeQuantity, 
 
   useEffect(() => {
     if (recipes.length > 0) {
-      console.log('new recipegrid items', recipes);
       setLoading(false);
     }
   }, [recipes]);

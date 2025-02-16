@@ -17,6 +17,40 @@ code {
     monospace;
 }
 
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1 }
+  50% { opacity: 0.8 }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (max-width: 640px) {
+  .chartjs-render-monitor {
+    max-width: 95vw !important;
+  }
+}
+
+.transition-colors {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.progress-transition {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neon-glow {
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5),
+               0 0 20px rgba(255, 46, 147, 0.5);
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 /*
 
 

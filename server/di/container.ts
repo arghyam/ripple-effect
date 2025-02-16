@@ -6,6 +6,8 @@ import { WaterFtCalcDAOImpl } from '../data/dao/waterft_calculator/WaterFtCalcDA
 import { WaterftCalcService } from '../services/WaterFtCalcService';
 import { ProfileService } from '../services/ProfileService';
 import { LeaderboardService } from '../services/LeaderboardService';
+import { QuizService } from '../services/QuizService';
+import { QuizDAOImpl } from '../data/dao/quiz/QuizDAOImpl';
 
 
 
@@ -19,6 +21,11 @@ container
 container
   .bind(TOKENS.waterFtCalculatorDao)
   .toInstance(WaterFtCalcDAOImpl)
+  .inTransientScope()
+
+container
+  .bind(TOKENS.quizDao)
+  .toInstance(QuizDAOImpl)
   .inTransientScope()
 
 container
@@ -39,5 +46,10 @@ container
 container
   .bind(TOKENS.profileService)
   .toInstance(ProfileService)
+  .inTransientScope()
+
+container
+  .bind(TOKENS.quizService)
+  .toInstance(QuizService)
   .inTransientScope()
 
